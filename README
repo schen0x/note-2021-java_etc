@@ -1,0 +1,4 @@
+Each folder contains the notes and related source code on a specific subject.
+The notes are in *org mode*, with a markdown tool(emacs, or vscode with org mode plugin), they should be tremendously easier to read.
+
+Currently only the java notes is in detailed.
