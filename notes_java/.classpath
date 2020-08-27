@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry excluding="#*#|*.java~" kind="src" path=""/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/usr/share/jac/junit4/junit-4.10.jar"/>
+	<classpathentry kind="lib" path="/usr/share/jac/junit4/junit-4.10-src.jar"/>
+	<classpathentry kind="lib" path="/usr/share/jac/junit4/junit-dep-4.10.jar"/>
+	<classpathentry kind="lib" path="/usr/share/jac/jdbc10/ojdbc10.jar"/>
+	<classpathentry kind="lib" path="/usr/share/jac/jdbc10/ons.jar"/>
+	<classpathentry kind="lib" path="/usr/share/jac/jdbc10/oraclepki.jar"/>
+	<classpathentry kind="lib" path="/usr/share/jac/jdbc10/orai18n.jar"/>
+	<classpathentry kind="lib" path="/usr/share/jac/jdbc10/osdt_cert.jar"/>
+	<classpathentry kind="lib" path="/usr/share/jac/jdbc10/osdt_core.jar"/>
+	<classpathentry kind="lib" path="/usr/share/jac/jdbc10/simplefan.jar"/>
+	<classpathentry kind="lib" path="/usr/share/jac/jdbc10/ucp.jar"/>
+	<classpathentry kind="lib" path="/usr/share/jac/jdbc10/xdb.jar"/>
+	<classpathentry kind="output" path=""/>
+</classpath>

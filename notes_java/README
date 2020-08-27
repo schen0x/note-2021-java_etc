@@ -1,0 +1,3654 @@
+;; -*- mode: org; eval: (company-mode -1); -*-
+//Thinking in Java, by Bruce Eckel, 1033 pages
+//OCP Oracje Certified Professional Java SE 8 Programmer II: Study Guide, 671 pages
+==============================================
+* TODO
+  + ocpjpg etc.
+
+
+* FAQ
+** Eclipse hotkeys
+   | Command                             | Key(O=Shift+o)  |
+   |-------------------------------------+-----------------|
+   |                                     |                 |
+   | Switch Editors                      | C-F7            |
+   | Show All Hotkeys                    | C-L             |
+   | Organize Imports                    | C-O             |
+   | Find Actions                        | C-3             |
+   | Jump to Definition                  | F3              |
+   | Jump back                           | A-LeftArrow     |
+   | Source menu                         | A-S             |
+   | Content Assist                      | C-I(customized) |
+   | ----syso                            | Content Assist  |
+   | ----syser                           | Content Assist  |
+   | ----main                            | Content Assist  |
+   | ?----References - Project           | Content Assist  |
+   | Auto-complete /** or Single Bracket | Enter           |
+   | Windows Components                  |                 |
+   | ---- Statusbar                      |                 |
+   | ---- Main Toolbar                   |                 |
+   | Working Sets                        |                 |
+   | Switch between Editors              | A-e             |
+
+** The disadvantage of Java.
+  1. The behavoir of compiler is just "heavy knowledge".
+  2. Hard to debug (e.g. gbc binary walk style, or even compare to python.) 
+  3. Hard to implement GUI/Simple math(arrays, matrix, calculation, statics), compare to R, python.
+  4. The performance of Java heavily relies on Compiler/JVM's algorithm/optimization, thus the *legacy code* could be heavy. Which increase the long-term maintainence (human) cost.
+** the local variables is always not public;
+[[./Cp8_ConstructorsWithoutArgument.java::5][Cp8_ConstructorsWithoutArguent::5]] 
+
+** the common discriptors:
+    MethodType: '(' (FieldType)* ')' (FieldType | 'V')
+    FieldType: PrimitiveType | ArrayType | ObjectType | *TypeExpr
+    PrimitiveType: 'B' | 'C' | 'D' | 'F' | 'I' | 'J' | 'S' | 'Z'
+    ArrayType: '[' (PrimitiveType | Array - Type | ObjectType)             ////]
+    ObjectType: 'L' ClassName ';'
+    *TypeExpr: TypeCarrier '/' (TypeOpName)? (';' | '[' (TypeArg)+ ']' )
+    *TypeCarrier: FieldType | `L`
+    *TypeOpName: '$' Identifier | ('L' ClassName) (';' '$' Identifier)?
+    *TypeArg: FieldType | MethodType | NameArg | NumberArg
+    *NumberArg: ('-')? DigitNotZero (Digit)* ';' | '0' ';'
+    *NameArg: '$' Identifier ';'
+    Identifier: (any character except '.' ';' '[' '/' '<' '>' ':')*      ////]
+    
+** Lexical Structure
+*** Unicode Escapes
+    [[./Cp0_UnicodeEscapes.java][Cp0_UnicodeEscapes]]
+   
+*** Single quotes vs Double quotes
+    //single quotes for literal char s, double quotes for literal String s, like so: char c = 'a'; String s = "hello"; They cannot be used any other way around
+    | 's' | literal char s   |
+    | "s" | literal String s |
+    
+*** Double colon operator (::)
+    *method reference*
+    Interface Function<T,R> 
+    //T is the type of input to the function
+    //R is the type of return of the function
+    [[./Cp0_DoubleColonOperatorInJava8.org]]
+    
+** Fields initialization orders
+   [[./Cp0_FieldsInitializationOrder.java][Cp0_FieldsIniatializationOrder]]
+
+** Scopes, local var cannot be duplicated, in *lambda, for, as well as codeblock*.
+   [[./Cp0_ScopeOfFor.java][Cp0_ScopeOfFor]]
+   //in the scope of *For*:
+      + local variable define dulplication not allowed.
+      + However, the local variables in the enclosing scope can be modified.
+
+   [[./Cp0_ScopeOfLambda.java][Cp0_ScopeOfLambda]]
+   //in the scope of *lambda*;
+   //Pitfal: lambda defines a "variable", so that it can only take an unoccupied variable name.
+   //Local variable defined in an enclosing scope must be final or effectively final.
+
+   [[./Cp0_ScopeTryCatchFinally.java][Cp0_ScopeTryCatchFinally]]
+   //Rather than scope, this is about the implementation of try catch finally.
+   //Try block -> if exception -> jump to (catch block) ->  
+   //Then all code in catch is compiled by JVM. Which means the return value is interpreted (calculated) before the finally block. The operations in the finally block are then inserted *before the exit point*.
+
+   [[./Cp0_ScopeTryCatchFinally2.java][Cp0_ScopeTryCatchFinally2]] 
+   //The variable from enclosing bracket can be accessed, however, 
+   //Variables defined within the bracket are local: *The variables defined inside the Try Catch Finally bracket stays inside the bracket.*
+
+** the == compares value only.
+   it means: [[./Cp0_DoubleEqualCompareResult.java][Cp0_DoubleEqualCompareResult]]
+   returns false since the wrapper class is used, contents in the array is reference rather than actually value.
+
+** Cannot compile or run class in package    
+   //To compile or run the file */work/packageName/file.java* (with a first line: *package packageName;*)
+   //Under the working directory /work/packageName/*, run:
+     + *javac --class-path ../ file.java*
+   //Or go 1 level up to /work/* and run:
+     + javac ./packageName/Member.java
+Or simply use java instead of javac to execute.
+
+** {}the brack inside a method seems illegal, depends on compiler.
+   //However, the {} inside the field is allowed, though will not be executed. (check JVM?)
+
+** Function when inheriting
+   [[./Cp0_InheritedThis.java][Cp0_InheritedThis]]
+   [[./Cp0_InheritedThisBinary.hex][Cp0_InheritedThisBinary]]
+   //Check the binary file. Then we know that:
+   //In JVM, calling a method defined in super class (which means inheritance but without override), is implemented though specifying the name of the function and a reference to the parent.
+   //Hence in this case, the run() is not recompiled, and the arguments within, point to the constant pool of the parent class.
+   //What if polymorphism?
+   [[./Cp0_PolyThis.java][Cp0_PolyThis]]
+   //If override, then the method is always bound to the child method.
+   //Without override, there exists only one method definition, i.e. in the parent class. 
+
+*** *Hiding Fields*
+    //Within a class, a field that has the same name as a field in the superclass hides the superclass's field, even if their types are different. Within the subclass, the field in the superclass cannot be referenced by its simple name. Instead, the field must be accessed through super, which is covered in the next section. Generally speaking, we don't recommend hiding fields as it makes code difficult to read.
+** Interface vs Abstract Class
+   [[./Cp0_InterfaceVsAbstractClass.java][Cp0_InterfaceVsAbstractClass]]
+   
+** access *private* from other object.
+   [[./Cp0_PrivateFieldOtherClassGetter.java][Cp0_PrivateFieldOtherClassGetter]]
+   //i.e., a.(setter, b); //can be used to set private field of b.
+   
+** auto initialization default value and char[]
+   //Auto initialized *char[]* object throw NullPointerException when call java.io.Writer.write;
+   [[./Cp0_DefaultValue.java][Cp0_DefaultValue]]
+   //the syso(char[]); invoke PrintStream.println(char[]) directly and seems to behavior differently
+   //with auto initialization, the syso(char[]) still throw an null pointer exception.
+   //just same as only char[] can be printed.
+   //only content within char[] will be tried to accessed in toString()
+
+** ClassName c = null; is legal?
+   //Integer ii = null; is legal.
+   //aconst_null , putfield. //null is of the size of a pointer.
+
+** Class or Field initialization order
+   //Static block -> Normal block,(with order) -> Constructor ->
+   [[./Cp0_InitOrderp162.java][Cp0_InitOrderp162]]
+   [[./Cp0_FieldsInitializationOrder.java][Cp0_FieldInitializationOrder]]
+
+** Field behavior when inheritance
+   [[./Cp0_FieldBehaviorWhenInheritance.java][Cp0_FieldBehaviorWhenInheritance]]
+   //without shadowing, the child class seems to share a same ield namespace with its parent.
+   [[./Cp0_FieldBehavior2.java][Cp0_FieldBehavior2]]
+   
+** covariance and contravariance (共変戻り値)
+   //After JE5
+   [[./Cp0_CovarianceAndContravariance.java][Cp0_ConvarianceAndContravariance]]
+** non-static function call in constructor
+   [[./Cp0_nonstaticFunctionCallInConstructor.java][Cp0_nonstaticFunctionCallInConstructor]]
+** merit of immutable objects
+   + guarantee the value will not change.
+   + thread safe
+   + not necessary to deep copy
+   + shareable among multiple clients
+     
+** Arrays vs. Collection
+   The fastest way to print an array/collecton:
+     + For anArray, use Arrays.toString(anArray);
+     + For anCollection, just print it. It has its own toString() method;
+** fail-fast iterator
+   [[./Cp0_FailfastIterator.java][Cp0_FailfastIterator]]
+** constructor with inheritance, super() this() rules.
+   [[./Cp0_SuperThisInheritance.java][Cp0_SuperThisInheritance]]
+** ClassCastException or Compile Error
+   [[./Cp0_ClassCastExceptionOrCimpileError.java][Cp0_ClassCastExceptionOrCimpileError]]
+   
+** Default type of Literals
+   |   1 | int    |
+   | 1.0 | double |
+   
+** If without curly bracket
+   [[./Cp0_IfWithoutCurlyBracket.java][Cp0_IfWithoutCurlyBracket]]
+   //nestable
+   
+** While without curly bracket
+   [[./Cp0_WhileWithoutCurlyBracket.java][Cp0_WhileWithoutCurlyBracket]]
+   //not nestable
+   
+** Is it legal to throw without throws, if guarded? Legal.
+   [[./Cp0_LegalToThrowIfGuarded.java][Cp0_LegalToThrowIfGuarded]]
+   //Safe if guarded.
+   
+** ? null String, null or nullPointerException?
+   [[./Cp0_NullString.java][Cp0_NullString]]
+
+** Polymorphism pitfall, rebind timing.
+   [[./Cp0_PolyPitfall01.java][Cp0_PolyPitfall01]]
+   // i.e. cannot convert a polyed to another unrelated polyed object.
+
+** ? Object.clone() pitfall
+   //The general intent is:
+   For any Object x, 
+       (x.clone() != x) && (x.clone().getClass() == x.getClass()) holds true.
+   ? [[./Cp0_ObjectClonePitfall.java][Cp0_ObjectClonePitfall]]
+   //Check the oracle javadoc on Object.clone():
+   //1. it performs a shallowcopy as described below. 
+   //2. only objects that implemented clonable are able to call it without causing a (not runtime) Exception.
+   //3. arrays implemented cloneable by default.  
+    By convention, the object returned by this method should be independent of this object (which is being cloned). To achieve this independence, it may be necessary to modify one or more fields of the object returned by super.clone before returning it. Typically, this means copying any mutable objects that comprise the internal "deep structure" of the object being cloned and replacing the references to these objects with references to the copies. If a class contains only primitive fields or references to immutable objects, then it is usually the case that no fields in the object returned by super.clone need to be modified.
+
+The method clone for class Object performs a specific cloning operation. First, if the class of this object does not implement the interface Cloneable, then a CloneNotSupportedException is thrown. Note that all arrays are considered to implement the interface Cloneable and that the return type of the clone method of an array type T[] is T[] where T is any reference or primitive type. Otherwise, this method creates a new instance of the class of this object and initializes all its fields with exactly the contents of the corresponding fields of this object, as if by assignment; the contents of the fields are not themselves cloned. Thus, this method performs a "shallow copy" of this object, not a "deep copy" operation.
+
+The class Object does not itself implement the interface Cloneable, so calling the clone method on an object whose class is Object will result in throwing an exception at run time.
+
+** null can be cast to object
+   *(ObjectClass)null* is legal;
+   
+** find the relative file path when I/O
+    String fileName = new File("").getAbsolutePath();
+    fileName = (fileName.concat("/src/.../fineName.suffix"));
+    BufferedReader in = new BufferedReader(new FileReader(fileName));
+
+    
+** OCPJP8 misc
+*** default method inheritance
+    [[./Cp0_DefaultMethodsInheritance.java][Cp0_DefaultMethodsInheritance]]
+    //Even under polymorphism, the default method is bind to the closest one.
+    
+*** ClassCastException is RunTimeException
+    [[./Cp0_ClassCastException.java][Cp0_ClassCastException]]
+    
+*** apache Commons Lang library
+    [[./Cp0_reflectionToString.java][Cp0_reflectionToString]]
+
+    
+*** null pointer    
+     + null char print nothing, 
+     + null String print literal "null", 
+     //however,
+     + call on nullArrary.length throws the exception
+     + call on nullString.length() throws the exception
+     [[./Cp0_NullPointerExceptions.java]]
+
+** System Properties
+   [[./Cp0_SystemProperties.java][Cp0_SystemProperties]]    
+   
+   
+** empty StringBuilder
+   //print nothing
+   [[./Cp0_NullStringBuilder.java]]
+* Chapter 2. Introduction to Objects.
+Java 1. > C++ when objects are more "dynamic". e.g. handling data that with an always changing size. Reasons: variables declaration conventions (effect how to compile). (cpp automatic/scoped variables or static in size) vs (Java's convention, the dynamic approach, e.g. the heap).
+  However the dynamic method requires more headers, hence slower.
+  Cpp can use heap too. However needs manual order, to destory. While Java uses the GBC.
+
+2. Exception cannot be ignored. Thus more robust in general
+
+3. When dealing with concurrency, Language level, enables it to cross-platforming(or not because it's JVM lol) i.e. multi-threading. 
+  Shared resources access: Lock->use->Released loop. SE5~ with lib support. (diff. with Golong)
+
+4. In Web senario. middleware a. processes client data, b. increases respond speed, c. more maintainable than changing client.
+  To further reduce latency, use client-side programming. i.e. Common Gateway Interface (CGI)
+
+  4.1 Most of the simple client-side programming could be implemented using plug-ins & scripting language. (e.g. js) However complex scripts might be messy since it is hard to catch error or debug.
+  4.2 For more complicate usage (e.g. concurrency, database access, network programming, distributed computing), Java/.Net steps in via *applet* & *Java Web Start* :
+    The applet might be considered as a specified tiny program(e.g. capture mouse click), which is pushed from server to client when necessary. However, since it depends on JRE(+-10MB), which needs to be manually downloaded, nand was not included by default in the IE(MS counter part shall be .Net/C#). The usage was limited in Internet.
+    In enterprise however, since client machine are configurable by system manager, the applet&JavaWebStart might be more cost-efficient, since it eliminate the needs to manually update client softwares(each push of the applet is the newest).
+    In cross-platform cases, Java applet/JWS > .Net, for obvious reason. Though in enterprise all-clients-Windows case exists.
+    In real world, cases depends on the Legacy code, and the cost of each solution.
+    Server-side-programming, including text processing & database r/w, are traditionally implemented using Perl, Python, C++ ,.etc to create CGI programs. For complicated usage(supposely dynamic large data?), servlets/JSPs kicks in. In this scenario, Java wins by cross-platforming. (there're more)
+
+** Downcast
+   //Compiler check if the father object could be child object.
+   //If possible, then compiler allows downcast.
+   //In runtime, if cast fail, throw runtime error.
+   [[./Cp2_Downcasting.java][Cp2_Downcasting]]
+   //instanceof: Merit: 
+   //in very bad degisn, if the polymophism is necessary, however *a specific child method*, which is absent in parent class, is desired.
+   [[./Cp2_Upcasting.java][Cp2_Upcasting]]
+
+* Chapter 3. Everything is an Object
+To manipulate objects, C/C++ use &* pointers, which is treated as special objects that each refer to a position in the memory. As for Java, the process is automated, and Class.Obj refers to the object in the memory.
+  String s;    create the pointer.
+  new ...;  create a new object.
+  //Hence, String s = "ab"; is the illegal cases in C/C++
+  String s = new String("asdf"); create a new obj -> link it to a pointer.
+
+** Storage Lives in:
+  a. The registers.
+  b. The stack.
+    In RAM, but directly supported by the processor, via its stack pointer. The stack pointer moves down for new memory, moves up to release the memory. 2nd fastest(supposely because of the fixed pointer)
+    Objs in the stack must be specified explicitly on its exact lifetime(and size?) when compiling, thus reduce its flexibility.
+    Java can also create new obj in the stack, i.e. *Primitive Types*:
+      Heap is inefficient for small variables.
+      generate new variables and store it directly in the stack.
+      *keywords: boolean, char(16 bits), byte(8bits), short(16bits), int(32bits), long(64bits), float(32bits), double(64bits), void*
+      *wrappers: Boolean, Characer, Byte, Short, Integer, Long, Float, Double, Void*
+      Autoboxing, Wrapper and Primitive Types:
+        char c = 'x';    //Primitive Types c in stack
+        Character ch = c;
+        char d = ch;
+  c. The heap.
+    In RAM. Most Java objs lives in the heap. Does not require to specify the lifetime on compilation. Calling the "new" function on runtime allocates new heap for the new obj. And needs cleanup (GBC), hence slower.
+  d. Constant storage.
+    Constant values are hard coded since it never changes. Somecases in Read-Only-Memory(ROM). e.g. string pool.
+  e. Non-RAM storage. 
+    Data lives outside a program. e.g. Streamed objects & Persistent objects. (e.g. used in JDBC/Hibernation)
+     //the default length of the Object reference is 8 bits, and points to a maximum heap size of 32GB.
+
+** Other datatypes: 
+  High-precision numbers(Check later).
+    BigInterger
+    BigDecimal
+  Arrays.
+    > C++ in the sense that, 1. a Java array is guaranteed to be initilaized; 2. Java array has memory overhead & verify index on runtime, thus eliminated the risk of illegal r/w on memory outside of the array range. 
+
+** Null pointer:
+  //int[] anArray = {1, 2,..., 5};
+  int[] nullArray;
+  When pointer is declared without a referencing object, JAVA auto refer it to keyward *null*. When *null* is called, compilier throws an error.
+
+** Obj lifespawn & GBC:
+  *scope*
+    {...{...}...}
+    {int x=12;
+      {int x=13; //Illegal in JAVA, though legal in C/C++
+       String s = new String("13");
+      }
+    } 
+   Java's *GBC* (on runtime) search in all obj created by *new*. Auto destory when out of the scope (cannot be referenced anymore).  
+   While C++ GBC is hard coded.
+ 
+** /Naming Conventions/
+  https://en.wikipedia.org/wiki/Naming_convention_%28programming%29#Java
+  | Class     | *UpperCamelCase*      |                                                                                                                              |
+  | Methods   | *lowerCamelCase*      |                                                                                                                              |
+  | Variables | *lowerCamelCase*      | should not start with '_' or '$'(instance variables). For temporary varialbes, (i j k) for integers, (c d e) for characters. |
+  | Constants | *UPPERCASECHARACTERS* | should not start with digit                                                                                                  |
+
+** class:
+*** Default initial values for primitive types, *as members of a class*.
+    | boolean | false    |                       |
+    | char    | 'u\0000' | 16 bits = 2^16 = 16^4 |
+    | byte    | (byte)0  | 8 bits = 1 byte       |
+    | short   | (short)0 | 16 bits               |
+    | int     | 0        | 32 bits               |
+    | long    | 0L       | 64 bits               |
+    | float   | 0.0f     | 32 bits               |
+    | double  | 0.0d     | 64 bits               |
+    //However, when assigning long value, must use the L notation after the value. 
+        long l = 0xFFFFFFFFFFFFFFFFL;
+
+***  *importing packages/classes*
+     import java.util.ArrayList; //java.util is a package
+     import java.util.*; 
+  
+***  *static*
+      1. for CONSTANTs, that one single instance used universally.
+      2. for methods which are independent, to any other object instances of that class.
+*** *static* method create a fix entry point. Can be called withouout creating an object. 
+    [[file:Cp3_Class.java::17][Cp3ClassStaticTest]]
+    And for this reason (fixed entry point), the main{} has to be static.
+
+** Javadoc (in case need more styles, use "doclets")
+   *{>javadoc -d ./destination file}*
+   [[./Cp3_Javadoc.java::3][Cp3_Javadoc]]
+   1. Before the class/method
+   2. more about @tags in *annotation*.
+   3. some tags: @author, @version, @param, @return, @throws(check later), @deprecated  
+      
+      
+* Chapter 4. Operators  
+** *import static*
+   [[file:Cp4_Operators.java][Cp4_Operators_import_statiic]]
+   
+** Something more about the *private, public, static* scopes.
+   1. The meaning of private / public field shall be clear. 
+    public class Person {
+      public String name;
+      private String count;
+      modifier returnType nameOfMethod (Param List){
+      //method body (could be used to modify the private variables)
+      }
+    }
+   //in this case, use Person.method to interact with tthe private String.
+   2. *static final* as const
+
+** The *private class* / *inner class*
+   Non-static variable cannot be referenced from a static context
+   For detail see:
+   [[https://docs.oracle.com/javase/tutorial/java/javaOO/innerclasses.html][docs.oracle.come/innerclasses]] 
+   Private inner class -> referenced as *new* instance in a *public method* of the class-> main{call class constructor -> call the method};
+   
+** comparison
+   * *equals()* (class java.lang.Object) 
+   * *x.equals(y)* returns true if and noly if x & y points to the same object.
+       while as in String class, there's another equals() that compares string content if match.
+   * *instanceof*, find if is subclass or implementation.
+
+
+** && || !
+
+** Literals
+   [[./Cp4_Literals.java][Cp4_Literals.java]]
+   (byte) (short) / L / D / f
+   0b / number / 0x / 0 
+   Expoents: 1e-2d == 0.01; 1e1d == 10; 
+
+** Bitwise Operators
+   | AND | &           |
+   | OR  | verticalBar |
+   | XOR | ^           |
+   | NOT | ~           |
+   &=, |=, ^= are legitimate.
+   Bitwise-NOT is illegit on *booleans*
+   
+** How to print the type of an primitive
+   *Use autoboxing*
+   Object o = x + c;
+   System.out.println(o.getClass());
+*** Note that (byte +,-,*,/,&,| byte) -> int
+    [[./Cp4_Bitwise.java::10][Cp4_Bitwise]]
+    To prevent register leak/overflow, and presumably increase effiency.
+    Due to the definition of the operator, which for C# is defined in (ECMA-334). 
+    
+** Shift operators
+   | signed extension   | >>, << |
+   | Unsigned extension | >>>    |
+   Note that since << cause overflow directly, <<< does not exist.
+   char, byte, short auto promote to int. (to prevent "bits leak" in the x64 register)
+   [[./Cp4_Bitwise.java::19][Cp4_Bitwise]] 
+  
+** Print Binary Strings
+   Integer.toBinaryString();
+   Long.toBinaryString();
+   
+** Ternary if-else operator
+   boolean-exp ? ifTrueEvalFunction0 : ifFalseEvalFunction1; 
+   static int ternary (int i){
+     return i < 10 ? i * 100 : i * 10;
+   }
+** Casting operator
+   [[./Cp4_Casting.java][Cp4_Casting.java]]
+   double j = 1;
+   int i = (int) j;
+   (float format? IEEE 754, check later)
+   Noted that the casting is not the same in C++;
+
+** round() and int()
+   java.lang.Math.round()
+
+** no *sizeof()*
+   size is hard coded into the compiler.
+   
+** *no warning on overflow*.
+   int k = 2147483647;
+   k * 4 == -4;
+
+* Chapter 5, Controlling Execution
+** if(boolean-statement)
+     else if()
+     else
+
+** while(boolean-expression)
+     statement
+
+** do-while
+   do
+   while(boolean-expression);
+
+** for(initialization; boolean-expression; step)
+   | for (char i=0; i<10; i++) |
+   | for (char c : Iterable)   |
+   [[./Cp5_ControlFlow.java][Cp5_ControlFlow.java]]
+** while(true) equals to for(;;) or for(;true;) 
+** generate a list, (1, 10): //Java 8   
+   [[./Cp5_ControlFlow.java::25][Cp5_ControlFlow.java]]
+   import static java.util.stream.*;
+   List<Integer> range = IntStream.rangeClosed(start, end)
+    .boxed().collect(Collectors.toList());
+     System.out.print(c + "");
+   //In this case java seems quite tedious handling math.
+   
+** unconditional branching. return, break, continue
+   *return*
+   quit the current method.
+   *break*
+   break the for/while loop
+   *continue*
+   next loop
+   
+** "goto" - "label"
+   [[./Cp5_Label.java][Cp5_Label]]
+   the label better to be exactly before a control flow. 
+   label1:
+   outer-iter{
+     lol:
+     inner-iter{
+       continue lol;
+       continue label1;
+       //...
+       break label1;
+     }
+   }
+   
+** switch
+   switch(integral-selector){
+     case int-value1 : 
+     case int-value2 : statement; //case 1 and 2 share an output.
+                       break;
+     case int-value3 : statement; 
+                       break;
+     //...
+     default: statement; //execute default if no match.
+   }
+     
+* Chapter 6, Initialization & Cleanup
+  //The Cp5_ is a joke. or a simple mistake.
+** Constructor 
+   Same name as the class
+** Method overloading
+   [[./Cp5_Overloading.java][Cp5_Overloading.java]]
+
+** this
+   this refers back to object.
+   [[./Cp5_This.java::3][Cp5_This.java]] 
+   *used often in a returns clause.* 
+   *to pass objects around(separate implementation with object, i.e. to call methods in other classes)*
+   C increment(){ //C is the class. since "return this" returns an obj.
+     i++; return this;
+   }
+   
+   Also can call constructors from constructors. Once. Or use this.s = value; to modify class variable.
+
+** Cannot call non-static methods from inside static methods. 
+
+** Garbage Collection & Finalization 
+   finalize(); //is just a mark, mark object for next garbage collection. Different with the /Distructor/ from C++
+   Need to free() if used malloc() native function.
+   Not reliable.
+   
+  *Avoid Finalizers* check out <Effective Java> later.
+  try{//methods}
+  finally{super.finalize()}
+  
+  *used to catch error e.g. obj not complete processed be thrown to gbc*
+  protected void finalize(){
+    if(flag)
+      System.out.println("error msg.");
+    super.finalize() //Call the base class finalizer
+  }
+*** GBC implementation
+    1. reference-counting (simple, slow, inefficient)(when reference count==0 or null(out of scope), GBC. In circularly referencing cases, trash can have count greater than 0)
+    2. Trace from static objects on the stack / in the static storage. 
+       a. Hence, GBC might /stop-and-copy/, cp all live objects and pack them to new heap, thus free the desolated ones.
+          it also create a map of new pointers and the old. correct when during the walk.
+       b. when progn becomes stable, GBC uses /mark-and-sweep/, (slow but efficient in little to no garbage scenario. Prevent moving memory around.
+    3. for big trunks / small temporary objects, use the *reference-counting* (generation-count), as well as *stop-and-copy*. 
+       if all objects become long-lived, GBC proceed to *mark-and-sweep*.
+       if fragments becomes an issue, GBC proceed to *stop-and-copy* again.
+       
+** the JIT implementation
+    a JIT compiler partially or fully interpreted a code to native machine code so what does not rely on JVM interpretation.
+    However, take compile time, and memory for the extra machine code, which decrease speed if cause paging.
+    Or alternativly, /lazy evaluation/, JIT compile only when necessary.
+
+** Member Initialization
+   [[./Cp5_Initialize.java][Cp5_Initialize.java]]
+   Every primitive field in a *Class* is automatically initiated. 
+   
+   Ways to specify initialize value, include the followings, Different from C++
+   *specify when initialize*
+   public class C{
+     int i = 10;
+     char c = 'c';
+   }
+   //Trivia in forward referencing
+   public class MethodInit2
+     //! int j = g(i); //illegal
+     int i = f(); //legal
+     int f() {return 10;}
+     int g(int n) {return n;}
+   }
+   
+   *objects within a class might get initialized multiple times, to guarantee proper initialization*
+   e.g. If, in an overload method, an object is not initialized.
+   
+   *static* cannot be used on local variables, only applies to fields.
+   The static object is initialized only once, when the obj is first called.
+   public class C{
+     static int i;
+     static {
+       i = 47;
+     }
+   }
+
+** Array initialization   
+   indexing operator [];
+   int[] a1;
+   int a1[]; //C++ style
+   int[] a1 = {1, 2, 3, 4, 5};
+   int[] a2;
+   a2 = a1; //Only changes the pointer. 
+   //So a2 change affects a1...
+   [[./Cp5_Array.java][Cp5_Array.java]]
+   
+   when size unknown, use the *new* keyword:
+   int[] a;
+   a = new int[the_Length];
+   //or
+   int[] a = new int[the_Length];
+`
+*** Array grammar meaning  
+    | int[] a1              | allocate enough memory for the *pointer*, to a primitive array       |
+    | int[] ai = new ...    | primitive array, value initialized to default values. i.e. 0         |
+    | //                    |                                                                      |
+    | Integer[] a = new ... | non-primitive array, create a *list of pointers* with no real values |
+    [[./Cp5_ArrayLoop.java][Cp5_ArrayLoop.java]]
+
+*** Variable argument lists, multiple args processing
+    [[./Cp5_VarArgs.java][Cp5_VarArgs.java]]
+    //0 or more parameters, "..."
+    //[[https://docs.oracle.com/javase/tutorial/java/javaOO/arguments.html#varargs][docs.oracle.com: Arbitrary Numbers of Arguments]]
+    [[./Cp5_VarArgs2.java][Cp5_VarArgs2.java]]
+    //Better to use only 1 Varargs List when overloading.
+    [[./Cp5_VarArgsOverloading.java][Cp5_VarArgsOverloading.java]]
+    and when an constructor is used, the default constructor is nullified. So be aware of the f() situation
+
+** Enumerated types
+   the *enum* keyword.
+   [[./Cp5_Enum.java][Cp5_Enum.java]]
+   [[./Cp5_Spiciness.java][Cp5_Spiciness.java]]
+   //the keyword creates some default methods.
+   //which include toString(), ordinal()
+
+* Non-static variable cannot be referenced from a static context   
+   *The Solution*:
+     class method{
+       public static void main(String[] args){
+         method mypgn = new method();
+	 mypgn.start();
+       }
+       void start(){}
+     }
+   //Literally, call *new* only on the main class.?
+   //And use only the methods of the main classs.?
+   //in Cp7_PackageRun.java, we can see a resolve, by simply create a new instance of the non-static class.
+   //then call the method of the instance.
+   [[./Cp7_PackageRun.java::6][Cp7_PackageRun.java::6]]
+   [[./Cp5_Burrito.java][Cp5_Burrito.java]]
+   [[./Cp7_Private.java][Cp7_Private.java]]
+
+* Chapter 7, Access Control
+  *Public, protected, package access, private*
+** package: the library unit
+   package access.mypackage; //Should be in .../access/mypackage/ClassName.java
+   import access.mypackage;
+   [[./Cp7_Package_Class.java][Cp7_Package_Class.java]] //The package java file is supposed to be in the destination folder.
+   [[./Cp7_PackageRun.java::6][Cp7_PackageRun.java::6]]
+   //Note the path. and java's CLASSPATH env variable. echo $CLASSPATH, which is normally the current folder.
+
+*** Collisions
+    the Collisions happens when trying to *new* a classname which is collided.
+    Could be avoided by stating the full path, say java.util.Vector v, instead of Vector v.
+*** Custom tool library
+    //However in order to use that, the main package structure shall remain unchanged.
+    //Which require some work.
+    //However, this should be considered a way to write all data structures, sorting, etc.
+
+*** Use imports to change behavior.
+    *alike C's conditional compilation*
+    can be used in such as debugging code.
+    Two packages, *debug* and *debugoff*
+    
+** Java Access specifiers
+*** Package access
+   |                | Class | Package | Subclass(same pkg) | Subclass(diff pkg) | World |
+   | Public         | +     | +       | +                  | +                  | +     |
+   | protected      | +     | +       | +                  | +                  |       |
+   | package access | +     | +       | +                  |                    |       |
+   | private        | +     |         |                    |                    |       |
+  
+  *private*
+  //private is import especially when multithreading.
+  [[./Cp7_Private.java][Cp7_Private.java]]
+  //getter/setter
+  private String Xxx
+  public String getXxx(){
+    return XXX;
+  }
+  public String setXxx(String name){
+    this.XXX = name;
+  }
+
+  *protected*
+  //protected is to deal with inheritance.
+
+  *default*
+  //default package. i.e. classes in the same directory.
+
+*** Interface and implementation
+    *encapsulation*
+    //convention: public at top.
+
+    *Class level control*
+    //Since a class cannot be private or protected, in case that want to limit class access,
+    //use a private constructor. and a static method to call it.
+    *method1* //useful if extra process needed, when creating an instance. Say a count.
+    class Soup1 {
+      private Soup1(){}
+      public static Soup1 makeSoup(){
+        return new Soup1();
+      }
+    }
+    *method2* //a *design pattern*, <<Thinking in Patterns>>. It only allows one single object to be created.
+    class Soup2 {
+      private Soup2(){}
+      //the "Singleton" pattern
+      private static Soup2 ps1 = new Soup2(); 
+      public static Soup2 access(){
+        return ps1;
+      }
+      public void f(){}
+    }
+
+* Chapter 8, Reusing Classes
+** Composition syntax
+   in the book section, the code overwrited non-primitive object's *toString()* method.
+   [[./Cp8_ToString.java][Cp8_ToString.java]]
+   
+** Inheritance syntax
+   class sub-class extends super-class{}
+   //if constructor *without* arguments.
+   //the constructor will be called outward.
+** Constructors without argument   
+   [[./Cp8_ConstructorsWithoutArgument.java][Cp8_ConstructorsWithoutArguent]]
+
+** Constructors with argument
+   *super*
+   [[./Cp8_Super.java::20][Cp8_Super.java::20]]
+   //The *super* is just like *this*
+   //super.methodA(); to call methodA() in super.
+   
+** Delegation
+   public class SpaceShipControls{
+     void up(int v){}
+   }
+   //delegation
+   public class SpaceShip extends SpaceShipControls
+     {public void up (int v){controls.up(v)}
+   }
+
+** Guaranteeing proper cleanup
+   //If cleanup is necessary,
+   //use 
+   try{
+     //...
+   } finally {
+     x.disposeFunction();//...
+   }
+
+** Name hiding @Override
+   //To prevent unintentionally overloading in sub-classes.
+   //Use the annotation. after Java SE5
+   [[./Cp8_Override.java][Cp8_Override.java]]
+   
+** protected
+   [[./Cp8_Protected.java][Cp8_Protected.java]] 
+   //the private field cannot be accessed even in sub-classes.
+   //private field using set/get method.
+   // *However a new private static int call with the same name will not override* see line 24
+
+** Upcasting
+   class Instrument {
+     public void play(){}
+     static void tune(Instrument i){
+       // ...
+       i.play();
+     }
+   }
+   public class Wind extends Instrument{
+     public static void main(String[] args){
+       Wind flute = new Wind();
+       Instrument.tune(flute); //Upcasting
+     }
+   }
+
+   //Ask: do I need upcasting.
+   //Upcasting(inheritance) or Composition?
+   //in Polymorphism.
+
+** the *Final* modifier
+   | Final Classes:  | cannot be subclssed                          |
+   | Final methods:  | cannot be overridden or hidden by subclasses |
+   | Final variables | can only be initialized once.                |
+   
+   Either a *compile-time constant* that won't ever change.
+   Or can be a value initialized at run time that you don't want changed. (?) 
+   
+   *static final* has only one picece of storge that cannot be changed.
+   //Naming convention: static final *ALL_CAPS_WITH_UNDERBARS*
+   
+   *final* primitive cannot be changed.
+   *final* pointer cannot be pointing to other objects. Though the objects can be modified.
+   [[./Cp8_Final.java][Cp8_Final]]
+   
+*** Blank finals
+    [[./Cp8_Final.java::8][Cp8_Final.java::Line8]]
+   
+*** final argsList
+    void f(final int i), then {i++} becomes illegal.
+    //primaily used to pass data to anonymous inner classes.
+   
+*** When to use *final methods*
+    1. Only use it to *prevent inhiritage / override.*
+    2. (Deprecated, esp. after the *Hotspot* engine) Before Java SE 5/6, increase efficiency in some situations. When compile, invoke *inline calls*, which replace the method call with a copy of the actual code. As a result, the overhead is eliminated.
+    [[./Cp8_FinalMethods.java][Cp8_FinalMethods.java]]
+   
+*** final classes
+    cannot be inherited (extended).
+    1. for Design reason.
+    2. for Security reason.
+
+*** the demerit of final.
+    the Java 1.0/1.1 *Vector* class's methods are all final, which is bad. Due to:
+    1. eliminated the possibility of overriding. e.g. the *Stack* inherit from *Vector*.
+    2. inefficient when dealing with *Concurrency*. Because import methods, e.g. addElement(), elementAt(), are all synchronized. 
+     
+** Initialization and class loading
+   different from C++, in Java, the static field's order does not matter.
+   The loading start whenever a static member is accessed. 
+   All constructors are by default static.
+   So when a new constructor is called, the class code is loaded.
+   Loading also happens when other static methods or field is called.
+   And the initialization happends only once.
+   [[./Cp0_FieldsInitializationOrder.java][Cp0_FieldsIniatializationOrder]]
+
+** Initialization with inheritance
+   [[./Cp8_ConstructorsWithoutArgument.java::5][Cp8_ConstructorsWithoutArguent::5]]
+   //Mind the Order. 
+   [[./Cp8_CompileOrder.java][Cp8_CompileOrder.java]]
+   
+   1. The main function first
+   2. The constructor, parents first
+   3. other fields are load on call.
+   //The behavoir varies, depends on compiler versions.
+   
+* Chapter 9, Polymorphism
+  *decoupling different types*
+  This is also called *dynamic binding, or late binding, or run-time binding*
+  
+** Upcasting
+   [[./Cp9_PolyUpcasting.java][Cp9_PolyUpcasting.java]]
+   *Once override, the Super method cannot be called. Any call would redirect to the method in the sub-class.*
+   
+** Binding
+   [[./Cp9_PolyUpcasting.java::21][Cp9_PolyUpcasting.java::21]]
+   //tune(Instrument i); How compiler knows the right class to point to?
+*** Binding
+    *dynamic binding, or late binding, or run-time binding*
+    //in contract, C only have early binding
+    All methods in JAVA are latebinding.
+    Except static, final(or private which is implicitly final)
+    
+    So the *final* call turn off dynamic binding, thus prevent method being overridden.
+    
+*** Producing the right behavior
+    //Shape-Circle situation
+    *Shape s = new Circle();* 
+    s.draw(); //Circle.draw() will be called.
+    //And s.getClass() returns "Circle"
+    [[./Cp9_Shape.java][Cp9_Shape.java]]
+    //However, if a new method is decleared in sub-class, it may not behave as expected.
+    //The base class must have all methods/interfaces
+
+*** Pitfall: fields and static method
+    [[./Cp9_PolyPitfall.java][Cp9_PolyPitfall.java]]
+    *static field should be accessed in a static way*
+    //Avoid this:
+    //Super sup = new Sub();
+    //sup.function();
+    //When function is called:
+    //1. check if the f() is overrided. Execute the overrided version.
+    //2. The function is hard-coded in the Sub .class file. Hence it uses that namespace. 
+    //3. While the static field, doesn't change. So sup.i returns base While the static field, doesn't change. So sup.i returns base static vWhile the static field, doesn't change. So sup.j returns base static value.lue.
+    
+*** Behavior of polymorphic methods inside constructor
+    //Inheritance. Just like the *constructors*. 
+    //If not default(gbc), remember the *base-class* version. i.e. the *super* version.
+    //Othewise the super part could not be properly set-up/clean-up.
+    //practically used in *shared objects*
+    [[./Cp9_Operators2.java][Cp9_Operators2]]
+
+*** Covariant return types
+    //Should be samed as the section above. sup sub01 behavior different before Java SE5.
+
+** Designing with inheritance
+   //When to avoid using polymorphism.
+   //Better to *use composition first* since it is more flexible.
+   //the *"State"* design pattern.
+   [[./Cp9_State.java][Cp9_State.java]]
+   
+   
+*** Substitution vs Extension
+    //A clear way to use inheritance(or *polymorphism*), is when "pure" inheritance happens.
+    //That is, only methods already decleared are overridden, no more new methods are included.
+    //Extends is useful, but in the following case the poly cannot access new methods in child.
+    [[./Cp9_Extends.java::17][Cp9_Extends.java::17]]
+
+** *ClassCastException*, when error in downcasting.
+   // *runtime type identification(RTTI)*
+   [[./Cp9_RTTI.java::29][Cp9_RTTI.java::29]]
+   //baseClass x = new baseClass();
+   //In this case x cannot be downcast
+
+* Chapter 10, Interfaces
+** Abstract classes and methods
+   [[./Cp9_PolyUpcasting.java][Cp9_PolyUpcasting.java]]
+   //The methods within the Instrument class is always dummy;
+   //So the code can be wrote that, when those methods are called, generate errors;
+   //But that requires run-time debugging.
+   //In order to detect those error in compile time, use *abstract* keyword.
+   *abstract void f();*
+   | 1. abstract methods must be within abstract classes.      |
+   | 2. abstract classes *could* contain non-abstract methods. |
+   //the keyword prevent user from creating *new* object of that class directly.
+   rewind: Cp7 Access Control:
+   package com.package; //should be in .../com/package/ClassName.java
+
+** Interface
+   //The *interface* keyword defines a completely abstract class.
+   //In some other languages, this is called a "protocol"
+   //Fields in an interface are implicitly *static* and *final*.
+   [[./Cp10_Interface.java][Cp10_Interface.java]]
+   
+   | 1. All methods in an Interface are implicitly *public* only. | //void toString(); 
+   | 2. The fields in an Interface is not implemented.            |
+
+** *Complete decoupling*
+   //When sub-function take different type of input, it does not Override super.
+   [[./Cp9_Extends.java][Cp9_Extends.java]]
+   class Processor {
+     public String name(){ return getName(); }
+     Object process(Object input) { return input; }
+   }
+
+   class Upcase() extends Processor { //body }
+
+   public class Apply{
+     public static void process(Processor p, Object s){ //p must be in a sub-class of class Processor.
+       System.out.println(p.process(s));
+     }
+     public static void main(String[] args){
+     process(new Upcase(), s);
+     }
+   }
+   //When a Waveform which is a new package comes in, it cannot be used by Apply directly,
+   //Since it is not a sub-class of class Processor.
+   //The Processor and the Apply class are Not as decoupled.
+   //Use interface to complete decouple as follows:
+
+   public interface Processor {
+     public String name();
+     Object process(Object input);
+   }
+
+   class Upcase() implement Processor { //body }
+
+   public class Apply{
+     public static void process(Processor p, Object s){ //p could comes from anywhere outside the package.
+       System.out.println(p.process(s));
+     }
+     public static void main(String[] args){
+     process(new Upcase(), s);
+     Waveform w = new Waveform();
+     Apply.process(new FiterAdapter(new LowPass(1.0)), w); //And it could be more flexible.
+     }
+   }
+   //Conclusion: Interface is more global, more flexible than an abstract class.
+
+** "Multiple inheritance" in Java.
+   //Interface is for *to upcast to more than one base type*.
+   //Only 1 super class is allowed using *extends*
+   //While Multiple interfaces are allowed using *implements*
+   //implement vs abstract
+   //1. use interface whenever can, whenever abstraction can be done without explicitly stating the function body or var.
+   //2. to prevent client programming to new an "empty" object.
+   
+** Extending an interface with inheritance
+   interface Monster{
+     void meenace();
+   }
+   interface DangerousMonster extends Monster{
+     void destroy();
+   }
+   interface Lethal {
+     void kill();
+   }
+   interface Vampire extends DangerousMonster, Lethal {
+   void drinkBlood();
+   }
+   //provide easy extenability
+
+** Name collisions when combining interfaces
+   class C{ public int f(){return 1}; }
+   interface I { void f(); }
+   //! C5 extends C implements I ; //error
+   //return type different cannot differ methods away.
+   // *Avoid same method names in different Interfaces.*
+
+** Adapting to an interface
+   //Scanner Java SE5 class.
+   //by implementing method "read()", it is applicable to any existing class.
+
+** Fields in interfaces 
+   //Before Java SE5, the *enum* did not exist.
+   //Hence:
+   public interface Months{
+     int
+       JANUARY = 1, FEBRBUARY = 2, MARCH = 3,
+       APRIL = 4, MAY = 5, JUNE = 6, JULY =7,
+       AUGUST = 8, SEPTEMBER = 9, OCTOBER = 10,
+       NOVEMBER = 11, DECEMBER =12;
+   }
+   [[./Cp10_Months.java][Cp10_Months]]
+   [[./Cp10_InterfaceAsEnum.java][Cp10_InterfaceAsEnum]]
+   //Fileds cannot be *blank finals*
+
+** Nesting interfaces
+   //It's a feature.
+
+** Interfaces and factories
+   // *Factory Method* designing pattern produce objects thta fit the interface.
+   //commonly used in building *framework*.
+   //More elegent using innerclass.
+
+** Summary
+   //Abstraction should be motivated by a real need.
+   //Interfaces should be something that I refactor to when necessary, but not everywhere.
+   //A guidline might be to *prefer classes over interfaces*, and use interface only when clearly necessary.
+*** *default methods* and *static methods* in interface int JE8
+   [[./Cp10_InterfaceDefaultStatic.java][Cp10_InterfaceDefaultStaic]]
+
+* Chapter 11, Inner Classes
+  //Allow code to be more elegant and clear.
+  //The difference against normal classes.
+  | 1. names are nested within the parent                     |
+  | 2. it can be written to linked to its *enclosing object*. |
+  [[./Cp11_Selector.java][Cp11_Selector]] 
+  //theSelector selector = sequence.selector();
+  
+** Using .this and .new
+   [[./Cp11_DotNewThis.java][Cp11_DotNewThis]]
+   public Cp11_DotNewThis getOuter() {
+       return Cp11_DotNewThis.this;
+   }
+   dnI.getOuter().thisIS();
+   
+** Inner classes and upcasting
+   //Could be used to hide implementations.
+   //Since only Innner classes could be private or protected.
+
+** Inner classes in methods and scopes
+   //2 reasons for using the inner classes.
+   | 1. to implement a a interface and returns a reference.             |
+   | 2. as an assistant class locally, while solving a complex problem. |
+
+   if(b){class x{//body, encapsulation & getter;}} 
+   //then the code is not accessable outside the scope.
+   
+** Anonymous inner classes
+   //inner class inside a method (an implementation of the abstract method?)
+   [[./Cp11_InnerInMethod.java][Cp11_InnerInMethod]] //this is already anonymous inner? 
+   Temp, Broken: [[./Cp11_AnonymousInner.java][Cp11_AnonymousInner]] 
+   Q: which super? whosyourdaddy?
+   //For inner class inside a class, see the [[./Cp11_Selector.java][Cp11_Selector]] example.
+   
+** ? Factory Method revisited
+
+** Nested classes
+   Terminology: Nested classes are divided into two categories: static and non-static. 
+     + *Nested classes that are declared static are called static nested classes.*
+     + *Non-static nested classes are called inner classes.*
+   A nested class is a static inner class. It has attribute such as:
+     + Does not need an outer-class object to create.
+     + Cannot access a non-static out-class object from an object of a nested class.
+     + Can have static data, field, or nested classes. Which is different from ordinary inner classes.
+*** Why Use Inner Classes?
+     + to logically group classes that are only used in one place.
+        //If a class is useful to only one other class, then it is logical to embed it in that class and keep the two together. Nesting such "helper classes" makes their package more streamlined.
+     + increases encapsulation
+        //Consider two top-level classes, A and B, where B needs access to members of A that would otherwise be declared private. By hiding class B within class A, A's members can be declared private and B can access them. In addition, B itself can be hidden from the outside world.
+     + It can lead to more readable and mantainable code:
+        //Nesting small classes within top-level classes places the code closer to where it is used.
+
+        
+** Classes inside interfaces p257
+   public interface C{
+   void howdy();
+   class Test implements C{
+     System.out.println("Howdy");
+   }
+   public static void main(String[] args){
+     new Test().howdy();
+   }
+}
+   //as a static class. but nested. if inside a public class C, compiled as file: C$Tester, which could be deleted when packaging.
+
+** Reaching outward from a multiply nested class.
+   // *inner class object could call outer class private functions.*
+
+** Why inner classes?
+   //Must use: When multiple *abstract class* is wanted, to be extend.
+   //Features: 
+     //Each inner can *independently* inherit from an implementation.
+       +Which means different implementations is possible within a single parent class.
+       +Its creation not strictly tied to outer-class object. 
+       +Which then provide better orginaziton. (The Sequence does not have to be a Selector. [[./Cp11_Selector.java][Cp11_Selector]])
+
+#+NAME: multiple abstract class extensions
+#+HEADERS: :classname C
+#+BEGIN_SRC java
+class ParentClass {} 
+abstract class absC{
+  void f(){
+    System.out.println("absC.f");
+  }
+}
+class Z extends ParentClass {
+  absC makeC() {
+    return new absC (){ 
+      @Override
+      void f() {
+        System.out.println("absC.f.implement");
+      }
+    };
+  }
+} //anonymous inner class as an implementation
+public class C{
+  public static void main(String[] args){
+    //! absC x = new absC(); //absC is abstract; cannot be instantiated
+    Z z = new Z();
+    z.makeC().f();
+  }
+}
+#+END_SRC
+
+#+RESULTS: multiple abstract class extensions
+: absC.f.implement
+
+
+** Closures & callbacks
+   A *closure* is a callable object that retains information from the scope in which it was created.
+     i.e. an inner class can manipulate private parameters in its parent class.
+
+     
+** OCPJP II, Inner Classes
+*** Member Inner Class
+    + public, private, protected or default
+    + can extend any class and implement interfaces
+    + can be abstract or final
+    + *cannot declare static fields or methods*
+    + can access members or the outter class including private members
+
+*** does local class has name?
+    [[./Cp11_localClassName.java][Cp11_localClassName]]
+    //Local class (class inside a method) has a name.
+
+*** *callbacks* function implementation using inner class
+    [[./Cp11_Callback.java][Cp11_Callback]]
+//It turned this.increment() into an Incrementable object.
+//The nature of Callback, should be passing variable(s) as well as *a function*, which is determined on Runtime, to a Caller, which then execute the function.
+
+*** Summary:
+    1. Member inner class *cannot* declare static fields or methods, throw compile error. Only nested static classed are permitted to contain statics.
+
+** ? Inner classes & control frameworks
+   
+** Inheriting from inner classes
+   //Since an instance of an inner class must be attached to a parent class.
+   //The super constructor must be explicitly called before the construction.
+   [[./Cp11_InheritingAnInner.java][Cp11_InheritingAnInner]]
+
+** ? Local inner classes
+   
+** Summary
+*** (Static) Nested Classes:
+    Accessed using the enclosing class name:
+        OuterClass.StaticNestedClass
+    To create an new instance, use the following syntax:
+        OuterClass.StaticNestedClass nestedObject = new OuterClass.StaticNestedClass();
+*** (Non-static) Inner Classes:
+    An instance of InnerClass can exist only within an instance of OutClass, and has direct access to the methods and fields of its enclosing instance.
+    To create an new instance, use the following syntax:
+        OuterClass.InnerClass innerObject = outerObject.new InnerClass();
+    There are two special kinds of inner classes: local classes and anoymous classes.
+*** Shadowing
+    In the inner class, if a variable is declared with the same name as an existing variable in the enclosing scope, then the declaration *shadows* the declaration of the enclosing scope. A shadowed declaration cannot be referred by its name alone:
+    [[./Cp11_Shadowing.java][Cp11_Shadowing]]
+
+* Chapter 12, Holding Your Objects (Container basic)
+** Generics and type-safe containers
+   [[./Cp12_ArrayListWithoutGeneric.java][Cp12_ArrayListWithoutGeneric]]
+   [[./Cp12_ArrayListWithGeneric.java][Cp12_ArrayListWithGeneric]]
+   //the ArrayList<Generic(class)> can also upcast, take sub-class Objects.
+   //for(Apple c : apples)
+         //loop body
+** Basic concepts
+   //Two very basic interfaces:
+   1. Collection: a sequence of elements with rule(s) applied to them.
+      + List: holds the order of elements inserted.
+      + Set: cannot have duplicate elements
+      + Queue: *produces* the elements in the order determined by a *queuing discipline*
+   2. Map: a group of key-value object pairs, allowing value look-up with the key.
+      + ArrayList: allows object look-up with *number*.
+      + Map: allows look-up with *another object*. (also named as associatve array or a *dictionary*)
+        
+   //Upcasting also possible:
+   List<Apple> apples = new ArrayList<Apple>();
+   List<Apple> apples = new LinkedList<Apple>();
+   //Though by upcasting, sub-type's specific functions might be lost.
+   //e.g. TreeMap, LinkedList's functions that does not exist in Map, List.
+   [[./Cp12_SimpleCollection.java][Cp12_SimpleCollection]]
+   //0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 
+** Basic Methods; Adding groups of elements
+   add(): ensures that this Collection contains the specified element.
+   [[./Cp12_BasicMethods.java][Cp12_BasicMethods]]
+   #+NAME: BasicMethods
+   #+HEADERS: :classname 
+   #+BEGIN_SRC java
+   Collection<Integer> collection = new ArrayList<Integer>{Arrays.asList{1,2,3}}
+   Collection<Integer> collection = new ArrayList<Integer>();
+   Integer[] moreInts = {4,5,6};
+   collection.addAll(Arrays.asList(moreInts)); //inferior
+   Collections.addAll(collection, moreInts); //runs faster, hence the preferred approach
+   #+END_SRC
+   
+   //the Arrays.asList() take a guess on type.
+   [[./Cp12_AsListInference.java][Cp12_AsListInference]]
+** Printing containers
+   Arrays.toString()
+   [[./Cp12_PrintingContainers.java][Cp12_PrintingContainers]]
+   
+#+NAME: PrintingContainers
+#+HEADERS: :results table :classname PrintingContainers
+#+BEGIN_SRC java
+import java.util.*;
+
+public class PrintingContainers {
+    static Collection fill(Collection<String> collection) {
+        collection.add("rat");
+        collection.add("dog");
+        collection.add("dog");
+        return collection;
+    }
+
+    static Map fill(Map<String,String> map) {
+        map.put("rat", "Fuzzy");
+        map.put("dog", "Bosco");
+        map.put("dog", "Spot");
+        return map;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(fill(new ArrayList<String>()));
+        System.out.println(fill(new LinkedList<String>()));
+        System.out.println(fill(new HashSet<String>()));
+        System.out.println(fill(new TreeSet<String>()));
+        System.out.println(fill(new LinkedHashSet<String>()));
+        System.out.println(fill(new HashMap<String,String>()));
+        System.out.println(fill(new TreeMap<String,String>()));
+        System.out.println(fill(new LinkedHashMap<String,String>()));
+    }
+}
+
+#+END_SRC
+
+#+RESULTS: PrintingContainers
+| [rat       | dog        | dog] |
+| [rat       | dog        | dog] |
+| [rat       | dog]       |      |
+| [dog       | rat]       |      |
+| [rat       | dog]       |      |
+| {rat=Fuzzy | dog=Spot}  |      |
+| {dog=Spot  | rat=Fuzzy} |      |
+| {rat=Fuzzy | dog=Spot}  |      |
+
+   //HashSet Fastest to retrieve. If inserting order matters, 
+   //LinkedHashSet or TreeSet(slower).
+*** interface List extends Collection, Iterable
+    //the List interface.
+    //promise to maintain elements in a particular sequence.
+    //Two types of List:
+     + ArrayList: excels at random accesing elements, but slower when inserting and removing elements in the middle of a list.
+     + LinkedList: provides optimal sequential access, insertion and deletion in the middle are cheaper, in exchange of a larger feature set than the ArrayList.
+           //Maybe related to Type Information.
+           
+    //Basic methods:
+    Obj.
+        add(Obj); add(positionInIndex, Obj); addAll(positionInIndex, Obj); get(id); 
+        remove(theExactObjRef); removeAll(); indexOf(theExactObj); clear();
+        subList(idStart, idEnd); contains(Obj); set(id, Obj); 
+
+    Collections.
+        sort(Obj); Collections.shuffle(Obj); 
+        
+*** interface Iterator
+#+BEGIN_SRC java
+List<Pet> pets = new ArrayList<Pet>(Arrays.asList("dog", "cat"));
+Iterator<Pet> it = pets.iterator();
+#+END_SRC
+    //it.
+         hasNext(); next(); remove(); 
+         
+*** ListIterator
+#+BEGIN_SRC java
+List<Pet> pets = new ArrayList<Pet>(Arrays.asList("dog", "cat"));
+Iterator<Pet> it = pets.listIterator();
+#+END_SRC
+    //it.
+         hasNext(); next(); remove(); 
+         
+*** LinkedList 
+#+BEGIN_SRC java
+LinkedList<Pet> pets = new LinkedList<Pet>(Arrays.asList("dog", "cat"));
+#+END_SRC
+    //Obj.
+          getFirst(); element(); peek(); removeFirst(); remove(); poll(); addfirst(); offer(); removeLast(); 
+
+*** Stack
+    //implemented using LinkedList.
+    [[./Cp12_Stack.java][Cp12_Stack]]
+    //To avoid conflict: must specify the whole path:
+    //new java.util.Stack<String>();
+    //new net.my.package.Stack<String>();
+    
+*** Set
+    //
+    
+*** Map
+    //use for each to loop through key/value/pair.
+    //map.keySet(); map.values(); entrySet();
+    [[./Cp12_Map.java][Cp12_Map]]
+    //Obj.
+          put("key", Obj); get("key"); containsKey("key"); continsValue(Obj);
+          
+    //Multi-dimention
+#+BEGIN_SRC java
+public class MapOfList{
+  public static Map<Person, List<? extends Pet>>
+    petPeople = new HashMap<Person, List<? extends Pet>>();
+  static {
+    //...body
+  }
+  public static void main(String[] args) {
+    System.out.println("People: " + petPeople.keySet());
+    System.out.println("Pets: " + petPeople.values());
+    for(Person person : petPeople.keySet()) {
+      print(person + " has:")
+      for(Pet pet : petPeople .get(person))
+        print("    " + pet);
+    }
+  }
+}
+#+END_SRC
+
+*** Queue
+    //First-in, first-out
+    //important in transfering objects from one area of a program to another.
+    //important in Concurrency. 
+    //Use LinkedList to implement a Queue through upcast.
+    [[./Cp12_Queue.java][Cp12_Queue]]
+    //Queue.
+            offer(): instert to tail, return false if can't.
+            peek(), element(): return head without removing. False / NoSuchElementException if empty.
+            poll(), remove(): remove & return the head. null / NoSuchElementException if empty.
+            
+*** PriorityQueue
+    //when offer(), obj is sorted into the queue, default using natural order;
+    //The oreder can be modified by customizable *Comparator*;
+    //Which changes the order, ensuring peek(), poll(), remove()
+    
+*** Collection vs Iterator
+    //public class xxx extends AbstractCollection<Generic>;
+    //then implement hasNext(); next();
+   
+*** Foreach and iterators
+    for (Type t : obj) 
+    //Works for all Iterable(After SE5) objects.
+    //Two implementations:
+    [[./Cp12_Foreach.java][Cp12_Foreach]]
+  
+**  The Adapter Method idiom
+    //in case a reverse is needed.
+    //instead of overriding the iterator() method,
+    //write a function:
+    [[./Cp12_Reversible.java][Cp12_Reversible]]
+  
+**  Summary
+    1. Array can be multidimensional, and can hold primitives. However, size unchangable.
+    2. Collection holds single elements, Map holds associated pairs. Resizable automatically. Won't hold primitives, but autoboxing possible.
+    3. ArrayList if a lot of random access, while LinkedListif insert/remove in the middle.
+    4. Queues and Stacks are implemented using LinkedList.
+    5. Map associate Objects with Objects. HashMaps are designed for quick access, TreeMap keeps keys in sorted order, thus slower, while
+       a LinkedHashMap keeps keys in insertion order, while provide rapid access.
+    6. Set accepts one of each type of Object only. HashSets provide fast lookups, TreeSets keeps elements in sorted order, 
+       LinkedHashSets keep elements in insertion order.
+    7. no need to use the legacy classes Vector, Hashtable or Stack in new code.
+       
+    //Simple Container Taxonomy. p309
+    
+* Chapter 13, Error Handling with Exceptions
+  [[./Cp13_SevenIsEvil.java][Cp13_SevenIsEvil]]
+  // ? the block after finally is still executed.
+** Basic exceptions
+   //exceptional condition -> a *new* exception object is created on the heap -> current path of execution is stopped ->
+   the reference for the exception object is ejected -> exception-handling mechanism takes over and looking for the *exception hander* and execute.
+** Exception arguments
+   //throw new NullPointerException("t = null");
+   //The string can be extracted.
+   //Note that the *throw* can throw any type of *Throwable*.
+** Catching an exception
+   //a guarded region:
+*** The try block 
+#+BEGIN_SRC java
+try {
+    // Code that might generate exceptions.
+} catch(Type1 id1)|{
+    // Handle exceptions of Type1.
+} catch(Type2 id2) {
+    // Handler2
+}
+#+END_SRC
+   //the id represents identifier.
+**** Termination vs. resumption
+     //for resumption, instead of throwing an exception, call a method that fixes the problem.
+     //or put try inside a while loop.
+     //However usually unpratical and hard to maintain especially in large systems, where the exception can be 
+     //generated from many points.
+** Creating customized exceptions
+#+NAME: Cp13_InheritingExceptions
+#+HEADERS: :results pp :classname InheritingExceptions
+#+BEGIN_SRC java
+class SimpleException extends Exception {}
+
+public class InheritingExceptions {
+    public void f() throws SimpleException{
+        System.out.println("Throw SimpleException from f()");
+        throw new SimpleException();
+    }
+    public static void main(String[] args){
+        InheritingExceptions sed = new InheritingExceptions();
+        try {
+            sed.f();
+        } catch(SimpleException e) {
+            System.out.println("catch");
+        }
+    }
+}
+#+END_SRC
+
+#+RESULTS: Cp13_InheritingExceptions
+: Throw SimpleException from f()
+: catch
+
+   //printStackTrace(printStream);
+   [[./Cp13_MyException.java][Cp13_MyException]]
+   [[./Cp13_Logging.java][Cp13_Logging]]
+** The exception specification
+   //Must be thrown. 
+   void function() throw exception;
+   //However the throw can be compiled without really implementing a throw.
+   //Thus, possible to throw in abstract classes.
+** The *Exception* and how to catch all exceptions
+   [[./Cp13_AllException.java][Cp13_AllException]]
+** The StackTrack Elements.
+   [[./Cp13_StackTrace.java][Cp13_StackTrace]]
+** Rethrowing an exception.
+catch(Exception e) {
+System.out.println("An exception was thrown.")
+throw e;
+}
+   //Any further catch block for the Exception e will be ignored,
+   //Meanwhile e will be thrown to exception handlers in the next higher context. 
+   //its attributes and info remain *unchanged*. i.e. The original info is kept.
+   //or also possible to overwrite the original using  method *fillInStackTrace()*.
+   //or throw another class of exception to achieve the save effect.
+** Exception chaining
+   //After JDK 1.4, all *Throwable* have the option to take a *cause* object in their constructor. 
+   //The *cause* is intended to be the originating exception.
+   //In 3 fundamental exception classes, the *cause* argument is allowed in the *constructor*:
+   | *Error*            | used by JVM to report system errors. |
+   | *Exception*        |                                      |
+   | *RuntimeException* |                                      |
+   //to chain any other type of exceptions, use the *initCause()* method (inherited from the public class Throwable)
+try {
+     lowLevelOp();
+ } catch (LowLevelException le) {
+     throw (HighLevelException)
+           new HighLevelException().initCause(le); // Which uses cast. Legacy constructor
+ }
+   [[./Cp13_MyException.java][Cp13_MyException]]
+*** Multi-dimentional array
+ [[./Cp0_Array3D.java][Cp0_Array3D]]
+ arr03[0][1] = 4;
+ arr03[0] = new int[] {2, 2};
+ System.out.println((arr03[0][1]));
+ //Output: 2
+** Standard Java exceptions
+   //java.lang.Exception, check oracle documentation
+*** Special case: RuntimeException
+    [[./Cp13_RuntimeException.java][Cp13_RuntimeException]]
+    //RuntimeException is not required to be caught.
+    //If it gets to main(),
+    //printStackTrace() is called as the program exits.
+    //Error messages are printed to System.err.
+    //A RuntimeException means either:
+      1. An error programmer cannot anticipate. e.g. a null pointer outside of the program.
+      2. An error in the program. Such as an ArrayIndexOutOfBoundException.
+** Performing cleanup with *finally*.
+   *finally clause always run*.
+   //even on error.
+   //example usage:
+     1. As java's "goto" combined with the labeled break&continue statement.
+     2. guarantee a important cleanup, which will be executed no matter what.  
+        //e.g. use switch or if to implement multiple return point, finally use finally to cleanup.
+*** pitfall: finally silence exception
+    //Two situations:
+    [[./Cp13_Pitfall.java][Cp13_Pitfall]]
+    //a. Must ensure no exception is thrown in finally clause.
+    //b. Must not have "return" in finally clause because it will mute all exceptions.
+    // *Other situations*:
+    try{
+        f(); //report exception A.
+        g(); //report exception B.
+    } catch{//body} 
+    //then exception B will not be reported if A error.
+    
+** Exception restrictions
+   //When override a method, only exceptions that have been specified in the base class can be thrown.
+   //An sub-class exception can be thrown.
+   *Some advanced impromptu*:
+   [[./Cp13_MyExceptionAdvanced.java][Cp13_MyExceptionAdvanced]]
+   
+** Constructors. Handle Construction Exceptions.
+   //Sometimes, when constructor fail, the Obj won't be created, 
+   //However finally runs every time, so it will run no matter what.
+   //Use the following logic:
+try{
+    Construct x = new Construct(); // which may fail.
+    try{
+        // actions.
+    } finally {
+        x.dispose(); // clean-up if Obj x is constructed successfully.
+    }
+} catch (ConstructionException e) {
+    // Construction Exception handler
+}
+   //Guard each Object if its construction may fail.
+
+** Exception matching
+   //As discovered in
+   [[./Cp13_MyExceptionAdvanced.java][Cp13_MyExceptionAdvanced]]
+   //Catch follows the order.
+   
+** Alternative approaches and guidelines
+   //Some main logic of error handling:
+   //Don't catch an exception unless know what to do with it.
+   //The goal:
+     1. To separate error handling code with main code, thus more readable.
+     2. To reduce the amount of error-handling code, by allowing one handler to deal with multiple error sites.
+   *to swallow the Exception:*
+#+BEGIN_SRC java
+try {
+// ...body
+} catch(ObligatoryException e) {} // Gulp!
+#+END_SRC
+   //Once this is done, the Exception is completly vanished.
+   //Thus very hard to be re-discovered.
+   //Remember to check.
+   
+** History
+   //"...every invocation must be followed by a conditional test to determine what the outcome was.
+   //This requirement leads to programs that are difficult to read, and probably inefficient as well,
+   //thus discouraging programmers from signaling and handling exceptions."
+   Thus one of the original motivation of exception was to prevent this requirement.
+   //Authors reflection:
+   //Error checking's merit comes from:
+     1. A unified error-reporting model via exceptions.
+        That is, regardless of whether the programmer is forced by the compiler to handle them.
+     2. Type checking, regardless of *when* it takes place. 
+        That is, either at compile time or at run time is fine.
+        
+   //Moreover, *reflection* and *generic* are required to compensate for the overconstraining nature of static typing.
+   //Also, need to understand what the compiler is able to do.
+   
+** Passing exceptions to the console.
+   [[./Cp13_ExceptionToConsole.java][Cp13_ExceptionToConsole]]
+   // throw in main, which will be reflected in the console, does not require a catch.
+   
+** Converting checked to unchecked exceptions
+try{
+    // ... body
+} catch(AnExceptionIDontKnowWhatToDo e){
+    throw new RuntimeException(e);
+}
+   [[./Cp13_WrappedException.java][Cp13_WrappedException]]
+   //Different types of exceptions are wrapped in a RuntimeException Object as its cause.
+   //And since a RuntimeException does not require extra handling, more efficient.
+   //Thus when do not know what to do, exception can be passed to someone who can handle it.
+   
+** Exception guideline:
+   //Use exceptions to:
+     1. Handle problems at the approatiate leve. (Avoid catching unless know what to do with them.)
+     2. Fix the problem and call the method that cause the exception again.
+     3. Patch things up and continue without retrying the method.
+     4. Calculate some alternative result instead of what the method was suppose to produce.
+     5. Do whatever you can in the current context and rethrow the *same* exception to a higher context.
+     6. Do whatever you can in the current context and rethrow a *different* exception to a higher context.
+     7. Terminate the program.
+     8. Simplify. (Do not make things more complicated with the exception scheme.)
+     9. Make your library and program safer. (Consider it as short-term investment for debugging, and a long-term investment for application robustness.)
+
+** Summary
+   [[./Cp13_AllException.java][Cp13_AllException]] //Catch all exceptions
+   [[./Cp13_WrappedException.java][Cp13_WrappedException]]
+   [[./Cp13_ReturnJVMCode.java][Cp13_ReturnJVMCode]]
+   [[./Cp13_CatchFinallyExecuteOrder.java][Cp13_CatchFinallyExecuteOrder]] //Try->Catch->Finally->Return(even if in CatchBlock)
+
+
+    //The actual recovery aspect might only be 10 percent.
+    //However the bug reporting ablity is extremly useful. Even only with a Runtime exception.
+
+*** Frequently Used Exceptions
+   + ArrayIndexOutOfBoundsException: RuntimeException, Thrown to indicate that an array has been accessed with an illegal index. *The index is either negative or greater than or equal to the size of the array.*
+   + IndexOutOfBoundsException: RuntimeException, Thrown to indicate that an index of some sort (such as to an array, to a string, or to a vector) is out of range.
+     - listObject.get();
+   + NumberFormatException:
+     - Integer.parseInt("#")
+   + IllegalArgumentException
+   + IllegalStateException //JVM error?
+   + ExceptionInInitializerError
+     - nullString.length()[[./Cp13_ExceptionInInitializerError.java][Cp13_ExceptionInInitializer]]
+
+       
+** OCPJP misc
+*** structure   
+    Object -> 
+      Throwable -> 
+         + Exception
+           - RuntimeException, 
+           - (Checked exceptions)
+         + Error
+    //to catch an Error is legal, but is not a good practice.
+    
+*** OCP checked and unchecked exceptions
+    //checked exceptions
+    + java.text.ParseException
+    + java.io.IOException
+    + java.io.FileNotFoundException
+    + java.io.NotSerializableException
+    + java.sql.SQLException
+
+    //runtime exceptions
+    + java.lang.ArrayStoreException
+    + java.time.DateTimeException
+    + java.util.MissingRecourceException
+    + java.lang.IllegalStateException  //invalid operation in collections and concurrency
+    + java.lang.UnsupportedOperationException //invalid operation in collections and concurrency
+      //oca
+      + NumberFormatException //Integer.parseInt("str");
+      + ClassCastException //Obj o = "1"; Integer i = (Integer) o
+      + ArithmeticException //divide by 0
+        
+*** multi-catch
+    //Java 7+:
+    catch (DateTimeParseException | IOException e)
+    
+    //trivia:
+    catch(Exception1 e | Exception2 e | Exception3 e) //!DOES NOT COMPILE
+    catch(Exception1 e1 | Exception2 e2 | Exception3 e3) //!DOES NOT COMPILE
+    catch(Exception1 | Exception2 | Exception3 e)
+    catch (FileNotFoundException | IOException e) {} //!DOES NOT COMPILE
+    
+    *multi-catch is effectively final*
+    try{ //...
+    } catch(IOException | RuntimeException e) {
+        e = new RuntimeException(); //!DOES NOT COMPILE NO MORE. designed to reduce complexity, by preventing some bad random rethrowing
+    } catch(Exception e){
+        e = new RuntimeException(); //LEGAL, though not a good practice.
+    }
+
+*** Try-With-Resources
+    //i.e., automatic resource management
+    //Java will automatically close those resources
+    [[./Cp13_TryWithResources.java]] 
+    //This feather also prevented the following problem(if in.close() throw an IOException):
+    } finally {
+        if (in != null) in.close();
+        if (out != null) out.close();
+    }
+
+    *trivia*
+    1. try{} need at least a catch or finally clause, while try with resources does not. Because an implicit finally block runs before it.
+    2. try(Scanner s = new Scanner(System.in)){
+       }finally{ 
+           //! s.close() //won't compile since not accessable
+       }
+      
+    *java.lang.AutoCloseable*
+    public void close() throws Exception;
+    
+    *suppressed exceptions*
+    [[./Cp13_TryWithResources.java]] 
+
+*** assert
+    //enable assertion in development
+    java -ea/enableassertions:com.mypkg... -da/disableassertions:com.otherpkg mainClassName
+    [[./Cp13_Assert.java]]
+    //! java.lang.AssertionError
+    
+    //a built-in worse version of JUnit.
+    //Since JUnit separate the test code and guarantee those be run.
+    
+* Chapter 14, Strings
+** Immutable Strings
+   //String objects are immutable.
+** Overloading '+' vs. StringBuilder
+   //About Operator Overloading:
+   //(The '+' and '+=' for *String* are the only operators that are overloaded in Java, and Java does not allow the programmer to overload any others.)
+#+BEGIN_SRC java
+String s = "abc" + "mango" + 47;
+System.out.print(s);
+//Output: abcmango47
+#+END_SRC   
+*** To decompile/disassemble the code: javap
+    javap --help
+    javap -c ClassName //Disassemble the code
+[[./Cp14_SimpleStringV2.java][Cp14_SimpleStringV2]]
+[[./Cp14_SimpleStringDisassembleV2][Cp14_SimpleStringDisassembleV2]]
+//I think now instead of calling StringBuilder in Runtime, the String is resolved at compile time. 
+//So that need no dynamic approach to reallocate the buffer.
+
+[[./Cp14_SimpleString.java][Cp14_SimpleString]]
+[[./Cp14_SimpleStringDisassemble][Cp14_SimpleStringDisassemble]]
+    //Positional Order: 0, 1, 2, 3, ... 
+| Afterline | Local Var | Stack    |
+|         0 | 0 = this  | x        |
+|         3 |           | x, x     |
+|         4 |           | x        |
+|         7 | 1 = x     |          |
+|         9 | 2 = x     |          |
+|        10 |           | x        |
+|        11 |           | x.d      |
+|        14 | 3 = x.d   |          |
+|        16 |           | x, x     |
+|        17 |           | x, x.d   |
+|        25 |           | x, x.d++ |
+|        28 |           |          |
+|        31 |           | x.d      |
+|        32 |           |          |
+** StringBuilder
+   //insert(), replace(), substring(), reverse()
+   //append(), toString(), delete()
+   [[./Cp14_BuildString.java][Cp14_BuildString]]
+   //StringBuilder was introduced in JavaSE5. It's faster.
+   //Before that *StringBuffer* was used, which ensured thread safety.
+** Unintended recursion
+   [[./Cp14_InfiniteRecursion.java][Cp14_InfiniteRecursion]]
+   [[./Cp14_InfiniteRecursionDA][Cp14_InfiniteRecursionDA]]
+   
+   [[./Cp14_SimpleDeadLoop.java][Cp14_SimpleDeadLoop]]
+   [[./Cp14_SimpleDeadLoopDA][Cp14_SimpleDeadLoopDA]]
+   // return "AString" + this, in toString() implicitly calls the toString(), which causes the infinite recursion;
+** Operations on Strings
+** String format specifier
+   [[./Cp14_Formatter.java][Cp14_Formatter]] 
+   f.format("%-10.10s %5s %,20.2f\n", "Total", "", total);
+   // %[argument_index$][flags][width][.precision]conversion
+   //the .10 in the string means to truncate the string by that number.
+*** a Hex Dumper
+    //String.format(String format, Object... args)
+    [[./Cp0_HexDumper.java][Cp0_HexDumper]]
+** Regular Expression p372
+//the *Quantifiers*, p374.
+| Greedy | Reluctant | Possessive | Matches                                 |
+| X?     | X??       | X?+        | X, one or none                          |
+| X*     | X*?       | X*+        | X, zero or more                         |
+| X+     | X+?       | X++        | X, one or more                          |
+| X{n}   | X{n}?     | X{n}+      | X, exactly n times                      |
+| X{n,}  | X{n,}?    | X{n,}+     | X, at least n times                     |
+| X{n,m} | X{n,m}?   | X{n,m}+    | X, at least n but not more than m times |
+   
+#+BEGIN_SRC java
+System.out.println("+911".matches("(-|\\+)?\\d+")); // true
+//------------
+StringObj.split(regex); // split("n\\W+");
+#+END_SRC
+
+   //More in JDK documentation, section:
+   java.util.regex.Pattern
+
+*** String[] split(String regex, & int limit)
+    [[./Cp14_Split.java][Cp14_Split]] 
+   
+*** Match in String
+    [[./Cp14_MatchInString.java][Cp14_MatchInString]]
+#+BEGIN_SRC java
+    String s = "-1231234123";
+    Pattern p = Pattern.compile("-\\d*");
+    Matcher m = p.matcher(s);
+    // m.reset("newString"); //reset() the Matcher m to new string. 
+                             //m.reset(line); where (String line: new TextFile(args[0])){};
+    System.out.println("maches(): " + m.matches()); // matches the whole string.
+                                   // m.lookingAt() //matches from the start.
+    while(m.find()){ //matches from anywhere.
+        System.out.println(m.group() + " atpos: " + m.start() + "-" + (m.end() - 1));
+    } 
+#+END_SRC:
+
+*** Groups
+    [[./Cp14_RegexGroup.java][Cp14_RegexGroup]]
+
+*** ? Pattern.flag
+    
+*** split()
+    Arrays.toString(Pattern.compile("!!").split(input));
+   
+*** ? Replace operations
+    //replaceFirst(); replaceAll(); appendReplacement(); appendTail();
+    
+** ? Scanning input p389
+   [[./Cp14_SimpleRead.java][Cp14_SimpleRead]]
+   //Scanner take a File Object, an InputStream, a String, or a Readable;
+   [[./Cp14_Scanner.java][Cp14_Scanner]] 
+   
+*** ? StringTokenizer p389
+    //to split string before scanner or split() exist in JDK.
+
+    
+** ocpjp misc
+*** Internationalization(I18n), localization(l10n)
+    *ResourceBundle*
+    new Locale(String language)
+    new Locale(String language, String country)
+
+    ResourceBundle.getBundle("name");
+    ResourceBundle.getBundle("name", locale);
+    [[./Cp14_I18N.java]]
+    //or extend and overwrite the ResourceBundle class to further customize if so wish.
+    //The priority, 11 steps table,
+      1. Zoo_fr_FR.java
+      2. Zoo_fr_FR.properties
+      3. Zoo_fr.java
+      4. Zoo_fr.properties
+      5. Zoo_en_US.java //the default locale
+      6. Zoo_en_US.properties
+      7. .. //without country code
+      8. ..
+      9. Zoo.java //no locale, the default bundle
+      10. Zoo.properties //no locale, the default bundle
+      11. MissingResourceException
+    //Parent attribute could be inherited by children
+*** format(), Number parse()
+    *NumberFormat*
+    [[./Cp14_I18NNumberAndCurrency.java]]
+    //parse stop and return on the first non-pasable character 
+    NumberFormat nf = NumberFormat.getInstance();
+    String one = "456abc";
+    String two = "-2.5165x10";
+    String three = "x85.3";
+    System.out.println(nf.parse(one)); //456
+    System.out.println(nf.parse(two)); //-2.5165
+    System.out.println(nf.parse(three));//throws ParseException, which is a checked exception
+*** date time format
+    [[./Cp14_DateAndTimeFormat.java]]
+    *date time format string (pattern)*
+    + MMMM Month. The more Ms you have, the more verbose the Java output. 
+      //M outputs 1, MM outputs 01, MMM outputs Jan, and MMMM outputs January.
+    + dd day in the month. 
+      //dd include the leading zero for a single-digit day.
+    + , output a comma
+    + yyyy
+      //yy outputs a two-digit year and yyyy outputs a four-digit year.
+    + hh the hour. 
+      //hh includes the leading zero if single-digit hour.
+    + : output a colon
+    + mm the minute. 
+      //m omits the leading zero if present.
+represents the minutes using two digits.
+
+    //Default formatter:
+    //LocalDate.parse(): DateTimeFormatter.ISO_LOCAL_DATE, e.g. "2007-12-03", not null.
+    //LocalTime.parse(): DateTimeFormatter.ISO_LOCAL_DATE, e.g. "10:15:30", not null.
+    
+* Chapter 15, ? Type Information
+  //Runtime type infomation (RTTI) allows program to discover and use type information at runtime. 
+** The need for RTTI
+   psvm{
+       List<Shape> shapeList = Arrays.asList(
+           new Circle(), new Square(), new Triangle()
+       );
+       for(Shape shape : shapeList){
+           shape.draw();
+       }
+   }
+   //RTTI means that, at run time, the type of an object is identified.
+   //RTTI routine:
+     1. JVM load *Class object* using a subsystem named *class loader*.
+     2. Which might comprise a chain of class loaders, however, only one *primordial class loader*.
+     3. Which then loads *trusted classes*, including Java API classes, typically from the local disk, but can also include additional class loaders using hook, under special needs (e.g. related to Web server applications or downloading classes across a network).
+     4. All classes are loaded into the JVM dynamically, upon the first time a static member of that class is referenced (the constructor is also a static method implicitly).
+     5. The class loader first checks if the *Class* object for the specific type is loaded. If not, the default class loader finds the .class file by name (an add-on class loader might, e.g., look for the bytecodes in a database instead). As the bytes for that class are loaded, they are *verified* to ensure that they have not been corrupted and that they do not comprise bad Java code(one of the lines of defense for security in Java).
+     6. Once the *Class* object for that type is in memory, it is used to create all objects of that type.
+    //Class *Class*
+    //Class.forName("X"); //returns the class object Class<?> X;
+
+*** the Class object. Class.forName()
+    [[./Cp15_forName.java][Cp15_forName]]
+    //Reference to the appropriate *Class* object first, in order to use type information at run time.
+    //2 convenient methods: 
+      1. Class.forName("ClassName"). Which returns a reference to a particular class object.
+      2. nameOfAnObj.getClass(). 
+    //Literally, do not mix the two up. the returned classReference belongs to Class Class<T>
+
+** Class literals ~p399
+   the *class literal* is:
+   //A second way to produce the reference to a Class object.
+         FancyToy.class
+   //It is simpler, and safer since it's checked at compile time(thus need not a *try* block). and more efficient since eliminateds the *forName()* method call.
+   //Also applies to interfaces, arrays, and primitive types as well as normal class.
+   //In addition, there exist a standard field called *TYPE* for each of the primitive wrapper class.
+
+** Summary
+
+*** Using Reflection 
+    [[./Cp15_ReflectionDumpMethods.java][Cp15_ReflectionDumpMethods]]
+    reflection instead of CGI? //The idea seems to be "reusing" an app, by changing its input. instead of copying and restart the whole app, which is the CGI method.
+    
+*** Object.getClass()
+    [[./Cp15_GetClass.java][Cp15_GetClass]]
+    //The actual result type is Class<? extends |X|> where |X| is the erasure of the static type of the expression on which getClass is called.
+    //e.g.:
+    Number n = 0;
+    Class<? extends Number> c = n.getClass();
+    //syso(c) == class java.lang.Integer
+
+* Chapter 16, Generics
+** General
+   introduced in Java SE5, the concept of *parameterized types*
+*** ? vs. C++ templates
+    
+*** Simple generics
+    [[./Cp16_GenericMethodSimple.java][Cp16_GenericMethodSimple]]
+    [[./Cp16_GenericClassBasic.java][Cp16_GenericClassBasic]]
+    
+*** A tuple library
+    //The concept of *Data Transfer Object(or Messenger)*. Read-only. used in, e.g. return a pair of values.
+    //Generic can be used to constrain the input type.
+    [[./Cp16_TuplePair.java][Cp16_TuplePair]]
+    
+
+
+    
+*** OCPJP8G misc
+**** Limitation on Generic Parameters as a result of Type Erase
+     [[./Cp16_TEUpperBound.java][Cp16_TEUpperBound]]
+     
+***** Cannot Instantiate Generic Types with Primitive Types
+
+***** Cannot Create Instances of Type Parameters (cannot *new* )
+       //Because at runtime, it would be equivalent to calling a new Object():
+       public static <E> void append(List<E> list) {
+           E elem = new E();  // compile-time error
+           list.add(elem);
+       }
+       //work around:
+       public static <E> void append(List<E> list, Class<E> cls) throws Exception {
+           E elem = cls.newInstance();   // OK
+           list.add(elem);
+       }
+       //invoke:
+       List<String> ls = new ArrayList<>();
+       append(ls, String.class);
+
+***** Cannot Declare *Static Fields* Whose Types are Type Parameters
+       //Because it might be confusing:
+         public class MobileDevice<T> {
+            private static T os;
+         }
+         //as the static field os will be share among instances, the result of:
+         MobileDevice<Smartphone> phone = new MobileDevice<>();
+         MobileDevice<Pager> pager = new MobileDevice<>();
+         MobileDevice<TabletPC> pc = new MobileDevice<>();
+         //could be confusing.
+
+***** Cannot Use *Casts* or *instanceof* With Parameterized Types
+       //Because a parameterized type is not a refiable type, by which it means that the type information is not fully available.
+       //Refiable types include: *primitives, non-generic types, raw types, and invocations of unbound wildcards*. 
+       //no *instanceof* example:
+         public static <E> void rtti(List<E> list) {
+             if (list instanceof ArrayList<Integer>) {  // compile-time error
+             }
+         }
+         //but:
+         public static void rtti(List<?> list) {
+             if (list instanceof ArrayList<?>) {  // OK; instanceof requires a reifiable type
+             }
+         }
+       //no *cast* example:
+        List<Integer> l2 = new ArrayList<>();
+        List<String> l1 = (List<String>) l2; //cannot cast from List<Integer> to List<String>
+         //except when the parameter is the same:
+         List<Integer> l1 = (ArrayList<Integer>) l2 // OK;
+
+***** Cannot Create *Arrays* of Parameterized Types
+      //Because 
+        List<Integer>[] arrayOfLists = new List<Integer>[2];  // compile-time error
+      //Background:
+        String[] j = new String[2]; j[0] = 0; // Compile error, type mismatch
+        Object[] o = new String[2];
+        //! o[0] = 0; // ArrayStoreException (Runtime)
+        //! o[1] = new Integer(100); // ArrayStoreException (Runtime)
+      //In the later case, polymophism, it relied on runtime to detect the wrong type.
+      //However, it is not possible to detect in the Array of Parameterized Type case:
+        Object[] stringLists = new List<String>[]; //compile error, but pretend it's allowed
+        stringLists[0] = new ArrayList<String>(); //OK
+        stringLists[1] = new ArrayList<Integer>(); //An ArrayStoreException shold be throwned but this the runtime can't detect.
+        
+        <T> void f(T t){
+           T[] tArray = new T[2]; //Cannot create an array of T;
+           //It's because Java's arrays (unlike generics) contain, at runtime, information about its component type. 
+           //However T is non-refiable, array creating is not allowed.
+        }
+
+***** Cannot *Create, Catch, or Throw* Objects of Parameterized Types
+       //A generic class cannot extend the Throwable class directly or indirectly.
+       //A type parameter cannot *extend* a Throwable class directly or indirectly, example:
+         class MathException<T> extends Exception { /* ... */ }    // compile-time error
+         class QueueFullException<T> extends Throwable { /* ... */ } // compile-time error
+       //Cannot *catch* a type parameter, example:
+         public static <T extends Exception, J> void execute(List<J> jobs) {
+             try {
+                 for (J job : jobs) { //... }
+             } catch (T e) {   //compile-time error
+             }
+         }
+       //However, possible to use a type parameter in *throws* clause, example:
+         class Parse<T extends Exception>{
+            public void parse(File file) throws T //OK
+         }
+
+***** Cannot Overload a Method Where the Formal Parameter Types of Each Overload Erase to the Same Raw Type
+       //public class Example {
+             public void print(Set<String> strSet) {}
+             public void print(Set<Integer> intSet) {}
+         }
+
+**** upper-bound(extends) Insert 
+     [[./Cp16_UpperBoundInsert.java]]
+**** Pitfall, do not mix generic function and generic wildcard
+     //Generic function:
+     <T extends Object> private void f(List<T> list)
+**** Trivia
+     [[./Cp16_GenericCollectionTrivia.java]]
+     *adding not-that-generic-element into generic list is possible, although ClassCastException be thrown upon an underlying cast.*  
+     //i.e., java do not know what kinds of objects are actually inside a generic collection.
+     //hence generic only pervent potential ClassCastException in the CompileTime
+     
+     *unbounded && upper-bounded generics are immutable*
+     
+     *the lower-bounded generic <? super IOException> is counter-intuitive!*
+     List<? super IOException> listB = new ArrayList<>();
+     //! listB.add(new Exception()); //do no compile!
+     //the aim was to allow user to pass in a varities of list with less restrictions, without violating type safety.
+     //Hence, we can only add element that is the *child* of IOException, in the meanwhile the destination container could have less constraint e.g., List<Exception>, or List<Object>.
+     //widd
+
+     
+
+**** Wildcard Capture and Helper Methods
+     [[./Cp16_WildcardCapture.java]]
+
+**** generic function syntax
+     private static final <T> void fooHelperCaptureTheWildcard(List<T> l){}
+     //wrong order does not compile
+
+
+* Chapter 17, ? Arrays
+* Chapter 18, ? Containers in Depth
+* Chapter 19, I/O
+** the *File* class
+   //a or a set of "FilePath". to list all filenames, use list() which returns a String[].
+   //if a different directory listing is desired, create a different *File* object.
+   //to filter, *Filename Filter* interface
+*** a directory lister 
+    ? [[./Cp19_DirectoryLister.java][Cp19_DirectoryLister]] //String comparator, Arrays.sort.
+     [[./Cp19_DirectoryListerAnonymousInner.java][Cp19_DirectoryListerAnonymousInner]] 
+     
+** Directory utilities
+
+** ?
+** Input and Output
+   //a *stream* represents a kind of data source or sink as an object capable of producing or receiving data.
+   //The stream hides the details of what happens to the data inside the actual I/O devide.
+   //Through inheritance, everything derived from the *InputStream* or *Reader* classes has basic method *read()* for reading a single byte or a byte array. Likewise, all child of *OutputStream* or *Writer* classes has basic method *write()* for writing byte or a byte array.
+   //However they are rarely used, instead implemented by other methods, which is *decorator* design pattern.
+   
+** Type of InputStream:
+   *InputStream* represent classes that produce input from different sources. the sources can be:
+      + a byte[] array
+      + a String object
+      + a file
+      + a "pipe" *PipedInputStream*
+      + a sequence of other steams, so it can be combined into a single stream
+      + Other sources, such as an Internet connection.
+    //Table of usage: p657
+
+** ?
+** Buffered input file
+   [[./Cp19_BufferedInputFile.java][Cp19_BufferedInputFile]]
+   //simple input
+** Basic file output
+   [[./Cp19_BasicFileOutput.java][Cp19_BasicFileOutput]]
+** Summary
+*** InputStream & OutputStream vs. Readers & Writers
+    //The later was newly introduced in Java 1.1, but aims not at replacing the former one.
+    //Instead, the former is used in *byte-oriented I/O*, while as the later is used in *Unicode-compliant, character-based I/O*
+    //The former only support 8-bit byte steams so that it doesn't handle the 16-bit Unicode characters well. In addition, the later one is faster.
+    //Bridging: *InputStreamReader* converts an InputStream to a Reader, *OutputStreamWriter* converts an OutputSteam to a Writer.
+
+    //It is *sensible* to:
+    //Try to use the *Reader* and *Writer* class whenever possible.
+    //However, sometimes the byte-oriented I/O is the right answer. In those cases, code may not compile with char-based Reader and Writer.
+    //In particular, the *java.util.zip* library is byte-oriented rather than char-oriented.
+*** Sources and sinks of data
+    | Java 1.0 classes                      | Java 1.1 classes             |
+    |---------------------------------------+------------------------------|
+    | InputStream                           | Reader                       |
+    |                                       | adapter: InputStream Reader  |
+    | OutputSteam                           | Writer                       |
+    |                                       | adapter: OutputStream Writer |
+    | FileInputStream                       | FileReader                   |
+    | FileOutputStream                      | FileWriter                   |
+    | StringBufferedInputStream(deprecated) | StringReader                 |
+    | (no corresponding class)              | StringWriter                 |
+    | ByteArrayInputStream                  | CharArrayReader              |
+    | ByteArrayOutputStream                 | CharArrayWriter              |
+    | PipedInputStream                      | PipedReader                  |
+    | PipedOutputStream                     | PipedWriter                  |
+
+*** "Decorator" classes
+    | Filters: Java 1.0 classes         | Corresponding Java 1.1 classes                  |
+    | FilterInputStream                 | FilterReader                                    |
+    | FilterOutputStream                | FilterWriter(abstract class with no subclasses) |
+    | BufferedInputStream               | BufferedReader(also has readLine())             |
+    | BufferedOutputStream              | BufferedWriter                                  |
+    | DataInputStream                   |                                                 |
+    | PrintSteam                        | PrintWriter                                     |
+    | LineNumberInputStream(deprecated) | LineNumberReader                                |
+    | Stream Tokenizer                  | Stream Tokenizer                                |
+    | PushbackInputStream               | PushbackReader                                  |
+
+*** PrintWriter
+    public class PrintWriter extends Writer{} 
+    //Prints formatted representations of objects to a text-output stream. 
+    //Its constructor support both OutputStream and Writer.
+    //The class implements all of the print methods found in PrintStream.
+    //See: [[./Cp19_BasicFileOutput.java][Cp19_BasicFileOutput]]
+*** Serialization
+    [[./Cp19_SerializationBasic.java][Cp19_SerializationBasic]]
+    [[./Cp19_DeserializationBasic.java][Cp19_DeserializationBasic]]
+    ////
+    //Override the default readObject(), writeObject() method.
+    [[./Cp19_SerializationCustomized.java][Cp19_SerializationCustomized]]
+    [[./Cp19_DeserializationCustomized.java][Cp19_DeserializationCustomized]]
+
+        
+*** ocpjp misc
+**** basic
+***** File
+      File parent = new File("/home/smith"); //new File("C:\\data\\smith") use skip in windows
+      File child = new File(parent,"data/zoo.txt"); //parent will be skipped if null.
+      System.out.println(file.exists());
+      
+***** IOStreams
+      //Input/OutputStream vs. Reader/Writer
+      [[Sources and sinks of data]]
+      //Most Input Stream has a Output counterpart, however, exceptions exist, e.g., PrintWriter has no counterpart.
+      *four abstract parent classes*
+      //InputStream, OutputStream, Reader, Writer.
+
+      //Note: Children normally inherit their names, with exception(s?):
+      //PrintStream extends FilterOutpetStream extends OutputStream
+      
+      *Trivia*
+      + a low-level stream connects directly with the source of the data.
+      + In a file system, failing to close a file properly could leave it locked by the operating
+system such that no other processes could read/write to it until the program is terminated.
+        
+      *Low/High Level*
+      | Class Name         | Low/High Level | description              |
+      |--------------------+----------------+--------------------------|
+      | InputStream        | N/A            |                          |
+      | Outputstream       | N/A            |                          |
+      | Reader             | N/A            |                          |
+      | Writer             | N/A            |                          |
+      | FileInputStream    | Low            |                          |
+      | FileOutputStream   | Low            |                          |
+      | FileReader         | Low            |                          |
+      | FileWriter         | Low            |                          |
+      | BufferedReader     | High           |                          |
+      | BufferedWriter     | High           |                          |
+      | ObjectInputStream  | High           |                          |
+      | ObjectOutputStream | High           |                          |
+      | InputStreamReader  | High           | read from an InputStream |
+      | OutputStreamWriter | High           | write to an OutputStream |
+      | PrintStream        | High           |                          |
+      | PrintWriter        | High           |                          |
+      
+      //however, new BufferedReader(new InputStreamReader(System.in)); read concole input.
+      
+      *flush()*
+      //When called, request that all accumulated data be written immediately to destination.
+      //Conisder call flush() intermittently while writing large file.
+      //On close(), flush() will be performed automatically.
+      
+      *Marking the Stream*
+      [[./Cp19_Mark.java]]
+      + markSupported()
+      + mark(int readlimit)
+      + reset()
+
+      *skip(long n)*
+      //ABCD -> read(): A -> skip(2); -> read(): D
+      //similar to read(byte[] b), or read(); 
+      //but faster.
+      //The skip method of this class creates a byte array and then repeatedly reads into it until n bytes have been read or the end of the stream has been reached. Subclasses are encouraged to provide a more efficient implementation of this method. For instance, the implementation may depend on the ability to seek.
+      
+***** Working with Streams
+      *FileInputStream and FileOutputStream*
+      [[./Cp19_SimpleCopyFile.java]]
+      
+      *FileReader and FileWriter*
+      [[./Cp19_SimpleRWText.java]]
+      
+      *ObjectInputStream and ObjestOutputStream*
+      //involving serialization and deserialization
+      
+***** the java.io.Serializable Interface
+      //Serializable must be recursively applied to nested classes.
+      //If one of the contained class is not serializable, throw NotSerializableException (unchecked exception)
+      //except those marked as *transient*. Though those data will be lost in serialization process.
+
+      *serialVersionUID*
+      //Although this is certainly not required as part of implementing the Serializable interface, it is considered a good practice to do so and update this static class variable anytime you modify the class.
+      //Note: It is recommend to assign this UID manually instead of generating it using JVM, since different value might be generated, depending on the JVM version or the platform.
+      *serialization ObjectStream*
+      [[./Cp19_SerializationWithObjectStream.java]]
+      //Note: null Object can be r/w in serialization, hence important to perform the check beforehand, using instanceof, which returns false if obj on its left side is null.
+      *EOF Check Methods*
+      //proper technique:
+      try{
+      } catch(EOFException e){
+          //do nothing.
+      }
+      //Note: never use in.available() because its definition.
+      *null and instanceof*
+      x instanceof SomeClass is false if x is null.
+      *trivia*
+      //Note that all constructors are ignored during deserialization. String -> null, int -> 0, char -> nothing, ...;
+      
+      *PrintStream and PrintWriter*
+      + PrintStream(File file)
+      + PrintStream(OutputStream out)
+      + PrintStream(String fileName)
+        //out.print(String s)
+        //out.write(int b) //write a *char*
+
+      + PrintWriter(File file)
+      + PrintWriter(OutputStream out) //an outputStream, need no adapter;
+      + PrintWriter(String fileName)
+      + PrintWriter(Writer out) 
+        //out.print(String s)
+        //out.write(String s)
+
+***** Interacting with Users
+      //java.io.Console class is recommended, however:
+      *the old way*
+      BufferedReader reader = new BufferedReader(new InputStreamReader(System.in)); 
+      String userInput = reader.readLine(); //throws IOException;
+      //the InputStream does not need to be closed since it is System.in;
+
+      *the new way* //since Java 6;
+      [[./Cp19_Console.java]]
+      + reader()
+      + writer()
+      + writer().format()
+      + format()
+      + flush() //suggest to call prior to any readLine() or readPassword()
+      + char[] readPassword() //Security note: If an application needs to read a password or other secure data, it should use readPassword() or readPassword(String, Object...) and manually zero the returned character array after processing to minimize the lifetime of sensitive data in memory. e.g. by calling Array.fill(thePasswordArrary,'x');
+        
+**** NIO.2
+     //Non-blocking I/O
+
+***** Path     
+      //designed as a replacement to java.io.File, hence share a few common functionalities
+      //In addition, support creating, detecting and navigating symbolic links.
+      //related classes
+      + java.nio.file.Paths //Factory method that generate system independent Path instance
+      + java.nio.file.Files //helper class that operate mainly on a existing Path instance
+        
+      *java.nio.file.Paths*
+      Path path1 = Paths.get("pandas","cuddly.png"); //considered relative
+      Path path2 = Paths.get("c:","zooinfo","November","employees.txt"); //considered absolute
+      Path path3 = Paths.get("/","home","zoodirector"); //considered absolute
+
+      Path path4 = Paths.get(new URI("file:///home/zoodirectory")); //with URI
+      URI uri4 = path4.toUri();
+     
+      File file = new File("pandas/cuddly.png");
+      Path path5 = file.toPath();
+      File file = path.toPath();
+
+
+      *java.nio.file.FileSystems.getDefault() -> java.nio.file.FileSystem*
+      //the previous Paths.get() is short-hand for:
+      + Path path1 = FileSystems.getDefault().getPath("pandas/cuddly.png");
+      [[./Cp19_NioBasic.java]]
+        *access system other than default*
+      + FileSystem fileSystem = FileSystems.getFileSystem(new URI("http://www.selikoff.net"));
+        Path path = fileSystem.getPath("duck.txt");
+        
+      *path.getNameCount(), path.getName(int i)*
+      //return Path object so that chaining is possible.
+      Path path1 = Paths.get("/abc/swim.txt");     
+      path1.getParent() //"/abc"
+      path1.getParent().getParent() //"/"
+      path1.getParent().getParent().getParent() //"null"
+      path1.getParent().getParent().getParent().getParent() //NullPointerException
+      
+      *path.subpath(0,3)* //0, 1, 2; consistent with subString
+      *path.toRealPath()* //NOFOLLOW_LINK symbolic link, return an absolute path, or throw IOException if file not exist
+      *path1.resolve(path2).normalize()*
+      *path3.resolve(path3.relativize(path4))*
+
+***** java.nio.file.Files      
+      [[./Cp19_nioFiles.java]]
+      + exists
+        //boolean Files.exists(Path path);
+      + isSameFile
+        //boolean Files.isSameFile(Path path1, Path path2)
+      + createDiectory
+        //throw some IOException if level 0 does not exist.
+      + createDictories
+        //Path path Files.creatDictories;
+        //create all from level 0; throws
+      + copy
+        //long copy(InputStream in, Path target, CopyOption... options)
+        //long copy(Path source, OutputStream out)
+        //Path copy(Path source, Path target, CopyOption... options)
+      + move
+        //Path move(Path source, Path target, CopyOption... options)
+          //trying to move non-empty directory throw IOException
+      + delete
+        //void delete(Path path)
+      + deleteIfExists
+        //boolean deleteIfExists(Path path)
+
+***** Files.newBufferedReader() and newBufferedWriter(), with Charset
+      Path path = Paths.get("/animals/gopher.txt");
+      try (BufferedReader reader = Files.newBufferedReader(path, Charset.forName("US-ASCII"))) {
+      String currentLine = null;
+      while((currentLine = reader.readLine()) != null)
+          System.out.println(currentLine);
+      } catch (IOException e) {
+      // Handle file I/O exception...
+      }
+
+      *readAllLines()*
+      List<String> readAllLines(Path path, Charset cs);
+      //OutOfMemoryError if file is significantly large, since all read into memory.
+
+***** java.nio.charset.Charset
+      + Charset.forName("...");
+        
+***** Understanding File Attributes
+      *basic attributes*
+      + boolean Files.isDirectory(Path path) //for symbolicLink, the attributes of the original file
+      + boolean Files.isRegularFile(Path) //for symbolicLink, the attributes of the original file
+      + boolean Files.isSymbolicLink(Path)
+      //does not throw checked Exception
+      
+      *accessibility*
+      + boolean Files.isReadable(Path path)
+      + boolean Files.isExecutable(Path path)
+      //-----------No IOException above------------------//
+
+      //-----------throws IOException below------------------//
+      *visibility*
+      + boolean Files.isHidden(Path path) //IOException
+      
+      *size()*
+      + long Files.size(Path) //IOException
+      
+      *getLastModifiedTime() and setLastModifiedTime()*
+      + FileTime getLastModifiedTime //IOException
+      + FileTime setLastModifiedTime //IOException
+        //java.nio.file.attribute.FileTime implements Comparable<FileTime>
+        //fileTime.toMillis()
+        //fileTime.fromMillis(System.currentTimeMillis())
+
+      *getOwner() setOwner()*
+      + UserPrincipal Files.getOwner(Path path); //OIException
+      
+      *views API*
+      //2 sets of methods:
+      + Files.readAttributes() //return a read-only view of the file attributes.
+        BasicFileAttributes data = Files.readAttributes(path, BasicFileAttributes.class);
+
+      + Files.getFileAttributeView() //return the underlying attribute view, and a direct resource for modifying file information
+      BasicFileAttributeView view = Files.getFileAttributeView(path,BasicFileAttributeView.class);
+      BasicFileAttributes data = view.readAttributes();
+          FileTime lastModifiedTime = FileTime.fromMillis(
+          data.lastModifiedTime().toMillis()+10_000);
+      view.setTimes(lastModifiedTime, null, null); 
+      //void setTimes(FileTime lastModifiedTime, FileTime lastAccessTime, FileTime createTime)
+      
+***** the New Stream Methods //throws IOException
+      Stream<Path> Files.walk(Path start, &int maxDepth, FileVisitOption... options);
+      Stream<Path> Files.find(Path start, int maxDepth, BiPredicate<Path, BasicFileAttributes> matcher)
+      Stream<Path> Files.list(Path dir)
+
+      Stream<String> Files.lines(Path path)
+      Stream<String> Files.lines(Path path, Charset cs)
+
+* Chapter 22, ? Enumerated Types
+** Basic enum features
+   [[./Cp22_EnumBasic.java][Cp22_EnumBasic]]
+   
+** Methods of Enum Objects
+   + public final int compareTo(E o)
+     //Compares this enum with the specified object for order. Returns a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object. Enum constants are only comparable to other enum constants of the same enum type. The natural order implemented by this method is the order in which the constants are declared.
+   + public final Class<E> getDeclaringClass()
+   + public static <T extends Enum<T>> T valueOf(Class<T> enumType, String name)
+   + protected final void finalize()
+
+* Chapter 20, Annotations
+  //Annotations is also known as *metadata*. It provide a formalized way to add information to the code so that the data is easily accessable at some later point.
+  //The invention is partly motivated by a general trend towards combining meta with src files, instead of keeping it in external documents, as well as a response to feature pressure from other languages, e.g. C#.
+  //Introduced in Java SE5.
+  //Java SE5 *java.lang* defines 3 annotations: *@Override, @Deprecated, @SupressWarnings*, the @SupressWaring is allowed but not supported thus ignored before Java SE5.
+** Base syntax
+   [[./Cp20_BasicAnnotationDefine.java][Cp20_BasicAnnotationDefine]]
+   [[./Cp20_BasicAnnotationRun.java][Cp20_BasicAnnotationRun]]
+** Storing and recovering data
+   [[./Cp19_StoringAndRecovering.java][Cp19_StoringAndRecovering]]
+
+*** Annotations That Apply to Other Annotations
+    //The so-called *meta-annotations*.
+    //Maybe, check Enum RetentionPolicy. which store those options.
+    //Defined in java.lang.annotation. See [[https://docs.oracle.com/javase/tutorial/java/annotations/predefined.html][docs.oracle.com, annotations predefined]]
+    + *@Rentention(policy)* specifies how the marked annotation is stored: 
+      - RetentionPolicy.SOURCE - The marked annotion is retained only in the source level and is ignored by the compiler.
+      - RetentionPolicy.CLASS - The marked annotation is retained by the compiler at compile time, but is ignored by the JVM.
+      - RetentionPolicy.RUNTIME - The marked annotation is retained by the JVM so it can be used by the runtime environment.
+    + *@Documented(args)* indicates that, whenever it is used, those elements should be documented in Javadoc, whereas the default behavior is to not include it.
+    + *@Target(args)* marks another annotation to restrict what kind of Java elements the annotation can be applied to. Allows the following values:
+      | ElementType.    | ~ can be applied to a/an: |
+      |-----------------+---------------------------|
+      | ANNOTATION_TYPE | annotation type           |
+      | CONSTRUCTOR     | constructor               |
+      | FIELD           | field or property         |
+      | LOCAL_VARIABLE  | local varible             |
+      | METHOD          | method-level annotation   |
+      | PACKAGE         | package declaration       |
+      | PARAMETER       | parameters of a method    |
+      | TYPE            | element of a class        |
+*** marker annotation
+    + *@Inherited* allow subclasses to inherit parent annotations.
+      //i.e, the sub-class will or will not inherit the annotion from the parent class.
+    An annotation without any elements. such as "@Test". "@UseCase()"
+    //Like the use case below, annotation might be used as descriptions, to mark empty cases, which could then be filled later.
+    [[./Cp20_BasicAnnotationDefine.java][Cp20_BasicAnnotationDefine]]
+    [[./Cp20_BasicAnnotationRun.java][Cp20_BasicAnnotationRun]]
+** Writing annotation processors
+   //Annotation differ with comments in that, it supports self-created tools, which helps in creating those comments.
+   //Java SE5 provides extensions to the reflection API, which help to create annotation processors.
+   //Also, an external tool named *apt* is added to help programmers in parsing Java source code with annotations.
+   *public <T extends Annotation> T getAnnotation(Class<T> annotationClass)*
+   [[./Cp20_BasicAnnotationProcessor.java][Cp20_BasicAnnotationProcessor]]
+   //Note that if not specify that retain info at runtime, then cannot be processed.
+   The following elements could exist in such an annotation:
+   | All primitives             |
+   | String                     |
+   | Class                      |
+   | Enums                      |
+   | Annotations                |
+   | Arrays of any of the above |
+** Default value constraints
+   Non-primitive elements cannot take *null* as value, neither in src or in the annotation. 
+      //Go around with -1 or emtpy string "".
+** Generating external files
+   //check the package Cp20AnnotationPkg
+   [[./Cp20_Member.java][Cp20_Member]]
+   //Also, @SQLString(30) is a shortcut for assigning, the value to the only 1 var with arithmetic value, if it is named as *value*.
+*** ? Alternative solutions
+    //some alternative designed for solving the SQL problem.
+    //However has limitation and the annotation design seems to be the best.
+
+** Annotations don't support inheritance
+   *extends* keyword is not supported with *@interfaces*.
+
+** Implementing the processor
+   //A processor which read a class file, checks for its database annotations and generates the SQL command for making the database.
+   [[./Cp20_TableCreator.java][Cp20_TableCreator]]
+   
+   
+** ? java.lang.reflect *Interface AnnotatedElement*
+   public interface AnnotatedElement;
+     ? Where is an annotation A?
+     + directly on an element E if E has RuntimeVisible Annotations in which contains A.
+    
+   
+** ? Use *apt* to process annotations
+*** ? Using the Visitor pattern with apt
+** Annotation-based unit testing
+   //Annotation based test: Junit, merit: is able to test both private methods and public ones.
+*** ? How to delete the test methods
+  
+* Chapter 21, Concurrency
+  //speed vs. design manageablity
+  //utilize multiple cores 
+  //also may improve speed in single core processor (different from hyperthreading)
+  // *blocking*, e.g. program stall during I/O.
+  //Problem exists in dealing with global variables. need communication. (Go).
+  //Language level: does function call produces side effects: *Erlang*
+  
+  //java threading creates tasks *whithin* the single process represented by the executing program.
+          , ? which increase operating system transparency.(e.g.?)
+            
+  //The necessity of concurrency code designing:
+      + To solve some particular problem, e.g. a simulation, in which the interaction among independent elements is necessary.
+        Multithreaded systems often only support a relatively small number of threads, on the order of tens or hundreds. The number is platform dependent. in Java, it depends on the version of JVM.
+        in Java, programmer should assume that threads number will not be large enough to assign one thread for each individual element.
+        
+  //A solution: 
+    + *cooperative* multithreading. Each task voluntarily gives up control, which requires the programmer to consciously insert some kind of yielding statement into each task.
+      Advantage: 
+      | Context switching is typically much cheaper (than with a preemptive system)               |
+      | ? Theoretically no limit to the number of independent tasks that can be running at once]. |
+      //Hence, when dealing with a large number of simulation elements, this could be the ideal solution.                                                                            
+      //However, some cooperative systems are not designed to distribute tasks across processors, which could be very limiting. (examples?)
+
+    + Java: *preemptive* threading. scheduling mechanism provides time sices for each thread, periodically interrupting a thread and context switching to another thread so that each one is given a reasonable amount of time to drive its task.
+      *messaging* system, when multiple independent computers distributed across a network exists. Then all the processes are running completely independently of each other,
+
+** Basic threading
+   //each of these independent tasks(subtasks) is driven by a *thread of execution*, which is a single sequential flow of control within a process. A single process can thus have multiple concurrently executing tasks. 
+   //The CPU allocation is seperated in a different layer.
+
+*** Defining tasks, *Runnable* run();
+    //A Thread drives tasks, hence need a way to describe the task. Using *Runnable*.
+    [[./Cp21_LiftOff.java][Cp21_LiftOff]]
+    [[./Cp21_LiftOffRun.java][Cp21_LiftOffRun]]
+    new ClassName().f();
+
+*** The *Thread* class
+    [[./Cp21_LiftOffBasicThreads.java][Cp21_LiftOffBasicThreads]] 
+    Thread t = Thread(Runnable);
+    t.start(); // start(), when called, JVM calls the run() method of this thread.
+    [[./Cp21_LiftOffMoreBasicThreads.java][Cp21_LiftOffMoreBasicThreads]] 
+    //About public static void Thread.yield();
+        + This method is rarely approprite to use. However may be useful for debugging or testing, where it may help to reproduce bugs due to race conditions.
+    //About GBC:
+        main{
+            new Thread(Runnable).start();
+        }
+
+        + Though it seems no reference is generated when a new thread is called, and thus might be GBCed, it is not. *Each Thread has a reference stored somewhere, and cannot be cleaned up ultil the task exits its run() and dies*. 
+     [[./Cp21_Print3TimesReturn.java][Cp21_Print3TimesReturn]]
+     
+
+** Using Executors executor.execute(new Runnable);
+   //Java SE5 java.util.concurrent *Executors*
+   public interface Executor throws RejectedExcecutionException, NullPointerException{
+       void execute(Runnable command);
+   }
+   //The interafce provides a way of decoupling task submission from the mechanics of how each task will be run, including details of thread use scheduling, etc.
+       //Usage: Instead of
+           new Thread(new(RunnableTask())).start();
+       //use the following:
+           Executor executor = anExecutor;
+           executor.execute(new RunnableTask1());
+           executor.execute(new RunnableTask2());
+           [[./Cp21_ExecutorDirect.java][Cp21_ExecutorDirect]]
+
+#+BEGIN_SRC java
+import java.util.concurrent.*;
+public class anExecutor01 implements Executor {
+    public void execute(Runnable r) {
+        r.run();
+    }
+}
+public class anExecutor02 implements Executor {
+    public void execute(Runnable r) {
+        new Thread(r).start();
+    }
+}
+#+END_SRC
+    //Class Structure:
+    + class Executors: 
+      - static ExecutorService newCachedThreadPool();
+      - static ExecutorService newCachedThreadPool(ThreadFactory threadFactory);
+      - static newSingleThreadExecutor();
+        [[./Cp21_LiftOffSingleThreadExecutor.java][Cp21_LiftOffSingleThreadExecutor]] 
+        
+
+    + Interface ExecutorService extends Executor:
+      - void execute();
+      - void shutdown();
+
+** Producing return values from tasks *Callable* Java SE5. V call().
+#+BEGIN_SRC java
+@FunctionalInterface
+public Interface Callable<V>{
+    void call();
+}
+#+END_SRC
+   //Must be invoked using *ExecutorService submit()* method.
+   [[./Cp21_CallableLiftOff.java][Cp21_CallableLiftOff]]
+  
+*** ? which is then possible to combine with *isDone()*
+
+*** ? Executors.callable() 
+    //The overloaded Executors.callable() takes a *Runnable* and *produces* a Callable.
+
+*** ? ExecutorService has some "invoke" methods that run collections of *Callable* objects.
+    
+   
+** Summary
+   [[./Cp21_SleepException.java][Cp21_SleepException]]
+
+*** Mutex
+    //A mutex(or mutual exclusion) is the simplest type of synchronizer - it ensures that only one thread can execute the critical section of a computer program at a time. To access a critical section, a thread acquires the mutex, then accesses the critical section, and finally releases the mutex.
+*** Thread Safety
+    *To avoid the ConcurrentModificationException*:
+    [[./Cp21_AvoidConcurrentModificationException.java][Cp21_AvoidConcurrentModificationException]]
+
+    //Regarding to *Collection, List, and etc.*
+    //Since those are normally only used as an container, in other words, the data inside is not constantly changing. Hence the thread safety is in that sense not that important. 
+    ConcurrentModificationException:
+    [[./Cp21_ConcurrentModificationException.java][Cp21_ConcurrentModificationException]]
+    //Three levels of safety:
+    //Unsafe, Thread safe - Serializable, Thread safe - MT-Safe
+    An unsafe procedure can be made thread safe and serializable by surrounding it with statements to lock and unlock a mutex. 
+    Next is a serializable version of this routine with a single mutex.
+    The last version is MT-safe. It uses one lock for each file, allowing two threads to print to different files at the same time. So, a routine is MT-safe when it is thread safe and its execution does not negatively affect performance.
+    [[./Cp21_DegreesOfThreadSafety.java][Cp21_DegreesOfThreadSafety]]
+    
+    
+*** Thread Safety - System.arraycopy()
+    [[./Cp21_ThreadSafetyArraycopy.java][Cp21_ThreadSafetyArraycopy]]
+    
+** ocpjp misc
+*** two methods to execute a thread
+    [[./Cp21_TwoWaysToRunAThread.java]]
+    
+    //when to use which
+    + extend Thread when customized thread rules(e.g. priority)is desired
+    + when multiple inheritance is not a problem
+    + use Runnable, since it separates task from Thread object which execute it
+    + use Runnable, to allow the class be useb by numerous Concurrency API.
+
+*** *Polling* with Sleep
+    //Polling is the process of intermittently checking data at some fixed interval. 
+    [[./Cp21_PollingWithSleep.java]]
+    //Problems:
+    + lack of control: cannot stop the loop when enough
+    + resource concurrency issue (no lock on shared resources)
+
+*** Concurrency APIs, ExecutorService
+
+**** basic
+    [[./Cp21_ExecutorServiceBasic.java]]
+    //ExecutorService life cycle
+    //Active -> [shutdown()] -> Shutting Down{isShutdown() = true, isTerminated() = false} -> [All Tasks Finished] -> ShutDown{true, true}
+    //public interface ExecutorService extends Executor
+    An Executor that provides methods to manage termination and methods that can produce a Future for tracking progress of one or more asynchronous tasks.
+    An ExecutorService can be shut down, which will cause it to reject new tasks. Two different methods are provided for shutting down an ExecutorService. The shutdown() method will allow previously submitted tasks to execute before terminating, while the shutdownNow() method prevents waiting tasks from starting and attempts to stop currently executing tasks. Upon termination, an executor has no tasks actively executing, no tasks awaiting execution, and no new tasks can be submitted. An unused ExecutorService should be shut down to allow reclamation of its resources.
+
+    Method submit extends base method Executor.execute(java.lang.Runnable) by creating and returning a Future that can be used to cancel execution and/or wait for completion. Methods invokeAny and invokeAll perform the most commonly useful forms of bulk execution, executing a collection of tasks and then waiting for at least one, or all, to complete. (Class ExecutorCompletionService can be used to write customized variants of these methods.)
+
+    The Executors class provides factory methods for the executor services provided in this package.
+    
+    *execute(), submit(), invokeAll(), invokeAny()*
+    
+**** scheduled
+     ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+         + schedule(Callable<V> callable, long delay, TimeUnit unit)
+         + schedule(Runnable command, long delay, TimeUnit unit)
+         + scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit)
+         + scheduleAtFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit)
+           //service.scheduleAtFixedRate(command, 5, 1, TimeUnit.MINUTE)
+
+**** thread pool
+     + newCachedThreadPool()
+     + newFixedThreadPool(int nThreads) [ExecutorService]
+     + newSchedledThreadPool(int nThreads) [ScheduledExecutorService]
+       
+
+*** Synchronizing Data Access
+    [[./Cp21_ConcurrencyBasic.java]] 
+
+    *atomic operation*
+    //refers to an operation to be carried out as a single unit of execution without any interference by another thread.
+    //i.e., an action with one single task.
+    //e.g., "plus" is thread safe, while "++a"is not, since it perform both read and write.
+    
+    *java.util.concurrent.atomic*
+        + AtomicBoolean
+        + AtomisInteger
+        + AtomisIntegerArray
+        + AtomicLong
+        + AtomicLongArray
+        + AtomicReference
+        + AtomicReferenceArray //An array of generic object references in which elements may be
+updated atomically
+
+     *common atomic methods*
+        + get()
+        + set()
+        + getAndSet() //Atomically sets the new value and returns the old value.
+        + incrementAndGet() //For numeric classes, ++value atomically.
+        + getAndIncrement()
+        + decrementAndGet()
+        + getAndDecrement()
+          
+     [[./Cp21_ConcurrencyBasicAtomic.java]]
+     
+     *lock/monitor and synchronized*
+     //a lock/monitor is a structure that supports mutual exclusion or the property that at most one thread is executing a particular segment of code at a given time.
+     //any Object can be used as a monitor, along with the synchronized keyword.
+     SheepManager manager = new SheepManager();
+     synchronized(manager) {
+         //Work to be completed by one thread at a time
+         
+     }
+     //Trivia:
+       //constructors cannot be cynchronized.
+     
+     //synchronized keyword introduces a lock to the object.
+     //when synchronized method is called, a lock is applied to the object.
+     [[./Cp21_ConcurrencyBasicLock.java]]
+     
+     //synchronization is about protecting data integrity at the cost of performance.
+     
+*** Concurrent Collections
+**** basic
+     [[./Cp21_ConcurrentCollections.java]]
+
+     + ConcurrentHashMap
+     + ConcurrentLinkedDeque
+     + ConcurrentLinkedQueue
+     + ConcurrentSkipListMap
+     + ConcurrentSkipListSet
+     + CopyOnWriteArrayList
+     + CopyOnWriteArraySet
+     + LinkedBlockingDeque
+     + LinkedBlockingQueue
+
+**** Memory Consistency Errors
+     *ConcurrentModificationException, fail-fast iterator*
+     Map<String, Object> foodData = new HashMap<String, Object>();
+     foodData.put("penguin", 1);
+     foodData.put("flamingo", 2);
+     for(String key: foodData.keySet())
+         //! foodData.remove(key);
+     //This exception may be thrown by methods that have detected concurrent modification of an object when such modification is not permissible.
+     //For example, it is not generally permissible for one thread to modify a Collection while another thread is iterating over it. In general, the results of the iteration are undefined under these circumstances. Some Iterator implementations (including those of all the general purpose collection implementations provided by the JRE) may choose to throw this exception if this behavior is detected. Iterators that do this are known as fail-fast iterators, as they fail quickly and cleanly, rather that risking arbitrary, non-deterministic behavior at an undetermined time in the future.
+     //Note that this exception *does not always* indicate that an object has been concurrently modified by a different thread. If a single thread issues a sequence of method invocations that violates the contract of an object, the object may throw this exception. For example, if a thread modifies a collection directly while it is iterating over the collection with a fail-fast iterator, the iterator will throw this exception.
+     //Note that fail-fast behavior cannot be guaranteed as it is, generally speaking, impossible to make any hard guarantees in the presence of unsynchronized concurrent modification. Fail-fast operations throw ConcurrentModificationException on a best-effort basis. Therefore, it would be wrong to write a program that depended on this exception for its correctness: ConcurrentModificationException should be used only to detect bugs.
+     
+      *fail-safe iterator*
+      //Iterator on CopyOnWriteArrayList, ConcurrentHashMap classes are examples of fail-safe Iterator.
+      Map<String, Object> foodData = new ConcurrentHashMap<String, Object>();
+      foodData.put("penguin", 1);
+      foodData.put("flamingo", 2);
+      for(String key: foodData.keySet())
+          foodData.remove(key); //safe
+
+**** *ConcurrentHashMap vs Hashtable?*
+      //lock on multiple buckets, and get() is asynchronized, since a reference is only 32bit.
+
+**** ConcurrentLinkedDeque/Queue
+
+**** ConcurrentSkipListMap/Set
+     //concurrent version of TreeMap/Set
+     Eligible implementation for SortedMap/NavigableSet 
+
+**** CopyOnWriteArrayList/Set
+
+**** LinkedBlockingDeque/Queue
+         + offerFirst(E e, long timeout, TimeUnit unit)
+         + offerFirst(E e, long timeout, TimeUnit unit)
+         + offerFirst(E e, long timeout, TimeUnit unit)
+         + offerFirst(E e, long timeout, TimeUnit unit)
+
+**** Synchronized collections methods
+     //wrapper methods for normal collections
+     //Note: though most of the operations are thread safe, the iterators will not be synchronized. As a result, modifying while iterating still might throws a ConcurrentModificationException.
+     //It is imperative that the user manually synchronize on the returned collection when iterating over it:
+     
+         collection c = Collections.synchronizedCollection(myCollection);
+         //...
+         synchronized (c) {
+             Iterator i = c.iterator(); // Must be in the synchronized block
+             while (i.hasNext())
+                 foo(i.next());
+         }
+         
+     + synchronizedCollection(Collection<T> c)
+       //~List, Map, NavigableMap, NavigableSet, Set, SortedMap, SortedSet
+       
+**** parallel streams
+     stream.parallel(); .parallelStream();
+     //stateful operations should be avoided
+     //concerrent collections should be used with parallel streams
+     
+     *Order-Based Taskes*
+     //skip(5).limit(2).findFirst(); //will return the same result on parallel stream, however reduce performance.
+     //stream().unordered(),parallel(); //could greatly improve performance; has no effect on a serial stream.
+     
+     *Requirementds for reduce() Arguments*
+     //to process in parallel while holding the result unchanged:
+     + The identity must be defined such that for all elements in the stream u, combiner.apply(identity, u) is equal to u.
+     + The accumulator operator op must be associative and stateless such that (a op b) op c is equal to a op (b op c).
+     + The combiner operator must also be associative and stateless and compatible with the identity, such that for all u and t combiner.apply(u,accumulator.apply(identity,t)) is equal to accumulator.apply(u,t).
+
+     [[./Cp21_ParallelStreamBadReduce.java]]
+     
+     *Combining Results with collect()*
+     Stream<String> stream = Stream.of("w", "o", "l", "f").parallel();
+     SortedSet<String> set = stream.collect(ConcurrentSkipListSet::new, Set::add, Set::addAll);
+     System.out.println(set); // [f, l, o, w]
+     //Note: a concurrent collection should be used here. Ensuring no ConcurrentModificationException is caused.
+     
+     *collect() with single argument*
+     Stream<String> stream = Stream.of("w", "o", "l", "f").parallel();
+     Set<String> set = stream.collect(Collectors.toSet());
+     System.out.println(set); // [f, w, l, o], serialstream, unordered.
+
+     //requirements for Parallel Reduction with collect()
+     + The stream is parallel.
+     + The parameter of the collect operation has the Collector.Characteristic.CONCURRENT characteristic.
+     + Either the stream is unordered, or the collector has the characteristic Collector.Characteristics.UNORDERED.
+       
+     //examples:
+     Stream<String> ohMy = Stream.of("lions", "tigers", "bears").parallel();
+     ConcurrentMap<Integer, String> map = ohMy.collect(
+         Collectors.toConcurrentMap(String::length, k -> k, (s1, s2) -> s1 + "," + s2)
+     ); //java.util.concurrent.ConcurrentHashMap, {5=lions,bears, 6=tigers}
+     ConcurrentMap<Integer, List<String>> map = ohMy.collect(
+         Collectors.groupingByConcurrent(String::length)
+     ); //{5=[lions, bears], 6=[tigers]}
+
+*** Managing Concurrent Process
+
+**** CyclicBarrier
+     [[./Cp21_CyclicBarrier.java]]
+
+**** Fork/Join Framework, recursiveAction, recurviceTask<V>
+     //A ForkJoinTask is a thread-like entity that is much lighter weight than a normal thread. Huge numbers of tasks and subtasks may be hosted by a small number of actual threads in a ForkJoinPool, at the price of some usage limitations.
+     [[./Cp21_ForkJoinFramework.java]]
+     + RecursiveAction
+     + RecursiveTask<V>
+
+
+     
+* Chapter 23, JDBC (ocpjp)
+  //All database classes are in the package *java.sql*
+** JDBC interfaces
+   + Driver
+     //get a connection
+   + Connection
+     //communicate with db
+   + Statement
+     //run SQL
+   + ResultSet
+     //knows what was returned by a SELECT query
+     
+** basic
+   //example01
+   public static void main(String[] args) throws SQLException {
+       String url = "jdbc:derby:zoo";
+       try (Connection conn = DriverManager.getConnection(url);
+           Statement stmt = conn.createStatement();
+           ResultSet rs = stmt.executeQuery("select name from animal")) {
+       
+           while (rs.next())
+               System.out.println(rs.getString(1));
+       }
+   }
+   
+   //example02
+   public static void viewTable(Connection con, String dbName)
+    throws SQLException {
+
+    Statement stmt = null;
+    String query =
+        "select COF_NAME, SUP_ID, PRICE, " +
+        "SALES, TOTAL " +
+        "from " + dbName + ".COFFEES";
+
+    try {
+        stmt = con.createStatement();
+        ResultSet rs = stmt.executeQuery(query);
+        while (rs.next()) {
+            String coffeeName = rs.getString("COF_NAME");
+            int supplierID = rs.getInt("SUP_ID");
+            float price = rs.getFloat("PRICE");
+            int sales = rs.getInt("SALES");
+            int total = rs.getInt("TOTAL");
+            System.out.println(coffeeName + "\t" + supplierID +
+                               "\t" + price + "\t" + sales +
+                               "\t" + total);
+        }
+    } catch (SQLException e ) {
+        JDBCTutorialUtilities.printSQLException(e);
+    } finally {
+        if (stmt != null) { stmt.close(); }
+    }
+}
+   
+** the Driver file
+   //the META-INF in newer driver contains the following structure:
+   META-INF -> service -> java.sql.Driver
+   //the classloader could find the java.sql.Driver and try to resolve the connection URL with the class.
+   //In older version(before Java 6) where java.sql.Driver is not compulsory, however, it might be necessary to load the driver class directly:
+   Class.forName("org.postgresql.Driver"); //throws ClassNotFoundException 
+   
+** createStatement
+   Statement stmt = Statement createStatement(int resultSetType, int resultsetConcurrency, int resultsetHoldability) throws SQLException
+   //parameters
+   + resultSetType
+     - ResultSet.TYPE_FORWARD_ONLY //default, rs has one method: next() only.
+     - ResultSet.TYPE_SCROLL_INSENSITIVE //rs has addition navigation methods: 
+       //previous(), first(), past(), beforeFirst(), afterLast(), relative(int rows), absolute(int row);
+       //all return booleans, throws SQLFeatureNotSupportedException, in addition to the basic SQLException
+     - ResultSet.TYPE_SCROLL_SENSITIVE //not well supported
+   + resultSetConcurrency
+     - ResultSet.CONCUR_READ_ONLY //default concurrency mode, set rs as readonly.
+     - ResultSet.CONCUR_UPDATABLE //rs object is updatable, not universally supported.
+   + resultSetHoldability
+     - ResultSet.HOLD_CURSORS_OVER_COMMIT
+     - ResultSet.CLOSE_CURSORS_AT_COMMIT
+   
+*** ths statement 
+    //stmt methods:
+    + ResultSet executeQuery(String sql)
+    + int executeUpdate(String sql)
+    + int executeUpdate(String sql, int autoGeneratedKeys)
+    + int executeUpdate(String sql, int[] columnIndexes)
+    + int executeUpdate(String sql, String[] columnNames)
+      //the int would be 0 for false, 1 for true
+    + boolean execute(String sql)
+      //boolean isResultSet = stmt.execute(sql);
+      //if (isResultSet){
+            //ResultSet rs = stmt.getResultSet(sql);
+      //}
+   
+    //PreparedStatement
+    PreparedStatement ps = conn.prepareStatement("delete from animal where name = ?");
+    ps.setString(1, name);
+    ps.execute();
+    *statement methods summary*
+   | Return    | Method          | DELETE | INSERT | SELECT | UPDATE |
+   |-----------+-----------------+--------+--------+--------+--------|
+   | boolean   | execute()       | Y      | Y      | Y      | Y      |
+   | ResultSet | executeQuery()  | N      | N      | Y      | N      |
+   | int       | executeUpdate() | Y      | Y      | N      | Y      |
+   //execute() returns true if and only if the query is SELECT, and the result is present.
+   //executeUpdate() returns the number of rows added/changed/removed
+
+** reading a ResultSet   
+   Map<Integer, String> idToNameMap = new HashMap<>();
+   ResultSet rs = stmt.executeQuery("select id, name from species");
+   while(rs.next()) {
+       int id = rs.getInt("id"); //or get(int columnIndex), where the index start from 1.
+       String name = rs.getString("name");
+       idToNameMap.put(id, name);
+   }
+   System.out.println(idToNameMap); // {1=African Elephant, 2=Zebra}
+   //calling rs.getInt(0) will throw SQLException.
+   
+
+   
+
+* Chapter 30, Designing Patterns 
+** Factory getInstance method
+   //Use the following to generate instance instead a constructor. Example is the abstract class Calendar.
+   public static getInstanceOf();
+   [[./Cp30_FactoryGetInstance.java][Cp30_FactoryGetInstance]]
+** Singleton pattern
+   //The singleton solves problem like:
+     + How to ensure that a class has only one instance?
+     + How can the solo instance of a class be accessed easily?
+     + How can a class control its instantiation?
+     + How can the number of instances of a class be restricted?
+   //The pattern offers solution using pattern described as:
+     + Hide the constructor of the class.
+     + Define a public static operation(getInstance()) that returns the solo instance of the class.
+   [[./Cp30_SingletonBasic.java][Cp30_SingletonBasic]] //Not-thread safe, multiple instance might be be initialized.
+   [[./Cp30_SingletonImproved.java][Cp30_SingletonImproved]] //Bill Pugh Singleton Implementation, Thread safe.
+* Chapter 31, Frequently Used API
+** String. String s = "abcde"
+   + *static* valueOf()
+     //String d = String.valueOf("hi");
+     //Double quotation mark is needed when a string is passed.
+   + replaceAll(String regex, String replacement)
+     //still, *immutable* is the String!
+   + indexOf()
+     //s.indexOf("bc");
+     //return:1, returns -1 if the string searched does not exist.
+   + substring()
+     //s.substring(2,4)
+     //return:cd
+     //remember the (k,m+1)
+   + trim()
+     //return char with code greater than \u0020, substring(k,m+1)
+     //String d = " a b c \t "; d.trim();
+     //return:"abc"
+   + replace(char oldChar, char newChar)
+   + replace(CharSequence target, CharSequence replacement)
+     //String d = "aaaaa"; Syso(d.replace("aa", "b"));
+     //return:"bba";
+     //Carefull not to mix char with CharSequence, e.g. s.replace("aa", 'b') is compile error.
+   + charAt()
+     //s.charAt(s.length());
+     //return:StringIndexOutOfBoundsException
+   + startsWith(String prefix)
+   + startsWith(String prefix, int toffset)
+     //Tests if the substring of this string beginning at the specified index starts with the specified prefix.
+     [[./Cp31_StartsWith.java][Cp31_StartsWith]]
+   + concat(String str)
+     //"abcde".concat("s");
+     //returns:"abcdes"
+   + Plus overloadding pitfall
+     [[./Cp31_PlusOverloadding.java][Cp31_PlusOverloadding]]
+     //syso(10+20+"30");
+     //return:"3030"
+** StringBuilder StringBuilder sb = new StringBuilder("abc");
+   + StringBuilder()
+   + StringBuilder(CharSequence seq)
+     //The initial capacity is 16 plus the length of the CharSequence argument.
+     [[./Cp31_StringBuilder.java][Cp31_StringBuilder]]
+     //boolean b = true; String.valueOf(b);
+     //returns:"true"
+   + insert(...);
+     //sb.append("de").insert(2, "g"); syso(sb);
+     //returns:"abgcde"
+   + delete(1,3)
+   + deleteCharAt(2)
+   + reverse()
+     //StringBuilder is *not immutable*
+   + replace(int start, int end, String str)
+     //Replaces the characters in a substring of this sequence with characters in the specified String.
+   + CharSequene subSequence(int start, int end)
+   + String substring(int start)
+   + String substring(int start, int end)
+     [[./Cp31_CharSequence.java][Cp31_CharSequence]]
+
+** Lambda
+   [[./Cp31_Lambda.java][Cp31_Lambda]]
+   //Single line, 
+   //If single variable, the Round brackets are omittable.
+   //Pitfall: *Cannot modify enclosing variable.*
+   f(){
+       int i = 0;
+       LambdaInterface x = () -> {
+           // ! i++; //illegal, i must be effectively final. 
+           System.out.println(i); //access only is allowed.
+       }
+   }
+   
+** interface java.util.function.Predicate
+   @FunctionalInterface 
+   public interface Predicated<T>{
+       boolean test(T t);
+   }
+   //Parent:
+   @FunctionalInterface
+   public interface Function<T, R>{
+       <R> apply(T t);
+   }
+   [[./Cp31_Function.java][Cp31_Funtion]]
+   [[./Cp31_Predicate.java][Cp31_Predicate]]
+
+** Collection.sort and interface Comparator
+   [[./Cp31_CollectionSimpleSort.java][Cp31_CollectionSimpleSort]]
+   
+** .stream()
+   [[./Cp31_SimpleStream.java][Cp31_SimpleStream]]
+   //Source -> Filter -> Sort -> Map -> Collect
+   //For large datasets: better to filter first, to reduce the elements in the stream
+   //For very large datasets, consider use ParrallelStream to enable multiple threads 
+   //Intermediate options: anyMatch(), distinct(), filter(), findFirst(), flatmap(), map(), skip(), sorted()
+   //To reduce the stream to a single summary element: count(), max(), min(), reduce(), summaryStatistics()
+   *Useful Tricks*
+   Arrays.stream(user.getRoles.trim().split("\\s*,\\s*"))
+       .map(SimpleGrantedAuthority::new)
+       .collect(Collectors.toList())
+
+*** ocpjp8g misc 
+**** stateless and stateful operation
+     //Intermediate operations are further divided into stateless and stateful operations. Stateless operations, such as filter and map, retain no state from previously seen element when processing a new element -- each element can be processed independently of operations on other elements. Stateful operations, such as distinct and sorted, may incorporate state from previously seen elements when processing new elements.
+     Stream.generate(() -> "Elsa")
+         .filter(n -> n.length() == 4 )
+         .sorted()
+         .limit(2)
+         .forEach(System.out::println); 
+     //loops forever since .sorted() is stateful thus require all elements be passed into it before it could start.
+         
+     Stream.generate(() -> "Elsa")
+         .filter(n -> n.length() == 3 )
+         .limit(2)
+         .sorted()
+         .forEach(System.out::println); 
+     //This stream opens forever as well since .limit(2) could never see any element.
+     
+     Stream<Integer> infinite = Stream.iterate(1, x -> x + 1);
+     intinite.limit(5)
+         .peek(System.out::print)
+         .filter(x -> x % 2 == 1)
+         .forEach(System.out::print); //11233455
+         
+**** infinite stream
+    + Stream.generate(() -> "chimp"); 
+      Stream.generate(Math::random);
+    + Stream.iterate(1, n -> n + 1)
+    //work with infinite stream
+    + .findAny() useful when working with a parallel stream.
+    + .fingFirst()
+**** search in a stream
+    + boolean anyMatch(Predicate <? super T> predicate)
+    + boolean allMatch(Predicate <? super T> predicate)
+    + boolean noneMatch(Predicate <? super T> predicate)
+      use with Predicate<String> pred = x -> Character.isLetter(x.charAt(0));
+**** reduce()
+       <U> U reduce(U identity,
+       BiFunction<U,? super T,U> accumulator,
+       BinaryOperator<U> combiner)
+       //when reducing into different type of element, a combiner is necessary, even in an non-parallel stream
+       [[https://stackoverflow.com/questions/24308146/why-is-a-combiner-needed-for-reduce-method-that-converts-type-in-java-8][stackoverflow-why-is-a-combiner-needed-for-reduce-method]]
+       //while an Identity element is a special type of element of a set with respect to a binary operation on that set, which leaves any element of the set unchanged when combined with it.
+       //e.g. 1 for multiplication and 0 for addition
+       //The reduce operation always returns a new value. However, the accumulator function also returns a new value every time it processes an element of a stream. Suppose that you want to reduce the elements of a stream to a more complex object, such as a collection. This might hinder the performance of your application. If your reduce operation involves adding elements to a collection, then every time your accumulator function processes an element, it creates a new collection that includes the element, which is inefficient. It would be more efficient for you to update an existing collection instead. You can do this with the Stream.collect method, which the next section describes.
+       //Hence, avoid those operations in an accumulator.
+
+**** collect()
+    //<R> R collect(Supplier<R> supplier, BiConsumer<R, ? super T> accumulator, BiConsumer<R, R> combiner)
+    + .collect(StringBuilder::new, StringBuilder::append, StringBuilder:append)
+      .collect(TreeSet::new, TreeSet::add, TreeSet::addAll);
+       
+**** limit(int maxSize), skip(int n)
+     Stream<Integer> s = Stream.iterate(1, n -> n + 1);
+     s.skip(5).limit(2).forFach(Sjstem.out::print); //67
+     
+**** map()
+     <R> Rtream<R> map(Function<? super T, ? extends R> mapper)
+     Stream<String> s = Stream.of ("monkey", "gorilla", "bonobo");
+     s.map(String::length).forEach(System.out::print); //676
+     
+**** flatMap()
+     //useful when processing *a stream of collection*. It take out sub-elements and map it into a stream.
+     <R> Stream<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper)
+     
+     Stream<List<String>> animals = Stream.of(list1, list2, list3);
+     animals.flatMap(l -> l.stream()).forFach(System.out::println);
+    
+**** sorted()
+     Stream<T> sorted();
+     //if T is not Comparable, java.land.ClassCastException may be thrown when the terminal operation is executed.
+     Stream<T> sorted(Comparator<? super T> comparator);
+     
+**** peek()
+     //intended for debugging use.
+     //should not change the content within the pipeline.
+     Stream<T> peek(Consumer<? super T> action)
+     .peek(element -> builder.append(element)). ...; 
+     
+**** primitive stream
+     //mapping functions: map, mapToDouble, mapToInt, mapToLong adjacency matrix 
+     Stream<String> objStream = Stream.of("penguin", "fish")
+     IntStream intStream = objStream.mapToInt(s-> s.length());
+     //some special methods: double sum(), OptionalDouble max()/min(), OptionalDouble average();
+     //normal stream: min/max(Comparator<? super T> comparator)
+     
+**** ? Primitive-specific functional interfaces
+     
+**** Chaining Optionals
+     //A few of the intermediate oferations for streams are available for *Optional* as well.
+     Optional<Integer> optional = Optional.of(Integer.valueOf(42));
+     private static void threeDigit(Optional<Integer> optional){
+         optional.map(n -> "" + n)
+             .filter(s -> s.length() == 3)
+             .ifPresent(System.out::println);
+     }
+     //use flatMap to remove extra layer.
+     for a helper method: static Optional<Integer> calculator(String s);
+     Optional<Integer> result = optional.map(ChainingOptionals::calculator) //! does not compile
+     Optional<Integer> result = optional.flatMap(ChainingOptionals::calculator) // works fine
+     
+**** Collecting Results
+     //predefined collectors, ocpgp p217
+     + averagingDouble/Int/Long
+       Double averagingDouble(ToDoubleFunction f)
+       Double averagingDouble(ToDoubleFunction f)
+       Double averagingDouble(ToDoubleFunction f)
+     + counting
+       Long counting()
+     + groupingBy
+       Map<K, List<T>> groupingBy(Function f)
+       Map<K, List<T>> groupingBy(Function f, Collector dc)
+       Map<K, List<T>> groupingBy(Function f, Supplier mapFactory, Collector downstreamCollector)
+     + joining
+       joining()
+       joining(CharSequence csDelimiter)
+     + max/minBy
+       Optional<T> maxBy(Comparator c)
+       Optional<T> minBy(Comparator c)
+     + mapping
+       Collector mapping(Function f, Collector dc)
+     + partitioningBy
+       Map<Boolean, List<T>> partitioningBy(Predicate p)
+       Map<Boolean, List<T>> partitioningBy(Predicate p, Collector dc)
+     + summarizingDouble/Int/Long
+       DoubleSummaryStatistics summarizingDouble(ToDoubleFunction f)
+       ...
+       ...
+     + summingDouble/Int/Long
+       Double summingDouble(ToDoubleFunction f)
+       Double summingInt (ToIntFunction f)
+       Double summingLong(ToLongFunction f)
+     + toList()
+     + toSet()
+     + toCollection(Supplier s)
+     + toMap
+       Map toMap(Function k, Function v)
+       Map toMap(Function k, Function v, BinaryOperator m)
+       Map toMap(Function keyMapper, Function valueMapper, BinaryOperator mergeFunction, Supplier mapSupplier)
+       
+**** Collecting Using Basic Collectors
+     *joining*
+     Stream<String> ohMy = Stream.of("a", "b", "c");
+     String result = ohMy.collect(Collectors.joining(", "));
+     System.out.println(result); // a, b, c
+     *averagingDouble/Int/Long*
+     String result = ohMy.collect(Collectors.averagingInt(String::length));
+     *toMap*
+     ohMy.collect(Collectors.toMap(s -> s, String::length));
+     ohMy.collect(Collectors.toMap(Function.identity(), String::length));
+     Map<Integer, String> map = ohMy.collect(Collectors.toMap(
+         String::length, k -> k, (s1, s2) -> s1 + "," + s2
+     )); //{1=a,b,c} which happens to be an HashMap
+     Map<Integer, String> map = ohMy.collect(Collectors.toMap(
+         String::length, k -> k, (s1, s2) -> s1 + "," + s2, TreeMap::New
+     )); //returns a treeMap
+     *groupingBy*
+     Map<Integer, List<String>> map = ohMy.collect(
+         Colectors.groupingBy(String::length)
+     );
+     Map<Integer, Set<String>> map = ohMy.collect(
+         Colectors.groupingBy(String::length, Collectors.toSet());
+     );
+     TreeMap<Integer, Set<String>> map = ohMy.collect(
+         Colectors.groupingBy(String::length, Tree::Map, Collectors.toSet());
+     );
+     *partitioningBy*
+     //grouping to only true or false.
+     Map<Boolean, List<String>> map = ohMy.collect(
+         Collectors.partitioningBy(s -> s.length() <= 5)
+     ); //{false=[], true=[a, b, c]}
+     
+
+     
+
+
+     
+     
+** List.
+   + boolean contains(Object o)
+*** ? removeIf < ? super E > in function default boolean removeIf(Predicate<? super E> filter) filter - a predicate which returns true for elements to be removed. [[./Cp21_AvoidConcurrentModificationException.java::16][Cp21_AvoidConcurrentModificationException::16]]
+** java.time.LocalDate.
+   //LocalDate object is *immutable*, while Calendar is mutable.
+   + *static of(2015,0,1)* //throw DateTimeException, which is RunTimeException.
+   + *static parse(CharSequence text, & DateTimeFormatter formatter)* //text = "2015-01-01".
+   + *static now(&...)*
+   + equals 
+     //Checks if this date is equal to another date.
+     [[./Cp31_LocalDate.java][Cp31_LocalDate]]
+   + plusDays(long daysToAdd) //return:LocalDate
+   + plusMonths(long monthsToAdd)
+   + plusWeeks(long weeksToAdd)
+   + plusYears(long yearsToAdd)
+
+** java.time.LocalTime. 
+   //Pitfall: *immutable* too.
+   + *static of(int hour, int minute, int second, & int nanoOfSecond)*
+   + plusHours(long hoursToAdd) //time.plusHours(12); //returns:time immutable.
+
+** java.time.LocalDateTime
+   + of(yr, month, day, hr, min, &sec)
+
+** java.time.Duration
+   + *static Duration between(Temporal startInclusive, Temporal endExclusive)*
+     //Both LocalDateTime and LocalTime implement the interface Temporal.
+     [[./Cp31_Duration.java][Cp31_Duration]]
+   + toHours(); //gets the number of hours in this duration.
+     
+** now
+   [[./Cp31_Now.java][Cp31_Now]]
+   
+** java.time.Period
+   //to calculate the date difference:
+   + *static Period between(LocalDate startDateInclusive, LocalDate endDateExclusive)*
+   + Period LocalTimeObject.until(targetLocalTimeObject)
+     
+** java.time.format.DateTimeFormatter
+   [[./Cp31_DateTimeFormatter.java][Cp31_DateTimeFormatter]]
+   
+** java.time.ZonedDateTime
+   + *static ZonedDateTime.of(LocalDate date, LocalTime time, ZoneID zone)*
+   + *static ZonedDateTime.of(LocalDateTime localDateTime, ZoneID zone)*
+   
+** ocpjp, date and time
+   //! LocalDate date = LocalDate.of(2020, 9, 31);
+   //java.time.DateTimeException (RuntimeException)
+
+   *Instant*
+   Instant instant = zonedDateTime.toInstant(); //the offset will be added
+   
+   *Daylight Saving Time*
+   //ocpjp p251, 
+   //March changeover day: 2-3am does not exist
+   //November changeover day: 1-2am exists twice.
+   LocalDate date = LocalDate.of(2016, Month.MARCH, 13);
+   LocalTime time = LocalTime.of(1, 30);
+   ZoneId zone = ZoneId.of("US/Eastern");
+   ZonedDateTime dateTime = ZonedDateTime.of(date, time, zone);
+   System.out.println(dateTime); //2016–03–13T01:30–05:00[US/Eastern]
+   dateTime = dateTime.plusHours(1); //2016–03–13T03:30–04:00[US/Eastern]
+   
+   //November changeover:
+   System.out.println(dateTime); //2016–11–06T01:30–04:00[US/Eastern]
+   dateTime = dateTime.plusHours(1);
+   System.out.println(dateTime); //2016–11–06T01:30–05:00[US/Eastern]
+
+
+
+
+   
+** valueOf()
+   [[./Cp31_ValueOf.java][Cp31_ValueOf]]
+
+   
+** apache common library
+   [[./Cp31_ReflectionToStringBuilder.java][Cp31_ReflectionToStringBuilder]]
+
+* Chapter 32, Frequently Used framework
+** Log4j
+   //Log for Java
+
+   
+   
+** maven
+
+* Chapter 33, General
+** Http/s -- belongs to OSI Application Layer
+   //rfc2616
+*** Overall Operation
+       The HTTP protocol is a request/response protocol. A client sends a
+   request to the server in the form of a request method, URI, and
+   protocol version, followed by a MIME-like message containing request
+   modifiers, client information, and possible body content over a
+   connection with a server. The server responds with a status line,
+   including the message's protocol version and a success or error code,
+   followed by a MIME-like message containing server information, entity
+   metainformation, and possible entity-body content. The relationship
+   between HTTP and MIME is described in appendix 19.4.
+   
+*** Methods
+**** GET
+       The GET method means retrieve whatever information (in the form of an
+   entity) is identified by the Request-URI. If the Request-URI refers
+   to a data-producing process, it is the produced data which shall be
+   returned as the entity in the response and not the source text of the
+   process, unless that text happens to be the output of the process.
+   *conditional GET*
+   *partial GET*
+
+**** HEAD 
+       The HEAD method is identical to GET except that the server MUST NOT
+   return a message-body in the response. The metainformation contained
+   in the HTTP headers in response to a HEAD request SHOULD be identical
+   to the information sent in response to a GET request. This method can
+   be used for obtaining metainformation about the entity implied by the
+   request without transferring the entity-body itself. This method is
+   often used for testing hypertext links for validity, accessibility,
+   and recent modification.
+
+**** POST
+       The POST method is used to request that the origin server accept the
+   entity enclosed in the request as a new subordinate of the resource
+   identified by the Request-URI in the Request-Line. POST is designed
+   to allow a uniform method to cover the following functions:
+
+      - Annotation of existing resources;
+
+      - Posting a message to a bulletin board, newsgroup, mailing list,
+        or similar group of articles;
+
+      - Providing a block of data, such as the result of submitting a
+        form, to a data-handling process;
+
+      - Extending a database through an append operation.
+
+   The actual function performed by the POST method is determined by the
+   server and is usually dependent on the Request-URI. The posted entity
+   is subordinate to that URI in the same way that a file is subordinate
+   to a directory containing it, a news article is subordinate to a
+   newsgroup to which it is posted, or a record is subordinate to a
+   database.
+
+**** PUT
+        The PUT method requests that the enclosed entity be stored under the
+   supplied Request-URI. If the Request-URI refers to an already
+   existing resource, the enclosed entity SHOULD be considered as a
+   modified version of the one residing on the origin server. If the
+   Request-URI does not point to an existing resource, and that URI is
+   capable of being defined as a new resource by the requesting user
+   agent, the origin server can create the resource with that URI. If a
+   new resource is created, the origin server MUST inform the user agent
+   via the 201 (Created) response. If an existing resource is modified,
+   either the 200 (OK) or 204 (No Content) response codes SHOULD be sent
+   to indicate successful completion of the request. If the resource
+   could not be created or modified with the Request-URI, an appropriate
+   error response SHOULD be given that reflects the nature of the
+   problem. The recipient of the entity MUST NOT ignore any Content-*
+   (e.g. Content-Range) headers that it does not understand or implement
+   and MUST return a 501 (Not Implemented) response in such cases.
+
+**** DELETE
+       The DELETE method requests that the origin server delete the resource
+   identified by the Request-URI. This method MAY be overridden by human
+   intervention (or other means) on the origin server. The client cannot
+   be guaranteed that the operation has been carried out, even if the
+   status code returned from the origin server indicates that the action
+   has been completed successfully. However, the server SHOULD NOT
+   indicate success unless, at the time the response is given, it
+   intends to delete the resource or move it to an inaccessible
+   location.
+   
+**** TRACE
+       The TRACE method is used to invoke a remote, application-layer loop-
+   back of the request message. The final recipient of the request
+   SHOULD reflect the message received back to the client as the
+   entity-body of a 200 (OK) response. The final recipient is either the
+   origin server or the first proxy or gateway to receive a Max-Forwards
+   value of zero (0) in the request (see section 14.31). A TRACE request
+   MUST NOT include an entity.
+
+**** CONNECT
+       This specification reserves the method name CONNECT for use with a
+   proxy that can dynamically switch to being a tunnel (e.g. SSL
+   tunneling [44]).
+
+** JDBC
+
+* Chapter 34, database, SQL
+** Keywords
+   commit, rollback, top, update, prepared statement
+
+** DBMS
+   is designed to:
+     + reduce error (insert wrong element/delete by accident)
+   
+** some Basics    
+*** mySQL data type
+   MySQL document - *Numeric Data Types*:
+    TINYINT: 1 byte, 0 to 255
+    SMALLINT: 2 bytes, -2^15 (-32,768) to 2^15-1 (32,767)
+    INT: 4 bytes, -2^31 (-2,147,483,648) to 2^31-1 (2,147,483,647)
+    BIGINT: 8 bytes, -2^63 (-9,223,372,036,854,775,808) to 2^63-1 (9,223,372,036,854,775,807)
+    equals to java corresponding type.
+*** Reserved words
+*** arithmetic operators
+    | *                  |                                     |                                                  |
+    | -                  |                                     |                                                  |
+    | *                  |                                     |                                                  |
+    | /                  |                                     |                                                  |
+    | DIV                | 8 DIV 3 -> 2                        | Integer division                                 |
+    | %                  |                                     |                                                  |
+    | MOD                |                                     |                                                  |
+    | =                  |                                     |                                                  |
+    | <=>                |                                     |                                                  |
+    | <>                 |                                     |                                                  |
+    | !=                 |                                     |                                                  |
+    | <                  |                                     |                                                  |
+    | <=                 |                                     |                                                  |
+    | >                  |                                     |                                                  |
+    | >=                 |                                     |                                                  |
+    |--------------------+-------------------------------------+--------------------------------------------------|
+    | IS NULL            |                                     |                                                  |
+    | IS NOT NULL        |                                     |                                                  |
+    | IS                 |                                     |                                                  |
+    | IS NOT             |                                     |                                                  |
+    | BETWEEN AND        | a BETWEEN min AND max               |                                                  |
+    | NOT BETWEEN AND    |                                     |                                                  |
+    | IN                 | a IN (value,...)                    | a equals to any of the values within the bracket |
+    | NOT IN             |                                     |                                                  |
+    | LIKE               | a LIKE regex                        | pattern matching using regex                     |
+    | NOT LIKE           |                                     |                                                  |
+    |--------------------+-------------------------------------+--------------------------------------------------|
+    | AND                |                                     |                                                  |
+    | &&                 |                                     |                                                  |
+    | OR/java logical OR |                                     |                                                  |
+    | XOR                |                                     |                                                  |
+    | NOT !              |                                     |                                                  |
+    |--------------------+-------------------------------------+--------------------------------------------------|
+    | &                  |                                     |                                                  |
+    | java bit or        |                                     |                                                  |
+    | ^                  | a^b                                 | bit XOR                                          |
+    | ~                  |                                     | bit NOT                                          |
+    | <<                 |                                     |                                                  |
+    | >>                 | -4294967295>>1->9223372034707292160 | *different from java*, *unsigned*                |
+    | >>                 | -16>>1->9223372034707292160 | *different from java*, *unsigned*                |
+
+*** DB normalization (正規化) 
+    1NF, 2NF, 3NF, BCNF, ...
+    1NF: 
+         + Each table cell should contain a single value.
+         + Each record needs to be unique.
+           
+    2NF:
+         + Be in 1NF
+         + Single Column Primary Key
+           
+    3NF:
+         + Be in 2NF
+         + Has no transitive functional dependencies
+           
+    BCNF: 4, 5, 6 more than 1 key per table
+           
+//foreign key: can be used to check, and prevent input error, must exist in parent table first.
+
+*** terminology
+    A transitive functional dependency is when changing a non-key column, might cause any of the other non-key columns to change
+
+*** Examples
+    [[./Cp34_CASEWHEN.sql][Cp34_CASEWHEN]]
+    [[./Cp34_EXISTS.sql][Cp34_EXISTS]]
+    [[./Cp34_GROUPBY.sql][Cp34_GROUPBY]]
+    [[./Cp34_CREATETABLEAS.sql][Cp34_CREATETABLEAS]]
+    [[./Cp34_WHEN.sql][Cp34_WHEN]] 
+    ./Cp34_MULTIPLELEJOIN.sql
+    [[./Cp34_MULTIPLELEJOIN.sql][Cp34_MULTIPLELEJOIN]]
+
+    *bind variables*
+    "?", ":name", "@name"
+    
+** Efficiency
+   | to avoid    | better             |
+   |-------------+--------------------|
+   | SELECT *    | SELECT column name |
+   | x>0 and x<5 | x BETWEEN 0 AND 5  | //2 queries
+   |             |                    |
+   
+   //Executing order:
+       FROM, WHERE, GROUPBY, HAVING, SELECT, ORDERBY
+       
+   //ストアドプロシージャ (stored procedure) 
+   //master table(or more detailed master), transaction table, 
+
+** Test Note
+   1. 0 entry
+   2. 1 entry
+   3. multiple entry
+   4. massive entry, to test the query efficiency.
+*** How to deal with massive data
+    + COUNT(), if < 300 -> JVM
+    + COUNT(), IF > 300 -> maybe dump into JVM
+    + or page break
+   
+** Injection
+    Defence Options (DO):
+*** DO1: Prepared statement (with Parameterized Queries)
+    //in rare situation where a prepared statment harms performence, a. strongly validate all data; b. escape all user supplied input.
+    via *variable binding*
+    [[./Cp34_PreparedStatement.java]]
+
+*** DO2: Escaping
+    [[./Cp34_InjectingEscaping.php][Cp34_InjectingEscaping]]
+    
+** Mybatis trivia
+   [[./Cp34_MybatisForeachMapper.xml][Cp34_MybatisForeachMapper]]
+   
+*** <![CDATA[ //SQLBODY ]]>
+
+** Utility Algorithms   
+*** greatest-n-per-group (SELECT (TOP N))
+    [[./Cp34_topN.sql][Cp34_topN]]
+
+* Chapter 35, Maven
+** POM
+  + *groupId*: This element indicates the unique identifier of the organization or group that created the project. The groupId is one of the key identifiers of a project and is typically based on the fully qualified domain name of your organization. For example org.apache.maven.plugins is the designated groupId for all Maven plugins.
+  + *artifactId*: This element indicates the unique base name of the primary artifact being generated by this project. The primary artifact for a project is typically a JAR file. Secondary artifacts like source bundles also use the artifactId as part of their final name. A typical artifact produced by Maven would have the form <artifactId>-<version>.<extension> (for example, myapp-1.0.jar).
+
+<<<<<<< HEAD
+    
+* Chapter 36, Test
+** Mock, Mockito  
+  //An depencency as Interface -> Stub Impl -> Test class
+  //Problem:
+    + Dynamic Condition
+    + Service Definition
+  //Solution: mock object
+
+  //Implementation: 
+    @Mock || @MockBean 
+    //As we write a test that *doesn’t need* any dependencies from the Spring Boot container, the Mockito‘s @Mock shall be used. It is fast and favors the isolation of the tested component.
+
+If the test needs to *rely on* the Spring Boot container and we want also to add or mock one of the container beans then @MockBean from Spring Boot is preferred way to add mocks.
+=======
+>>>>>>> 97189fbef048eb4ff4d2009780206c70b7dd9aec
+* Chapter 40, Design Structure
+  the detail depends on team members' level
+  WBS
+  + Data flowChart
+  + Process flowChart
+  + Exception handling
+  + 仕様書 -> 結合テスト仕様書
+  + detailed design specification -> unit test specification
+
+2000 line:
+    + unit test 150/KLOC
+    + combination test 50/KLOC
+    + general test 20/KLOC
+      
+Bug:
+    * 6 per unit test
+
+Bug in Production Environment:
+    + 20/KLOC or below 10
+
+One person:
+    + 100,000 Steps
+      

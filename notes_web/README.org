@@ -1,0 +1,830 @@
+;; -*- mode: org; eval: (company-mode -1); mode:emmet; -*-
+//HTML, CSS, JavaScript Basic
+//Learning Web Design, A Beginner's Guide to HTML, CSS, Graphics, and Beyond, by Jennifer Niederst Robbins (2007), 468 pages. [Finished]
+//JavaScript, The Definitive Guide by David Flanagan (2011), 1019 pages.
+//C-j to trigger emmet.
+================================================================================
+* TODO 
+  + classcast
+* FAQ
+** CGI standard
+   //RFC3875
+  
+* Chapter 1, Basic/Misc
+** J2EE
+** MVC (Model, View, Controller)
+   //DescriptionModel–view–controller is a software design pattern commonly used for developing user interfaces that divides the related program logic into three interconnected elements. 
+*Model*
+The central component of the pattern. It is the application's dynamic data structure, independent of the user interface.[5] It directly manages the data, logic and rules of the application.
+*View*
+Any representation of information such as a chart, diagram or table. Multiple views of the same information are possible, such as a bar chart for management and a tabular view for accountants.
+*Controller*
+Accepts input and converts it to commands for the model or view.[6]
+In addition to dividing the application into these components, the model–view–controller design defines the interactions between them.[7]
+
+The model is responsible for managing the data of the application. It receives user input from the controller.
+The view means presentation of the model in a particular format.
+The controller responds to the user input and performs interactions on the data model objects. The controller receives the input, optionally validates it and then passes the input to the model.
+As with other software patterns, MVC expresses the "core of the solution" to a problem while allowing it to be adapted for each system.[8] Particular MVC designs can vary significantly from the traditional description here.[9]
+
+*Service*
+Between the controller and the model sometimes goes a layer which is called a service. It fetches data from the model and lets the controller use the fetched data. This layer allows to separate data storage (model), data fetching (service) and data manipulation (controller). Since this layer is not part of the original MVC concept, it is optional in most cases but can be useful for code management and reusability purposes in some cases.
+
+** OSI Model, 7 layers
+   |   | Layer        | Protocal data unit(PDU) | Function                                               |
+   |---+--------------+-------------------------+--------------------------------------------------------|
+   | 7 | Application  | Data                    | ----High-level APIs.                                   |
+   | 6 | Presentation | Data                    | ----Translation of data between a networking service   |
+   |   |              |                         | and an application; including character encoding,      |
+   |   |              |                         | data compression and encryption/decryption.            |
+   | 5 | Session      | Data                    | ----Managing communication sessions, i.e., continuous  |
+   |   |              |                         | exchange of information in the form of multiple        |
+   |   |              |                         | back-and-forth transmissions between two nodes.        |
+   | 4 | Transport    | Segment, Datagram       | ----Reliable transmission of data segments between     |
+   |   |              |                         | points on a network, including segmentation,           |
+   |   |              |                         | acknowledgement and multiplexing.                      |
+   |---+--------------+-------------------------+--------------------------------------------------------|
+   | 3 | Network      | Packet                  | ----Structuring and managing a multi-node network,     |
+   |   |              |                         | including addressing, routing and traffic control      |
+   | 2 | Data Link    | Frame                   | ----Reliable transmission of data frames between two   |
+   |   |              |                         | nodes connected by a physical layer.                   |
+   | 1 | Physical     | Symbol                  | ----Transmission and reception of raw bit streams over |
+   |   |              |                         | a physical medium.                                     |
+
+   *Where is HTTP? Correlation with TCP/IP Model?*
+    //At the application layer.
+    //Defined in https://tools.ietf.org/html/rfc7230
+    https://stackoverflow.com/questions/38596488/in-which-layer-is-http-in-the-osi-model
+
+** HTTP/1.1 vs HTTP/2
+   HTTP/2 began as the SPDY protocol, developed primarily at Google with the intention of reducing web page load latency by using techniques such as compression, multiplexing, and prioritization.
+   + HTTP/1, TCP connection has to be break and remake multiple times on one page, whenever multiple GET methods are required.
+   + HTTP/1.1 assume a TCP connect should be kept on unless directly told to close, however, it has a natural bottleneck: Since multiple data packets cannot pass each other when traveling to the same destination, there are situations in which a request at the head of the queue that cannot retrieve its required resource will block all the requests behind it. This is known as *head-of-line (HOL) blocking*, and is a significant problem with optimizing connection efficiency in HTTP/1.1. Adding separate, parallel TCP connections could alleviate this issue, but there are limits to the number of concurrent TCP connections possible between a client and server, and each new connection requires significant resources.
+   + HTTP/2: the binary framing layer encodes requests/responses and cuts them up into smaller packets of information, greatly increasing the flexibility of data transfer.
+   https://www.digitalocean.com/community/tutorials/http-1-1-vs-http-2-what-s-the-difference
+
+   
+** Design pitfalls
+   + Provide alternatives: alternatives for non-text content.
+   + Allow text to resize: specify the font size in relative measurement such as percentage or ems
+   + Do not put text in graphics
+   + Try to use accessiility feature when creating HTML tables and forms. i.e. use the features from HTML 4.01+
+   + High contrast between foreground and background, should the image not load properly. 
+   //Government Accessibility Requirement: Section 508
+   + Design "above the fold": what would user see even when the site is folded, like a newspaper on the rack.
+     //Names&Logos, primary messages, theme indications, navigations, crucial actions, key infos, Ads.
+   + 16-bits monitors show rectangles while 24-bits monitors do not. The only solution is to make the pic transparent.
+
+** URL *percent encoding*
+   ナ -> "%e3%83%8a" == UTF-8 "\xE3\x83\x8A"
+
+* Chapter 2, HTML
+  [[./Cp2_BasicHTML01.html][Cp2_BasicHTML01]]
+
+| <b>      | Bold         text |
+| <strong> | Important    text |
+| <i>      | Italic       text |
+| <em>     | Emphasized   text |
+| <mark>   | Marked       text |
+| <small>  | Smaller      text |
+| <del>    | Deleted      text |
+| <ins>    | Inserted     text |
+| <sub>    | Subscript    text |
+| <sup>    | Superscript  text |
+//emphasized text is typically displayed in italic, 
+//strong text is typically displayed in bold.
+//However a screen reader might read the two tags differently.
+
+** HTML elements
+***   *empty elements* is elements without a closing tag
+    //in XHTML, empty elements need to be terminated.
+   + <br> (<br /> in XHTML) -- single line break
+   + <img> <img />
+   + <hr> (<hr /> in XHTML) -- horizontal rule
+     
+   | Type                  | Element(s)                                       |
+   |-----------------------+--------------------------------------------------|
+   | Headings              | h1, h2, h3, h4, h5, h6                           |
+   | Paragraphs            | p                                                |
+   | Block (long) quotes   | blockquote                                       |
+   | Preformatted text     | pre, code, kbd, var                              |
+   | Various list elements | ol, ul: li(item); dl: dt(terms), dd(description) |
+   | Horizontal rules      | hr                                               |
+   | Hyper link            | a(Attributes: download, href, rel)               |
+   | Address               | address                                          |
+   | abbr                  | abbreviation                                     |
+   | dfn                   | definition                                       |
+   | q                     | Short (inline) quotations                        |
+   [[./Cp2_dfn.html][Cp2_dfn]]
+
+*** *inline text elements* (presentational Elements, NOT ALLOWED in strict DTD, use CSS instead)
+   | Element | Description          | Alternative in CSS                              |
+   |---------+----------------------+-------------------------------------------------|
+   | b       | bold                 | font-weight: bold                               |
+   | big     | larger               | font-size: larger                               |
+   | center  | center               | text-align: center                              |
+   | font    | size,color,typeface  | font-family, font-size, color                   |
+   | i       | italic text          | font-style: italic                              |
+   | small   | smaller              | font-size: smaller                              |
+   | sub     | subscript            | font-size:smaller; vertical-align:sub           |
+   | sup     | superscript          | font-size:smaller; vertical-align:sup           |
+   | tt      | teletype;const-width | Use code, samp, kbd elements if appropriate,    |
+   |         |                      | Otherwise use a specific or generic fixed-width |
+   |         |                      | font. font-family: "Andale Mono", monospace;    |
+   
+*** Generic Elements (div and span)
+    <div>Generic block-level element</div>
+    <span>Generic inline element</span>
+    
+    With *element identifiers*: id and class attributes
+    //id and class can be used with nearly all (X)HTML elements, 
+    //In HTML 4.01, excepts:
+    //base, basefont, head, html, meta, param, script, style and title.
+    //In XHTML, the above elements are also included.
+    <ul>
+         <li>Joan: <span class="phone">999.8282</span></li>
+         <li>Lisa: <span class="phone">888.4889</span></li>
+    </ul>
+    
+*** Special Characters
+    Characters outside the scope of standard ASCII code have to be escaped.
+    + &copy;
+    + &#169;
+    [[./Cp2_BasicHTML02.html][Cp2_BasicHTML02]]
+    | Charter | Description              | Name     | Number |
+    |---------+--------------------------+----------+--------|
+    |         | Nonbreaking space        | &nbsp;   | &#160  |
+    | &       | Ampersand                | &amp;    | &#038  |
+    | '       | Apostrophe               | &apos;   | &#039  |
+    | <       | Less-than symbol         | &lt;     | &#060  |
+    | >       | Greater-than symbol      | &gt;     | &#062  |
+    |         | Copyright                | &copy;   | &#169  |
+    |         | Registered trademark     | &reg;    | &#174  |
+    | TM      | Trademark                | &trade;  | &#8482 |
+    |         | British Pound            | &pound;  | &#163  |
+    |         | Yen                      | &yen;    | &#165  |
+    |         | Euro                     | &euro;   | &#8364 |
+    |         | En-dash                  | &ndash;  | &#8211 |
+    |         | Em-dash                  | &mdash;  | &#8212 |
+    |         | Left curly single quote  | &lsquo;  | &#8216 |
+    |         | Right curly single quote | &rsquo;  | &#8217 |
+    |         | Left curly double quote  | &ldquo;  | &#8220 |
+    |         | Right curly double quote | &rdquo;  | &#8221 |
+    |         | Bullet                   | &bull;   | &#8226 |
+    | ...     | Horizon ellipse          | &hellip; | &#8230 |
+    
+    // or, since &#leq (U+2264), escape it use &#x2264;
+
+*** CDATA
+    *(Unparsed) Character Data*
+<script type="text/javascript"> 
+// <![CDATA[
+
+// ]]>
+</script> 
+
+*** ImageMap
+<img src="" width="" height="" alt="" usemap="#imageMap" />
+//or ismap which indicates a server-side imagemap
+<map name="imageMap">
+    <area shape="rect" coords="0,0,82,126" href="sun.htm" alt="Sun">
+    <area shape="circle" coords="90,58,3" href="mercur.htm" alt="Mercury">
+    <area shape="circle" coords="124,58,8" href="venus.htm" alt="Venus">
+</map>
+
+*** Basic Table Markup
+    [[./Cp2_BasicHTML02.html][Cp2_BasicHTML02]]
+    + column spans: <th colspan="2">TH</th>
+    + row spans:
+    + Cell padding: <table cellpadding="15"> ~p137
+    + Cell spacing: <table cellspacing="15"> ~p137
+      
+** Forms
+    <form action="/cgi-bin/basicForm01.pl" method="POST">
+    [[./Cp2_BasicHTML02.html][Cp2_BasicHTML02]]
+    *CGI (Common Gateway Interface)*
+    
+*** action 
+    //provides the URL to the "action page" that will be used to process the form
+    + .pl
+    + .php
+    + .asp (MS Active Server Pages)
+    + .jsp (JavaServer Pages)
+      
+*** method
+    
+    
+*** Entry Controls
+    [[./Cp2_BasicHTML02.html][Cp2_BasicHTML02]]
+    *Single Line completion*
+    <li><label for="form01"> TextEntry:</label> <input type="text" &name="nameInURL" value="defaultValue" size="25" maxlength="50" id="form01"/></li>
+
+    *password*
+    <input name="" type="password" value=""/>
+    
+    *submit and reset*
+    <p><input &name="" type="submit" &value="BottonName"/>
+    <input name="" type="reset" value="Reset"/></p>
+    
+    *Pull-down menues*
+    <form action="cgi-bin/basicForm01.pl" method="post">
+            <fieldset><label for="PullDown01">PullDownTest</label>
+                <select name="pd01" id="PullDown01">
+                    <option value="real">the fake might be real</option>
+                    <option value="true">the falsy might be true</option>
+                    <option >the words have no value</option>
+                    <option value="">the story has, but in vain</option>
+                </select>
+            </fieldset>
+            <input type="submit">
+        </form>
+        
+    *Scrolling menues*
+    <fieldset><label for="Scrolling02">Scrolling01</label>
+        <select name="pd02" size="3" multiple="multiple" for="Scrolling01">
+            <option value="real">the fake might be real</option>
+            <option value="true">the falsy might be true</option>
+            <option >the words have no value</option>
+            <option value="">the story has, but in vain</option>
+        </select>
+    </fieldset>
+    *Grouping menues*
+    <optgroup label="groupName">
+    </optgroup>
+    *File uploading*  use enctype to control encoding.
+    <form action="" method="post" enctype="multipart/form-data">
+        <p><label for="fileUp01">Send a file: </label></p><br/>
+        <input type="file" name="theFile" id="fileUp01"/></p>
+    </form>
+    *Hidden controls*
+    //can be used to achieve some special implementations 
+** XHTML Basic
+*** XHTML Syntax Convensions
+   + Element and attribute names must be lowercase
+   + All elements must be closed(terminated)
+   + Empty elements must be terminated too
+   + Attribute values must be in quotation marks
+   + All attributes must have explicit attribute values (with no *attribute minimization*)
+   + Elements must be nested properly
+   + Always use character entities for special characters
+   + Use *id* instead of *name* as an identifier
+   + Scripts must be contained in a CDATA section
+   + Follow additional nesting restrictions:
+     - basic HTML nesting restrictions
+     - a must not contain other a elements
+     - pre must not contain the img, object, big, small, sub or sup elements
+     - button must not contain the input, select textarea, label, button, form, fieldset, iframe or isindex elements
+     - label must not contain other label elements
+     - form must not contain other form elements
+*** Namespace and language requirements
+    *DTD Lists*
+    //Check w3.org valid DTD list, copy and paste it.
+    + HTML 5+: <!DOCTYPE HTML>
+    + HTML 4.01 Strict: <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+    *XHTML*
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"></html>
+    //for more language code, check iso639-2/langcodes.html
+    
+    *Validate the document type*
+    search for w3 validate or use plugin
+
+* Chapter 3, CSS
+  
+** Reference:
+   + CSS levels
+     [[https://www.w3.org/TR/CSS1/][CSS Levels W3Org]]
+   + Designs
+     //CSS Zen Garden
+   + Diana Smith
+     
+** Some Basics:
+*** importance level, Overriding
+    + !important is highest
+    + a more specific selector is with higher privilage.
+    + See the following, *** A Few More Selector Types. 
+   //reader style sheets may override the default ones
+   
+   
+*** Units of measurement
+**** Font-size
+    + Absolute units:
+      - pt (1 points= 1/72 inch in CSS 2.1)
+      - pc (1 pica = 12 points)
+      - mm millimeters
+      - cm centimeters
+      - inches
+    + Relative units: (em and % are recommended)
+      - em (a unit of measurement equal to the current height of the font in nominal points or inches)
+      - ex (approximately the height of a lowercase "x")
+      - px (pixel, considered relative because it varies with display resolution)
+      - % (percentage values)
+    + Keywords: font-size: medium, xx-small, ..., xx-large
+      //Larger and smaller.
+      //The keywords shift size of the text relative to the *parent element*.
+      //The keywords protect agains illegible type (e.g. smaller than 9 pixels)
+      //However also imprecise and unpredictable
+      
+      Examples:
+      body { font-size: small; }
+      h1 { font-size: 1.5em; } //Relative to its parent element (body)
+      
+**** Font-weight
+     *normal*, *bold*, bolder, lighter, 100, 200, ..., 900, inherit
+     
+**** Font-style
+     normal, italic, *oblique*, inherit
+     //The italic calls a separate font, while oblique takes the normal font design and slant it.
+
+**** Font-variant
+     normal, small-caps, inherit
+**** Line-height 
+     //the minimum line height 
+     p { line-height: 2em; }
+**** Indents
+     p#1 {text-indent: 2em; }
+**** text-align 
+     left, right, center, justify, inherit
+**** Decorations
+     none, underline, overline, line-through, blink, inherit
+     p { text-decoration: underline;}
+
+*** A Few More Selector Types
+    + Descendant selectors
+      - li em {}
+      - h1 em, h2 em {}
+      - div.row2>*
+    + ID selectors
+      - #catalog1234 {}
+      - li#catalog1234 {}
+      - #sidebar li { margin-left: 10px;}
+    + Class selectors
+      - p.special {}
+      - .special {}
+      - *.special {}
+    + Universal Selector
+      - * {}
+      - #intro * {}
+        
+*** Specificity, i.e. The Priority
+**** The calculation
+     //Start at 0, add 1000 for style attribute, add 100 for each ID, add 10 for each attribute, class or pseudo-class, add 1 for each element name or pseudo-element.
+     A: h1
+     B: #content h1
+     C: <div id="content"><h1 style="color: #ffffff"</h1></div> 
+     //The specificity of A is 1 (one element)
+     //The specificity of B is 101 (one ID reference and one element)
+     //The specificity of C is 1000 (inline styling)
+**** If equal, the latest rule counts
+**** ID selectors have a higher specificity than attribute selectors 
+    div#a {background-color: green;}
+    #a {background-color: yellow;}
+    div[id=a] {background-color: blue;}
+    //Result: green
+**** Contextual selectors are more specific than a single element selector
+    //i.e. the inline <style>#content h1{}</style> weight the most.
+    //But some minor bug exist, e.g. the priority does not take effect until server reload.
+**** A class selector beats any number of element selectors 
+    //a class selector such as .intro beats h1, p, div, etc:
+    .intro {background-color: yellow;}
+    h1 {background-color: red;}
+**** The universal selector and inherited values have a specificity of 0 
+    //*, body * and similar have a zero specificity. Inherited values also have a specificity of 0.
+    
+*** RGB color
+    #RRGGBB
+    
+*** background
+    body{
+        background-image: url(/img/bgPic01Gears.png);
+        background-size: 30em;
+        background-repeat: repeat-x repeat-y;
+        background-color: khaki;
+        background-attachment: fixed;
+    }
+    or use 
+    background{ background-colr background-image ...}
+    
+*** Import css
+    <link rel="stylesheet" herf="" type="text/css" />
+    ----------------------------------------
+    <style type="text/css">
+        @import url("stylesheet.css");
+        p{ font-face: Verdana;}
+    </style>
+    //The later one can be used to import modular css
+    
+    
+** The BOX
+   //Padding, Borders and Margins
+   1. content area (height, length)
+   2. inner edges
+   3. padding (one value) or (t/b r/l) or (t r/l b) or (top right bottom left);
+   4. border (style(none, dotted, dashed, solid, double, groove, ridge, inset, outset), width)
+   5. margin
+   6. outer edge
+   //From inside to outside
+   
+*** 5.margin
+    1. the margin collapse, the bigger value of the adjacent applies to the two.
+    2. negative margins push elements together.
+       body {
+           margin-left:12%;
+           margin-right:12%;
+           font: 76% Verdana, sans-serif;
+           width: device-width;
+       }
+       div.row1 {
+           margin: 3em 0; /* T/B L/R */
+       }
+       
+**** display
+     .class { display=none/inline/block/inline-block/}
+     //visibility: hidden makes the element invisible, but holds the space
+     //display:none removes the spaces.
+     
+*** Pseudo-elements (疑似要素)     
+    + p::first-line { color ::#ff0000; font-variant: small-caps; }
+    + p::first-letter {}
+    + h1::before{ content: url(pic.png); }
+    + h1::after { content: url(pic.gif); }
+    + ::selection { color: red; background: yellow; }
+
+*** Pseudo-classes (疑似クラス)
+    + a:link
+    + a:visited
+    + a:hover  //MUST come after a:link and a:visited in the CSS definition in order to be effective.
+    + a:active //MUST come after a:hover in the CSS definition in order to be effective.
+    + input:focus //input:focus selects the <input> element that has focus
+    + element:first-child
+    + :lang
+    + :nth-child(2n+1)
+    + :target
+    + input:valid
+    + input:invalid <input type="email">
+
+
+** Floating
+   float {left|right|none|inherit}
+   //parent div as class clearfix
+   .clearfix::after{
+       content: "";
+       display: block;
+       clear: both;
+    }
+    
+*** More Floating:
+    <p><span class="disclaimer">Disclaimer: content</span>text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text</p>
+    span.disclaimer {
+        float: right;
+        margin: 1.5 em;
+        width: 10em;
+        color: #FFF;
+        background-color: #9D080D;
+        padding: 0.5em;
+    }
+    p {
+        padding: 1.2em;
+        background-color: #FFF799;
+        border: 2px solic #6C4788;
+    }
+    
+    //Some Rules of Thumb:
+      + Always provide a width for floated text elements.
+      + Floated inline elements behave as block elements.
+      + Elements do not float higher than their reference in the source.
+
+*** Positioning
+    + static (default, not affected by the top, bottom, left, right properties)
+    + *fixed* (to the *screen*)
+    + relative (to the reference point)
+    + absolute (in the last parent that specified relative, absolute or fixed) 
+      em { position: absolute; width: 10em; top: 2em; left: 0em; }
+      //Element shows on the top left corner of the *document or last parent element*.
+     
+    //Fixed fix to the screen/window.
+    //Absolute requires a parent with none default position specified.
+   
+*** z-index, Stacking order
+    {z-index: 10;} is on top of {z-index 1;}
+    
+   
+** Page Layout with CSS 
+   
+*** Liquid Layout
+    //specify width in percentage values, or not specify at all.
+    div#main { width: 70%; margin-right: 5% float: left; background: yellow;}
+    div#extras { width: 25%; float: left; background: orange;}
+    
+*** Fixed Layout
+    //specify a fixed width, use the extra for non-critical information;
+    #wrapper {*width: 750px*; position: absolute; margin-left: auto; margin-right: auto; border: 1px solid black; padding: 0px;} /*parent element*/
+    #extras {position: absolute; top:0px; left:0px; *width: 200px*; background: orange;}
+    #main {*margin-left: 225px*; background-color: yellow; }
+
+*** Elastic Layouts
+    //Disadvantage: image cannot rescale along with the text.
+    text size: 76%;
+    page: 40em;
+    
+*** Zoom Layout ~p317
+    //Good in Zooming. Expecially good for low-vision users.
+    + A single column layout.
+    + Extremely large type, set in em.
+    + High-contrast text and background.
+    + Simplified navigation that appears at the beginning of the document.
+    + Some visual elements such as color and simple graphics to create an experience consistent with that of the site's normal presentation.
+      //Expert reference: Joe Clark.
+      
+    
+    
+** Style Properties for Tables
+*** borders
+    + border-collapase: separate|collapse;
+    //If separate,
+         + border-spacing: 15px(width) 3px(height);
+           
+    + empty-cells: show|hide
+      
+*** Changing List Bullets and Numbers:
+    + list-style-type: 
+      //none|disc|circle|square|decimal|decimal-leading-zero|lower-alpha|upper-alpha|
+      //lower-latin|upper-latin|lower-roman|upper-roman|lower-greek
+    + list-style-position
+      //inside|outside
+    + list-style-image:url();
+      
+*** Use Lists for Navigation
+    <ul id="nav">
+    <li><a href="#">title1</a></li>
+    <li><a href="#">title2</a></li>
+    <li><a href="#">title3</a></li>
+    </ul>
+**** Inline list items 
+     ul#nav {
+         list-style-type: none;
+         margin: 0px;
+         padding: 0px;
+     }
+     //Method1:
+     ul#nav li {
+         display: inline;
+     }
+     ul#nav li a { /*select only links in the "nav" list*/
+         padding: 5px 20px;
+         margin: 0px 2px;
+         border: 1px solid #FC6A08;
+         background-color: #FCA908;
+         text-decoration: none;
+         text-align: center;
+         color: black;
+     }
+
+     //Method2:
+     ul#nav li {
+         float: left;
+         margin: 0 2px;
+         padding: 0;
+     }
+     ul#nav li a { /*select only links in the "nav" list*/
+         display: block;
+         width: 100px;
+         height: 28px;
+         line-height: 28px;
+         border: 1px solid #FC6A08;
+         background-color: #FCA908;
+         text-transform: uppercase;
+         text-decoration: none;
+         text-align: center;
+         color: black;
+     }
+    
+     
+** Other keywords:
+   + progressive image loading
+
+
+** Summary and suggestions:
+   + Font: Verdana, for readbility
+   + "@" at rules, or the *conditional group rules*
+     //@media print{
+             #nav { display: none; }
+       }
+     //for *@Keyframes*, check [[https://www.w3.org/TR/css-animations-1/][CSS-Animations-1]]
+
+     
+*** The art of box
+   + border-radius: lt-h, rt-h, rb-h, lb-h / lt-v, rt-v, rb-v, lb-v;
+     //[[https://stackoverflow.com/questions/38493828/border-radius-with-division][stackoverflow, Border-radius with division]]
+   + box-shadow: 6px -11px 20px 1px red, -15px -15px 5px-10px blue, insert 5px 5px 35px 10px green;
+   + transform: rotate(-45deg)
+     //transform: scale(0.7, 1.3)
+     //transform: skew(25deg, 30deg)
+     //transform: perspective(10px) rotateY(5deg)
+   + linear-gradient / radial-gradient
+     //background-image: linear-gradient(0deg, blue, transparent 60%),
+     //radial-gradient(circle at 70% 30%, purple, transparent 40%);
+   + overflow: hidden;
+    
+
+* Chapter 4, JavaScript
+//JavaScript Basic, Client-Side JavaScript.
+
+** Some Basics
+*** Naming Convensions
+   + Must begin with a letter, dollar sign or an underscore. Must NOT start with a number.
+   + Must NOT use dash or period in a variable name.
+   + Better NOT to use the *reserved words*.
+   + All variales are case sensitive.
+   + Meaningful variable names.
+   + use Camel Case.
+   
+*** Type Checking
+   //TODO
+     
+*** Arrays
+   var colors;
+   colors = [`white`, `black`, `custom`];
+   //Usage:
+   console.log(colors[0]);
+   
+*** Handy Functions
+    + window.XMLHttpRequest
+
+      
+** Chapter 02, Lexical Structure
+*** Characters
+   + Unicode char set, version 2.1 or later.
+   + Case Sensitive (while HTML is case-nonsensitive)
+   + Ignore spaces between tokens in programs. Or most of the time also ignore line breaks.
+     //The following characters are recognized as space: 
+     //space(\u0020), tab(\u0009), vertical tab(\u000B), form feed(\u000C), nonbreaking space(\u00A0), byte order mark(\uFEFF), and any characters in Unicode category Zs.
+     //Some other characters as line terminators:
+   + "café" === "caf\u00e9" //True
+   + However, JavaScript will not try to normalize representations. In case not normalized, \u0301 and \u00E9, though presenting the same character, would be treat as not equal by JavaScript.
+
+*** Literals
+    + 12
+    + 1.2
+    + "hello world"   //A string of text
+    + 'hi'            //Another string
+    + true            //A Boolean value
+    + /javascript/gi  //A regex literal
+    + null            //Absence of an object
+    + { x:1, y:2 }    //An object initializer
+    + [1, 2, 3, 4, 5] //An array initializer
+
+*** Identifers and Reserved Words
+    //A legal *identifier* start with a letter, an underscore(_), or a dollar sign($), or a dollar sign($). Subsequent characters can be letters, digits, underscores, or dollar signs.
+    
+*** Optional Semicolons
+    //Two Exceptions:
+
+    //the linebreak after return, break, continue always interpreted as semicolon.
+    return
+    true;
+    //is always parsed as:
+    return; true;
+
+    x
+    ++
+    y
+    //is always parsed as:
+    x; ++y;
+
+    
+** Chapter 03, Types, Values and Variables
+   Object Types:
+   + primitive (numbers, strings of text, booleans, *null* and *undefined*)
+   + object 
+   + function
+     
+*** Numeric literal ~p34
+    //No distinguish between int and float point
+    //When overflow, returns *Infinity* or *-Infinity*
+    //When underflow, returns 0 or *-0* if src is negative.
+    //Divison by zero, divide infinity by infinity, root a negative number, returns *NaN*, i.e. Not a Number.
+    *Special:*
+      + 0 === -0             //true.
+      + 1/zero === 1/negz    //false, since infinity does not equal to -infinity.
+
+**** Binary Folating-Point and Rounding Errors
+     Follows the *IEEE-754 floating-point representation*
+     //which can exactly represent 1/2, 1/8, 1/1024, .etc
+     //however cannot persicely represent decimal fractions such as 0.1 
+     .3 - .2 == .2 - .1 //false
+     
+*** Regex
+    //RegExp();
+    //Adopted the syntax of Perl
+
+*** Immutable variables
+    
+*** Default type convension
+    empty string is false;
+    0, -0, NaN is false;
+    Infinity, -Infinity or number(?) is true;
+    ----------------------------------------
+    null, undefined is false;
+    object is true;
+    ----------------------------------------
+    null==undefined
+    "0"==0
+    0==false
+    "0"==false
+
+    
+** Some Tricks
+*** simple input check
+    <input type="submit" value="submit" onclick="return checkForm();"/>
+    <script>
+        function checkForm(){}
+    </script>
+    
+* Chapter 5, JSP
+** KeyWords
+*** JSP Implicit Objects   
+    + request
+    + response
+    + out
+    + session
+      //the *HttpSession* object associate with the request.
+    + application
+      //the *ServletContext* object associated with the application context.
+    + config
+      //the *ServletConfig* object associated with the page.
+
+      
+*** EL (Expression Language)
+    *EL Implicit Objects*
+    + pageScope
+    + requestScope
+    + sessionScope
+    + applicationScope
+    + pageContext
+    + param
+    + paramValues
+    + header
+    + headerValues
+    + initParam
+    + cookie
+    
+*** JSTL (JavaServer Pages Standard Tag Library)
+    + <c:forEach>
+    + <j>
+    + <j>
+
+      
+** Some Basic
+   
+*** Import
+    <%@ page language="java" contentType="text/html; charset=UTF-8">
+    <%@ page import="java.util.*">
+    <%@ page import="java.io.*, ccdebug.*">
+    
+* Chapter 10, the Grand Picture
+** the evolution of the Web model 
+   MVC - Service - DAO
+   //Maybe: Servlet == Controller, then it calls the applications on the server, which is the service layer. 
+   //How does servlet intereact with the application?
+   //Who handles the View?
+   //Who handles the Data?
+
+   For example, The data provider provide a new API for a specific kend of users(e.g. IOS user).
+   Then the DAO may be built on a specific platform.
+   
+** MVC
+   + Controller
+     //e.g. Servlet, Action
+   + Entity
+     //Java beans
+     //VO(View Object) BO(Business Object) PO
+   + Service 
+     //Interface and implementation
+   + DAO
+
+
+   
+* Chapter 20, BootStrap
+** Basic
+   //12 columns, unlimited rows.
+   //class= *"col-sizeCode-numberOfCols"*
+   <div class="row">
+       <div class="col-md-6">
+           <h1>1</h1>
+       </div>
+       <div class="col-md-6">
+           <h1>2</h1>
+           <button type="button" class="btn btn-primary">Primary</button>
+       </div>
+   </div>
+   
+* Chapter 30, HTML5 Canvas
+  
+** Canvas Objects:
+   + Rectangles
+   + Lines
+   + Arcs/Circles
+   + Bezier Curves
+   + Images
+   + Text
