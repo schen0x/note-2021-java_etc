@@ -21,6 +21,7 @@ public class Cp21_CyclicBarrier {
             removeAnimals();
             c1.await();
             cleanPen();
+            // c1.await(); // legal, canbe reused. but we wrote an barrierAction in c2 this time.
             c2.await();
             addAnimals();
         } catch (InterruptedException | BrokenBarrierException e) {

@@ -1780,6 +1780,7 @@ System.out.print(s);
 ** Regular Expression p372
 //the *Quantifiers*, p374.
 | Greedy | Reluctant | Possessive | Matches                                 |
+|--------+-----------+------------+-----------------------------------------|
 | X?     | X??       | X?+        | X, one or none                          |
 | X*     | X*?       | X*+        | X, zero or more                         |
 | X+     | X+?       | X++        | X, one or more                          |
@@ -1787,6 +1788,26 @@ System.out.print(s);
 | X{n,}  | X{n,}?    | X{n,}+     | X, at least n times                     |
 | X{n,m} | X{n,m}?   | X{n,m}+    | X, at least n but not more than m times |
    
+//the *Formatter* conversions
+|---+-----------------------------------------+--------------|
+| d | Integral(as decimal)                    |              |
+| c | Unicode character                       |              |
+| b | Boolean value                           |              |
+| s | String                                  |              |
+| f | Floating point                          |   179.543000 |
+| e | Floating point (in scientific notation) | 1.795430e+02 |
+| x | Integral (as Hex)                       |              |
+| h | Hash code (as Hex)                      |              |
+| % | % Literal                               |              |
+
+//the *regex* p372
+| \s | a white space char           |
+| \S | a non-~                      |
+| \d | a numeric digit              |
+| \w | a word character[a-zA-Z_0-9] |
+| \W | [^\w]                        |
+|    |                              |
+
 #+BEGIN_SRC java
 System.out.println("+911".matches("(-|\\+)?\\d+")); // true
 //------------
@@ -2083,7 +2104,7 @@ represents the minutes using two digits.
 
 
 * Chapter 17, ? Arrays
-* Chapter 18, ? Containers in Depth
+* Chapter 18, Containers in Depth
 * Chapter 19, I/O
 ** the *File* class
    //a or a set of "FilePath". to list all filenames, use list() which returns a String[].
@@ -2864,6 +2885,8 @@ updated atomically
 
 **** CyclicBarrier
      [[./Cp21_CyclicBarrier.java]]
+     CyclicBarrier(int parties, Runnable barrierAction)
+     //Creates a new CyclicBarrier that will trip when the given number of parties (threads) are waiting upon it, and which will execute the given barrier action when the barrier is tripped, performed by the last thread entering the barrier.
 
 **** Fork/Join Framework, recursiveAction, recurviceTask<V>
      //A ForkJoinTask is a thread-like entity that is much lighter weight than a normal thread. Huge numbers of tasks and subtasks may be hosted by a small number of actual threads in a ForkJoinPool, at the price of some usage limitations.
@@ -2991,6 +3014,20 @@ updated atomically
    
 
    
+   
+* Chapter 24, Collections revisit (ocpjp)
+** Queue
+   //The Queue interface specifies that add() will throw an IllegalStateException if no space is currently available (and otherwise return true ) while offer() will return false if the element couldn't be inserted due to capacity restrictions.
+
+*** LinkedList 
+    //Linked structures are possibly the worst structure to iterate with a cache miss on each element. On top of it they consume way more memory.
+    //allow null values
+*** ArrayDeque
+    //does not allow null values
+    
+** sort() and binarySearch()
+   //both use Comparator
+   //binarySearch requires the list been sorted, otherwise returns uncertain result.
 
 * Chapter 30, Designing Patterns 
 ** Factory getInstance method
@@ -3278,15 +3315,16 @@ updated atomically
          Collectors.partitioningBy(s -> s.length() <= 5)
      ); //{false=[], true=[a, b, c]}
      
-
+**** trivia
+     [[./Cp31_StreamReduceAndTrivia.java]]
+     + stream cannot be reused after an intermediate or terminal operation, i.e a reduce() call.
+       //A stream should be operated on (invoking an intermediate or terminal stream operation) only once. A stream implementation may throw IllegalStateException if it detects that the stream is being reused.
+     + reduce() returns element of the Identity type, while if that is not provided, returns an Optional element.
      
-
-
-     
-     
-** List.
+** List
    + boolean contains(Object o)
-*** ? removeIf < ? super E > in function default boolean removeIf(Predicate<? super E> filter) filter - a predicate which returns true for elements to be removed. [[./Cp21_AvoidConcurrentModificationException.java::16][Cp21_AvoidConcurrentModificationException::16]]
+*** removeIf < ? super E > in function 
+    default boolean removeIf(Predicate<? super E> filter) filter - a predicate which returns true for elements to be removed. [[./Cp21_AvoidConcurrentModificationException.java::16][Cp21_AvoidConcurrentModificationException::16]]
 ** java.time.LocalDate.
    //LocalDate object is *immutable*, while Calendar is mutable.
    + *static of(2015,0,1)* //throw DateTimeException, which is RunTimeException.
