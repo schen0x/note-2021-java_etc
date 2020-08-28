@@ -2,10 +2,6 @@
 //Thinking in Java, by Bruce Eckel, 1033 pages
 //OCP Oracje Certified Professional Java SE 8 Programmer II: Study Guide, 671 pages
 ==============================================
-* TODO
-  + ocpjpg etc.
-
-
 * FAQ
 ** Eclipse hotkeys
    | Command                             | Key(O=Shift+o)  |
@@ -228,7 +224,6 @@ The class Object does not itself implement the interface Cloneable, so calling t
 *** apache Commons Lang library
     [[./Cp0_reflectionToString.java][Cp0_reflectionToString]]
 
-    
 *** null pointer    
      + null char print nothing, 
      + null String print literal "null", 
@@ -237,6 +232,9 @@ The class Object does not itself implement the interface Cloneable, so calling t
      + call on nullString.length() throws the exception
      [[./Cp0_NullPointerExceptions.java]]
 
+*** exceptionWhinLambda
+    [[./Cp0_ExceptionWithinLambda.java]]
+    
 ** System Properties
    [[./Cp0_SystemProperties.java][Cp0_SystemProperties]]    
    
@@ -1806,7 +1804,6 @@ System.out.print(s);
 | \d | a numeric digit              |
 | \w | a word character[a-zA-Z_0-9] |
 | \W | [^\w]                        |
-|    |                              |
 
 #+BEGIN_SRC java
 System.out.println("+911".matches("(-|\\+)?\\d+")); // true
@@ -2461,6 +2458,9 @@ system such that no other processes could read/write to it until the program is 
    + public final Class<E> getDeclaringClass()
    + public static <T extends Enum<T>> T valueOf(Class<T> enumType, String name)
    + protected final void finalize()
+
+** trivia
+   [[./Cp22_MethodsInEnumElements.java]]
 
 * Chapter 20, Annotations
   //Annotations is also known as *metadata*. It provide a formalized way to add information to the code so that the data is easily accessable at some later point.
