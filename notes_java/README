@@ -2246,6 +2246,7 @@ system such that no other processes could read/write to it until the program is 
       + reset()
 
       *skip(long n)*
+      [[./Cp19_Skip.java]]
       //ABCD -> read(): A -> skip(2); -> read(): D
       //similar to read(byte[] b), or read(); 
       //but faster.
