@@ -3,32 +3,40 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class Cp13_TryWithResources {
+    class Cp13_TryWithResourcesAutoClosable implements AutoCloseable {
+        @Override
+        public void close() throws Exception {
+            System.out.println("Auto closing happens before catch block");
+        }
+    }
+
     private void run(Path path1, Path path2) throws IOException {
         try (BufferedReader in = Files.newBufferedReader(path1); BufferedWriter out = Files.newBufferedWriter(path2)) {
         } catch (IOException e) {
         }
-        try (Scanner s = new Scanner(System.in)) {
-            s.close();
+        try (Scanner s = new Scanner(System.in);
+                Cp13_TryWithResourcesAutoClosable x = new Cp13_TryWithResourcesAutoClosable();) {
+            throw new RuntimeException("msg");
         } catch (Exception e) {
+            System.out.println(e.getMessage());
         } finally {
-            // ! s.close(); //DOES NOT COMPILE
+            System.out.println("finally");
         }
 
-        // though catch/finally could be omitted, 
+        // though catch/finally could be omitted,
         // IOException must be thrown at the parent method.
-        try (BufferedReader in = Files.newBufferedReader(path1); BufferedWriter out = Files.newBufferedWriter(path2)) {
-        }
+        // try (BufferedReader in = Files.newBufferedReader(path1); BufferedWriter out =
+        // Files.newBufferedWriter(path2)) {
+        // }
     }
 
     public static void main(String[] args) throws IOException {
         Cp13_TryWithResources x = new Cp13_TryWithResources();
-        Object o = null;
-        Path path1 = (Path) o;
-        // Path path2 = null;
-        x.run(path1, path1);
+        x.run(Paths.get("no"), Paths.get("no"));
     }
 }
 

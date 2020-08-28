@@ -63,6 +63,7 @@
     //T is the type of input to the function
     //R is the type of return of the function
     [[./Cp0_DoubleColonOperatorInJava8.org]]
+    [[./Cp0_DoubleColonOperatorExample2.java]]
     
 ** Fields initialization orders
    [[./Cp0_FieldsInitializationOrder.java][Cp0_FieldsIniatializationOrder]]
@@ -1063,6 +1064,7 @@ To manipulate objects, C/C++ use &* pointers, which is treated as special object
    //then the code is not accessable outside the scope.
    
 ** Anonymous inner classes
+   [[./Cp11_A_PredicateImpl.java]]
    //inner class inside a method (an implementation of the abstract method?)
    [[./Cp11_InnerInMethod.java][Cp11_InnerInMethod]] //this is already anonymous inner? 
    Temp, Broken: [[./Cp11_AnonymousInner.java][Cp11_AnonymousInner]] 
@@ -2088,10 +2090,8 @@ represents the minutes using two digits.
      //! listB.add(new Exception()); //do no compile!
      //the aim was to allow user to pass in a varities of list with less restrictions, without violating type safety.
      //Hence, we can only add element that is the *child* of IOException, in the meanwhile the destination container could have less constraint e.g., List<Exception>, or List<Object>.
-     //widd
-
+     //keywords: *PECS(Producer Extends Consumer Super)*
      
-
 **** Wildcard Capture and Helper Methods
      [[./Cp16_WildcardCapture.java]]
 

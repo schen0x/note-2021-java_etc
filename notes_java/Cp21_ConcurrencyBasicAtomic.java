@@ -20,7 +20,8 @@ public class Cp21_ConcurrencyBasicAtomic {
         try {
             service = Executors.newFixedThreadPool(20);
             for (int i = 0; i < 100; i++)
-                service.submit(() -> manager.incrementAndReportAtomic());
+                service.submit(() -> manager.incrementAndReportAtomic()); 
+                // important: the output order is not guaranteed.
         } finally {
             if (service != null) {
                 service.shutdown();
