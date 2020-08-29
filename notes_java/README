@@ -236,6 +236,16 @@ The class Object does not itself implement the interface Cloneable, so calling t
 *** exceptionWhinLambda
     [[./Cp0_ExceptionWithinLambda.java]]
     
+*** generic, type casting
+    [[./Cp0_GenericFunctionAutoboxing.java]]
+*** method reference on instance
+    [[./Cp0_MethodReferenceGetterAsFunctionBean.java]]
+    //four types of method reference:
+      + ClassName::staticMethodName
+      + instance::instanceMethodName
+      + ClassName::instanceMethodName //this is important, take an incoming instance as a param
+      + ClassName::new
+
 ** System Properties
    [[./Cp0_SystemProperties.java][Cp0_SystemProperties]]    
    
