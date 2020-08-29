@@ -248,6 +248,8 @@ The class Object does not itself implement the interface Cloneable, so calling t
 
 *** primitive stream init trivia
     [[./Cp0_PrimitiveStreamTrivia.java]]
+*** stream chaining trivia (java.lang.IllegalStateException: stream has already been operated upon or closed)
+    [[./Cp0_StreamChainingTrivia.java]]
 ** System Properties
    [[./Cp0_SystemProperties.java][Cp0_SystemProperties]]    
    
@@ -374,7 +376,6 @@ To manipulate objects, C/C++ use &* pointers, which is treated as special object
    1. Before the class/method
    2. more about @tags in *annotation*.
    3. some tags: @author, @version, @param, @return, @throws(check later), @deprecated  
-      
       
 * Chapter 4. Operators  
 ** *import static*
