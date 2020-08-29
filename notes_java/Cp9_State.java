@@ -1,25 +1,25 @@
-class Alarm {
+class Cp9_State_Alarm {
     protected void ring() {
     }
 }
 
-class AlarmEmergency extends Alarm {
+class Cp9_State_AlarmEmergency extends Cp9_State_Alarm {
     protected void ring() {
         System.out.println("Emergency");
     }
 }
 
-class AlarmOff extends Alarm {
+class Cp9_State_AlarmOff extends Cp9_State_Alarm {
     protected void ring() {
         System.out.println("AlarmOff");
     }
 }
 
-class AlarmState {
-    private Alarm alarm00 = new AlarmOff();
+class Cp9_State_AlarmState {
+    private Cp9_State_Alarm alarm00 = new Cp9_State_AlarmOff();
 
     public void alarmChangeState() {
-        alarm00 = new AlarmEmergency();
+        alarm00 = new Cp9_State_AlarmEmergency();
     }
 
     public void alarmRing() {
@@ -29,7 +29,7 @@ class AlarmState {
 
 public class Cp9_State {
     public static void main(String[] args) {
-        AlarmState alarmState = new AlarmState();
+        Cp9_State_AlarmState alarmState = new Cp9_State_AlarmState();
         alarmState.alarmRing();
         alarmState.alarmChangeState();
         alarmState.alarmRing();

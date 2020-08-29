@@ -4,8 +4,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-class test2 implements Runnable {
-
+class Cp21_ConcurrentModificationExceptionNotGuaranteed implements Runnable {
     @Override
     public void run() {
         List<Integer> l = new ArrayList<>();
@@ -20,7 +19,7 @@ class test2 implements Runnable {
     public static void main(String[] args) throws InterruptedException {
         ExecutorService e = Executors.newFixedThreadPool(3);
         try {
-            e.execute(new test2());
+            e.execute(new Cp21_ConcurrentModificationExceptionNotGuaranteed());
         } finally {
             e.shutdown();
             e.awaitTermination(100, TimeUnit.MICROSECONDS);

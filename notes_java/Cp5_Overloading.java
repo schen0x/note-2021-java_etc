@@ -1,9 +1,9 @@
-class ClassTest{
+class Cp5_Overloading_Base{
     int i = 0;
-    ClassTest(){ //constructor
+    Cp5_Overloading_Base(){ //constructor
 	i = 1;
     }
-    ClassTest(int j){ //overload constructor
+    Cp5_Overloading_Base(int j){ //overload constructor
 	i = j;
     }
     public void method(){ //method
@@ -17,10 +17,10 @@ class ClassTest{
 }
 public class Cp5_Overloading{
     public static void main (String[] args){
-	ClassTest a = new ClassTest();
+	Cp5_Overloading_Base a = new Cp5_Overloading_Base();
 	a.method();
 	a.method("rock");
-	ClassTest b = new ClassTest(12);
+	Cp5_Overloading_Base b = new Cp5_Overloading_Base(12);
 	b.method();
 	b.method("rock");
     }

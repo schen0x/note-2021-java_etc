@@ -1,7 +1,7 @@
-class AClass{
-    private AClass(){}
-    static AClass makeAClass(){
-	return new AClass();
+class Cp7_Private_AClass{
+    private Cp7_Private_AClass(){}
+    static Cp7_Private_AClass makeAClass(){
+	return new Cp7_Private_AClass();
     }
 }
 public class Cp7_Private{
@@ -15,7 +15,7 @@ public class Cp7_Private{
     */
 	
     public static void main (String[] args){
-	AClass x = AClass.makeAClass();
+	Cp7_Private_AClass x = Cp7_Private_AClass.makeAClass();
 	System.out.println(x);
     }
 }
