@@ -16,7 +16,8 @@ class Cp0_StreamChainingTrivia_bean {
 public class Cp0_StreamChainingTrivia {
     public static void main(String[] args) {
         Stream<Cp0_StreamChainingTrivia_bean> stream =Stream.of(new Cp0_StreamChainingTrivia_bean[] { new Cp0_StreamChainingTrivia_bean("a"), new Cp0_StreamChainingTrivia_bean("b") });
-        stream.peek(Cp0_StreamChainingTrivia_bean::printName); // 1. do nothing
+
+        //! stream.peek(Cp0_StreamChainingTrivia_bean::printName); // 1. do nothing
         // 2. but it throws exception later, if the stream been called again.
         // to be specific, it throws:
         // java.lang.IllegalStateException: stream has already been operated upon or closed
