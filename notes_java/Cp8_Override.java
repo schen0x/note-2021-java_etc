@@ -1,4 +1,4 @@
-class Lisa {
+class Cp8_Override_Lisa {
     void method(String str){
 	System.out.println(str);
     }
@@ -6,7 +6,7 @@ class Lisa {
 	System.out.println(i + i);
     }
 }
-class LisaOverride extends Lisa {
+class Cp8_Override_LisaOverride extends Cp8_Override_Lisa {
     //@Override 
     void method(char c){
 	System.out.println("char");
@@ -15,7 +15,7 @@ class LisaOverride extends Lisa {
     
 public class Cp8_Override{
     public static void main (String[] args){
-	LisaOverride x = new LisaOverride();
+	Cp8_Override_LisaOverride x = new Cp8_Override_LisaOverride();
 	char c = 'C';
 	int i = 9;
 	x.method(c);

@@ -1,23 +1,23 @@
 import java.io.IOException;
 
 @SuppressWarnings("all")
-class TestMyThrowable extends Throwable {
-    TestMyThrowable() {
+class Cp13_WrappedException_TestMyThrowable extends Throwable {
+    Cp13_WrappedException_TestMyThrowable() {
         super();
     }
 
-    TestMyThrowable(String message, Throwable cause) {
+    Cp13_WrappedException_TestMyThrowable(String message, Throwable cause) {
         super(message, cause);
     }
 }
 
 
-class WrappedExceptions {
+class Cp13_WrappedException_WrappedExceptions {
     void throwRuntimeException(int type) {
         try {
             switch (type) {
                 case 0:
-                    throw new TestMyThrowable();
+                    throw new Cp13_WrappedException_TestMyThrowable();
                 case 1:
                     throw new IOException();
                 default:
@@ -33,7 +33,7 @@ class WrappedExceptions {
 public class Cp13_WrappedException {
 
     public static void main(String[] args) {
-        WrappedExceptions x = new WrappedExceptions();
+        Cp13_WrappedException_WrappedExceptions x = new Cp13_WrappedException_WrappedExceptions();
         x.throwRuntimeException(3);
         x.throwRuntimeException(0);
     }

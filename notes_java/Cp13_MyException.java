@@ -1,24 +1,24 @@
 @SuppressWarnings("all")
-class SimpleException extends Exception {
-    public SimpleException() {
+class Cp13_MyException_SimpleException extends Exception {
+    public Cp13_MyException_SimpleException() {
         super();
     }
 
-    public SimpleException(String msg) {
+    public Cp13_MyException_SimpleException(String msg) {
         super(msg);
     }
 }
 
 
 @SuppressWarnings("all")
-class HighlevelException extends Exception {
+class Cp13_MyException_HighlevelException extends Exception {
 }
 
 
 public class Cp13_MyException {
-    public void f(String msg) throws SimpleException {
+    public void f(String msg) throws Cp13_MyException_SimpleException {
         System.out.println("Throw SimpleException from f()");
-        throw new SimpleException();
+        throw new Cp13_MyException_SimpleException();
     }
 
 @SuppressWarnings("all")
@@ -27,12 +27,12 @@ public class Cp13_MyException {
         try {
             try {
                 sed.f("mmmmsg");
-            } catch (SimpleException e) {
+            } catch (Cp13_MyException_SimpleException e) {
                 e.printStackTrace(System.err);
                 System.out.println("++++++++++");
-                throw (HighlevelException) new HighlevelException().initCause(e);
+                throw (Cp13_MyException_HighlevelException) new Cp13_MyException_HighlevelException().initCause(e);
             }
-        } catch (HighlevelException h) {
+        } catch (Cp13_MyException_HighlevelException h) {
             h.printStackTrace(System.err);
             System.out.println((double) new Integer(9));
         }

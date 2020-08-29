@@ -1,10 +1,10 @@
-interface Incrementable {
+interface Cp11_Callback_Incrementable {
     void increment();
 }
 
 
 // Very simple to just implement the interface:
-class Callee1 implements Incrementable {
+class Cp11_Callback_Callee1 implements Cp11_Callback_Incrementable {
     private int i = 0;
 
     public void increment() {
@@ -14,19 +14,19 @@ class Callee1 implements Incrementable {
 }
 
 
-class MyIncrement {
+class Cp11_Callback_MyIncrement {
     public void increment() {
         System.out.println("Other operation");
     }
 
-    static void f(MyIncrement mi) {
+    static void f(Cp11_Callback_MyIncrement mi) {
         mi.increment();
     }
 }
 
 
 // If another implementation of increment() is desired, must use an inner class:
-class Callee2 extends MyIncrement {
+class Cp11_Callback_Callee2 extends Cp11_Callback_MyIncrement {
     private int i = 0;
 
     public void increment() {
@@ -35,21 +35,21 @@ class Callee2 extends MyIncrement {
         System.out.println(i);
     }
 
-    private class Closure implements Incrementable {
+    private class Closure implements Cp11_Callback_Incrementable {
         public void increment() {
             // Specify outer-class method, otherwise infinite recursion occurs.
-            Callee2.this.increment();
+            Cp11_Callback_Callee2.this.increment();
         }
     }
 
-    Incrementable getCallbackReference() {
+    Cp11_Callback_Incrementable getCallbackReference() {
         return new Closure();
     }
 
-    Incrementable getCallbackReference2() {
-        return new Incrementable() {
+    Cp11_Callback_Incrementable getCallbackReference2() {
+        return new Cp11_Callback_Incrementable() {
             public void increment() {
-                Callee2.this.increment();
+                Cp11_Callback_Callee2.this.increment();
                 System.out.println(
                         "Anonymous class or lambda new class can also access methods in the enclosing class, e.g. use the EnclosingClass.this.methodName();");
             }
@@ -59,10 +59,10 @@ class Callee2 extends MyIncrement {
 
 
 
-class Caller {
-    private Incrementable callbackReference;
+class Cp11_Callback_Caller {
+    private Cp11_Callback_Incrementable callbackReference;
 
-    Caller(Incrementable input) {
+    Cp11_Callback_Caller(Cp11_Callback_Incrementable input) {
         callbackReference = input;
     }
 
@@ -74,12 +74,12 @@ class Caller {
 
 public class Cp11_Callback {
     public static void main(String[] args) {
-        Callee1 c1 = new Callee1();
-        Callee2 c2 = new Callee2();
-        MyIncrement.f(c2);
-        Caller caller1 = new Caller(c1);
-        Caller caller2 = new Caller(c2.getCallbackReference());
-        Caller caller22 = new Caller(c2.getCallbackReference2());
+        Cp11_Callback_Callee1 c1 = new Cp11_Callback_Callee1();
+        Cp11_Callback_Callee2 c2 = new Cp11_Callback_Callee2();
+        Cp11_Callback_MyIncrement.f(c2);
+        Cp11_Callback_Caller caller1 = new Cp11_Callback_Caller(c1);
+        Cp11_Callback_Caller caller2 = new Cp11_Callback_Caller(c2.getCallbackReference());
+        Cp11_Callback_Caller caller22 = new Cp11_Callback_Caller(c2.getCallbackReference2());
         caller1.go();
         caller1.go();
         // caller2.go();

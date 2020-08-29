@@ -1,9 +1,9 @@
-class Shape{
+class Cp9_ShapeBaseShape{
     void draw(){
 	System.out.println("Shape.draw");
     }
 }
-class Circle extends Shape{
+class Cp9_ShapeCircle extends Cp9_ShapeBaseShape{
     void draw(){
 	System.out.println("Circle.draw");
     }
@@ -13,10 +13,10 @@ class Circle extends Shape{
 }
 public class Cp9_Shape{
     public static void main (String[] args){
-	Shape x = new Circle();
+	Cp9_ShapeBaseShape x = new Cp9_ShapeCircle();
 	x.draw();
 	System.out.println(x.getClass()); //Class Circle
-	Circle y = new Circle();
+	Cp9_ShapeCircle y = new Cp9_ShapeCircle();
 	y.drawP();
 	//! x.drawP(); //cannot find symble
     }

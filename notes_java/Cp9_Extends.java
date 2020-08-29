@@ -1,9 +1,9 @@
-class Base02 {
+class Cp9_Extends_Base02 {
     void baseMethod() {}
 }
 
 
-class Ext01 extends Base02 {
+class Cp9_Extends_Ext01 extends Cp9_Extends_Base02 {
     void extMethod() {
         System.out.println("extMethod");
     }
@@ -18,7 +18,7 @@ class Ext01 extends Base02 {
 public class Cp9_Extends {
     public static void main(String[] args) {
         // polymorphism
-        Base02 x = new Ext01();
+        Cp9_Extends_Base02 x = new Cp9_Extends_Ext01();
         x.baseMethod();
         // ! x.extMethod(); This, the downcast does not work.
     }

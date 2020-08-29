@@ -1,12 +1,12 @@
-enum Cp9EnumClassNote {
+enum Cp9_PolyUpcasting_Note {
     MIDDLE_C, C_SHARP, B_FLAT
 }
 
 
-class Instrument {
+class Cp9_PolyUpcasting_Instrument {
     private int i;
 
-    public void play(Cp9EnumClassNote n) {
+    public void play(Cp9_PolyUpcasting_Note n) {
         System.out.println("Instrument.play()");
     }
 
@@ -17,9 +17,9 @@ class Instrument {
 }
 
 
-class Wind extends Instrument {
+class Cp9_PolyUpcasting_Wind extends Cp9_PolyUpcasting_Instrument {
     @Override
-    public void play(Cp9EnumClassNote n) {
+    public void play(Cp9_PolyUpcasting_Note n) {
         System.out.println("Wind.play()" + n);
     }
 
@@ -30,16 +30,16 @@ class Wind extends Instrument {
 
 
 public class Cp9_PolyUpcasting {
-    public static void tune(Instrument i) { // Polymorphism reduce duplicated code here and only
+    public static void tune(Cp9_PolyUpcasting_Instrument i) { // Polymorphism reduce duplicated code here and only
                                             // here.
-        i.play(Cp9EnumClassNote.MIDDLE_C);
-        ((Wind) i).newM(); // Or cannot call newM(), since it's not in the Instrument class.
+        i.play(Cp9_PolyUpcasting_Note.MIDDLE_C);
+        ((Cp9_PolyUpcasting_Wind) i).newM(); // Or cannot call newM(), since it's not in the Instrument class.
     }
 
     public static void main(String[] args) {
-        Wind flute = new Wind();
+        Cp9_PolyUpcasting_Wind flute = new Cp9_PolyUpcasting_Wind();
         tune(flute); // Upcasting
-        Instrument a = flute;
+        Cp9_PolyUpcasting_Instrument a = flute;
         tune(a); // Result unchanged.
         a.geti();
         flute.geti();
