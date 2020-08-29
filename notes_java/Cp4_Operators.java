@@ -9,13 +9,13 @@ public class Cp4_Operators {
         double a = x + y - 2 / 2 + z;
         double b = x + (y - 2) / (2 + z);
         out.println("a = " + a + "b = " + b);
-        TestClass anValue = new TestClass();
+        Cp4_Operators_TestClass anValue = new Cp4_Operators_TestClass();
         out.println(anValue.i);
         anValue.i = 1;
         out.println(anValue.i);
     }
 }
 
-class TestClass {
+class Cp4_Operators_TestClass {
     int i;
 }

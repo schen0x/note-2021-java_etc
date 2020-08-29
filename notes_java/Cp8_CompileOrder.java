@@ -1,13 +1,13 @@
-class Base00{
-    Base00(){
+class Cp8_CompileOrder_Base00{
+    Cp8_CompileOrder_Base00(){
 	System.out.println("Base00Constructor");
     }
     static void base00Static(){
 	System.out.println("base00StaticMethod");
     }
 }
-class Base01{
-    Base01(){
+class Cp8_CompileOrder_Base01{
+    Cp8_CompileOrder_Base01(){
 	System.out.println("Base01Constructor");
     }
     static void base01FirstMethod(){
@@ -15,8 +15,8 @@ class Base01{
     }
 }
 @SuppressWarnings("all")
-class Extend01 extends Base01{
-    Extend01(){
+class Cp8_CompileOrder_Extend01 extends Cp8_CompileOrder_Base01{
+    Cp8_CompileOrder_Extend01(){
 	System.out.println("Extend01Constructor");
     }
     private static void extend01SecondMethod(){ // not called
@@ -29,9 +29,9 @@ public class Cp8_CompileOrder{
 	System.out.println("Cp8_CompileOrderConstructor"); // not called
     }
     public static void main (String[] args){
-	Base00.base00Static(); //a static method is called. but the constructor is not loaded.
+	Cp8_CompileOrder_Base00.base00Static(); //a static method is called. but the constructor is not loaded.
 	System.out.println("Cp8_CompileOrderMain");
-	Extend01 x = new Extend01();
+	Cp8_CompileOrder_Extend01 x = new Cp8_CompileOrder_Extend01();
 	x.base01FirstMethod();
     }
 }
