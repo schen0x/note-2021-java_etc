@@ -246,6 +246,8 @@ The class Object does not itself implement the interface Cloneable, so calling t
       + ClassName::instanceMethodName //this is important, take an incoming instance as a param
       + ClassName::new
 
+*** primitive stream init trivia
+    [[./Cp0_PrimitiveStreamTrivia.java]]
 ** System Properties
    [[./Cp0_SystemProperties.java][Cp0_SystemProperties]]    
    
