@@ -3321,7 +3321,7 @@ updated atomically
          Colectors.groupingBy(String::length, Collectors.toSet());
      );
      TreeMap<Integer, Set<String>> map = ohMy.collect(
-         Colectors.groupingBy(String::length, Tree::Map, Collectors.toSet());
+         Colectors.groupingBy(String::length, TreeMap::new, Collectors.toSet());
      );
      *partitioningBy*
      //grouping to only true or false.
