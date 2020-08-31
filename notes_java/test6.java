@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.Set;
 
+@SuppressWarnings("unused")
 public class test6 {
     public static void main(String[] args) {
         Map<String,Integer> m = new HashMap<>();
