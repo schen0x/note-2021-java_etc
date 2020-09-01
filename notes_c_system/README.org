@@ -35,4 +35,14 @@
    [[./Cp01_Array.c]]
    
 ** function
+   [[./Cp01_ReadLine.c]]
+   
+** the EOF implementation
+   //some use \0?
+   
+** automatic variables (local variables, e.g., i, j, etc.)
+
+** *extern* 
+   //ref: stackoverflow, what-is-the-effect-of-extern-c-in-c
+   //though public(external) variables can exist without it
 
