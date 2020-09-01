@@ -46,3 +46,11 @@
    //ref: stackoverflow, what-is-the-effect-of-extern-c-in-c
    //though public(external) variables can exist without it
 
+** data type qualifer
+   + char
+   + int
+   + float
+   + double
+   + *short* int
+   + *long* int
+   + *signed* / *unsigned*
