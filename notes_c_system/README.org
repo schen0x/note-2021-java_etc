@@ -50,7 +50,23 @@
    + char
    + int
    + float
+     //f, F, lf, lF (long double), default is double
    + double
    + *short* int
    + *long* int
-   + *signed* / *unsigned*
+   + *signed* / *unsigned* char, int. 
+     //1L, 1l, 1uL, 1UL
+   + long double
+     
+//0XFUL, an unsigned long 0xF
+
+** characters escape
+   '\ooo' where ooo is one to three octal digits (0...7) or by,
+   '\xhh' where hh is one or more hexadecimal digits (0...9, a...f, A...F). 
+   #define VTAB '\013' //ASCII vertical tab.
+   #define BELL '\007' //ASCII bell character.
+   
+   '\0' represents character with value zero.
+
+
+
