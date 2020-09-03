@@ -68,5 +68,4 @@
    
    '\0' represents character with value zero.
 
-
-
+** 
