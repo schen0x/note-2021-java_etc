@@ -189,7 +189,7 @@ Although there are other ways of doing it, this method is simple and reliable. I
 
     clean:
     ${RM_FR} ${FILES.o} ${PROGRAM} ${DEBRIS}
-
+    
 *** General Guidelines(stack overflow)
 //Rules to be broken by experts only, and only with good reason:
     + A header file only contains extern declarations of variables — never static or unqualified variable definitions.
@@ -199,3 +199,4 @@ Although there are other ways of doing it, this method is simple and reliable. I
     + The source file that defines the variable also includes the header to ensure that the definition and the declaration are consistent.
     + A function should never need to declare a variable using extern.
     + Avoid global variables whenever possible — use functions instead.
+*** ? How does gcc handle external.
