@@ -199,4 +199,31 @@ Although there are other ways of doing it, this method is simple and reliable. I
     + The source file that defines the variable also includes the header to ensure that the definition and the declaration are consistent.
     + A function should never need to declare a variable using extern.
     + Avoid global variables whenever possible — use functions instead.
-*** ? How does gcc handle external.
+*** ? How does gcc handle external, const pool, namespace, etc..
+
+*** misc
+    //standards are stated in the following header files, as well as several util functions:
+      + "<limit.h>"
+      + "<float.h>"
+
+        
+** enum
+   [[Cp01_Enum.c]]
+   
+** declarations
+   float eps = 1.0e-5;
+   const char msg[] = "msg: ";
+   
+** type conversion
+   //A char is just a small integer, so chars may be freely used in arithmetic expressions.
+   [[Cp01_TypeConversion.c]]
+   
+   *common library*
+   + <ctype.h>
+     
+   *trivia*
+   char -> short -> int
+   
+** 
+
+

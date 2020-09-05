@@ -1,7 +1,4 @@
 import java.util.Random;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Cp0_HammingErrorCorrectionCode {
     public static void main(String[] args) {
