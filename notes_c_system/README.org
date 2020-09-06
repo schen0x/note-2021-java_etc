@@ -7,9 +7,6 @@
 * Chapter 1, the basic
   [[./Cp01_HelloWorld.c]]
   
-** while loop, for loop
-  [[./Cp01_Loop.c]]
-  
 ** symbolic constants
    [[./Cp01_SymbolicConstants.c]]
 ** ++
@@ -177,6 +174,8 @@ Although there are other ways of doing it, this method is simple and reliable. I
     all:    ${PROGRAM}
 
     ${PROGRAM}: ${FILES.o}
+    
+
     ${CC} -o $@ ${CFLAGS} ${FILES.o} ${LDFLAGS} ${LDLIBS}
 
     prog1.o: ${FILES.h}
@@ -203,8 +202,8 @@ Although there are other ways of doing it, this method is simple and reliable. I
 
 *** misc
     //standards are stated in the following header files, as well as several util functions:
-      + "<limit.h>"
-      + "<float.h>"
+      + <limit.h>
+      + <float.h>
 
         
 ** enum
@@ -224,6 +223,59 @@ Although there are other ways of doing it, this method is simple and reliable. I
    *trivia*
    char -> short -> int
    
-** 
+** math
+   + <Math.h>
+     //pow
+     
+** control flow
+   + while && for loops
+     [[./Cp01_Loop.c]]
+  
+   + switch
+     [[./Cp01_Switch.c]]
+     //The condition in the switch-statement needs not to be type int exactly but "any expression of integer type (char, signed or unsigned integer, or enumeration)" 
+     //(though a long did not threw compiler error)
+     
+   + do ... while (expression);
+
+   + goto and labels
+     goto found;
+     found: //...
+
+** basic function structures
+   //cc main.c getline.c strindex.c
+   //say main.c has error, then possible to recompile with:
+   //cc main.c getline.o strindex.o 
+   
+   *with header file*
+   //cc Cp01_Bitwise.c Cp00_AnyToBinary.c -o Cp01_Bitwise
+   [[./Cp01_Bitwise.c]]
+
+** misc
+   + getch();
+   + ungetch(c);
+   
+   + #define A_CONSTANT_VALUE 100
+     vs.
+     int i 100;
+     //the former is compiled to source code as a constant.
+     //while the later gets load to memory.
+     
+     
+** *scopes*
+   + vars without declaration is private to the file.
+   + *static variavles*
+     [[*Memory Layout of C Programs]]
+   
+
+* Chapter 0, misc
+** Memory Layout of C Programs
+   //TODO
+   1. Text segment
+   -> stack, heap
+   2. Initialized data segment
+   3. Uninitialized data segment
+   4. Stack
+   5. Heap
 
 

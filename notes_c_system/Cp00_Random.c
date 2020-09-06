@@ -1,48 +1,37 @@
+#include <stdio.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
+#include <fcntl.h>
 
+//TODO
 int myrandom()
 {
-    int randomData = open("/dev/urandom");
+    int randomData = open("/dev/urandom", O_RDONLY);
     if (randomData < 0)
     {
-        // something went wrong
+        return -1;
     }
     else
     {
-        char myRandomData[50];
-        ssize_t result = read(randomData, myRandomData, sizeof myRandomData);
-        if (result < 0)
+        int myRandomInteger;
+        size_t randomDataLen = 0;
+        while (randomDataLen < sizeof myRandomInteger)
         {
-            // something went wrong
+            ssize_t result = read(randomData, ((char *)&myRandomInteger) + randomDataLen, (sizeof myRandomInteger) - randomDataLen);
+            if (result < 0)
+            {
+                // error, unable to read /dev/random
+                return -1;
+            }
+            randomDataLen += result;
         }
-        return result;
+        close(randomData);
+        return myRandomInteger;
     }
-    return -1;
 }
-
 
 int main(int argc, char const *argv[])
 {
-    // arc4random
-    // char myRandomData[50];
-    // arc4random_buf(myRandomData, sizeof myRandomData);
-
-    printf("%lf", myrandom());
-    // int randomData = 0;
-    // // int randomData = open("/dev/urandom", O_RDONLY);
-    // if (randomData < 0)
-    // {
-    //     // something went wrong
-    // }
-    // else
-    // {
-    //     char myRandomData[50];
-    //     ssize_t result = read(randomData, myRandomData, sizeof myRandomData);
-    //     if (result < 0)
-    //     {
-    //         // something went wrong
-    //     }
-    // }
-    // return 0;
+    printf("%d", myrandom());
 }
