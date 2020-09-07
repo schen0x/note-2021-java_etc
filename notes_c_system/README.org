@@ -268,7 +268,7 @@ Although there are other ways of doing it, this method is simple and reliable. I
      [[*Memory Layout of C Programs]]
    
 
-* Chapter 0, misc
+* Chapter 2, program stucture
 ** Memory Layout of C Programs
    //TODO
    1. Text segment
@@ -278,4 +278,27 @@ Although there are other ways of doing it, this method is simple and reliable. I
    4. Stack
    5. Heap
 
+
+** static
+   //static variables inside a function. Similar to sequential invocation of a same Class::staticFunction
+   [[./Cp02_Static.c]]
+   //static outside a function
+     //a file local constant storage.
+** register variable     
+   //A register declaration advises the compiler that the variable in question will be heavily used. The idea is that register variables are to be placed in machine registers, which may result in smaller and faster programs. But compilers are free to ignore the advice.
+   //It's a hint to the compiler that the variable will be heavily used and that you recommend it be kept in a processor register if possible. Most modern compilers do that automatically, and are better at picking them than us humans.
+
+   register int x;
+   register char c;
+   f(register unsigned m, register long n)
+   {
+       register int i;
+       ...
+   }
+
+** initialization
+   //In the absence of explicit initialization, external and static variables are guaranteed to be
+initialized to zero; automatic and register variables have *undefined* (i.e., garbage) initial values.
+   // *automatic variables* (local variables within a function):
+      //All variables declared *within a block of code* are automatic by default. An uninitialized automatic variable has an undefined value until it is assigned a valid value of its type.
 
