@@ -626,7 +626,6 @@ Between the controller and the model sometimes goes a layer which is called a se
      //radial-gradient(circle at 70% 30%, purple, transparent 40%);
    + overflow: hidden;
     
-
 * Chapter 4, JavaScript
 //JavaScript Basic, Client-Side JavaScript.
 
@@ -803,8 +802,6 @@ Between the controller and the model sometimes goes a layer which is called a se
      //Interface and implementation
    + DAO
 
-
-   
 * Chapter 20, BootStrap
 ** Basic
    //12 columns, unlimited rows.
@@ -828,3 +825,105 @@ Between the controller and the model sometimes goes a layer which is called a se
    + Bezier Curves
    + Images
    + Text
+* Chapter 31, Redux
+** functional programming
+   //e.g.
+   + Haskell
+   //function is treated as an object.
+   #+BEGIN_SRC  javascript
+   function sayHello(){return function(){
+       return "Hello";
+   }} 
+   let fn = sayHello();
+   //function is high order function if it takes function as input.
+   function(f){
+       return f()(); 
+   }
+   #+END_SRC
+
+** *lodash* (library) lodash/fp *compose* and *pipe*
+   //utility library for functional programming
+   #+BEGIN_SRC  javascript
+       const trim = str => str.trim();
+       const wrap = (type, str) => `<${type}>${str}</${type}>`
+       const toLowerCase = str => str.toLowerCase();
+       transform = losash.compose(wrapInDiv, toLowerCase, trim);
+       transform = losash.pipe(trim, toLowerCase, wrapInDiv);
+       console.log(transform(input));
+   #+END_SRC
+   #+begin_src javascript
+   function add1(a){
+       return function(b){
+           return a+b;
+   }}
+   const add2 = a => b => a + b;
+   #+end_src
+
+   *Hence:*
+   #+begin_src javascript
+       //we rewrite the following function:
+       //const wrap = (type, str) => `<${type}>${str}</${type}>`
+       const wrap = type => str => `<${type}>${str}</${type}>`
+       transform = losash.pipe(trim, toLowerCase, wrap("div"));
+       //this gives: 
+       //<div>javascript</div>
+   #+end_src
+   
+** pure function
+   //a reducer should be a pure function
+   
+** immutable
+   //merits:
+   + faster change detection
+     //react can quickly tell if a immutable object changed quickly
+   + concurrency
+   //costs:
+   + performance
+   + memory overhead
+     //structural sharing is offered by some libraries
+
+   *data in redux should not be mutated*
+*** update an object in redux
+    #+begin_src javascript
+        const person = { name: "John" };
+        //! person.name //should not do this directly, instead,
+
+        //method1
+        const updated = Object.assign({}, person, { name: "Bob", age: 30 })
+        console.log(updated); //{ name: "Bob", age: 30 }
+        //method2, spread operator
+        const updated = {... person, name: "Bob" }
+        
+
+    #+end_src
+
+* Javascript tricks
+** array
+   + []
+** object
+   + {}
+** backticks
+   const wrap = (type, str) => `<${type}>${str}</${type}>`
+** the spread syntax(...)
+   //used to iterate or merge arrays or objects
+   + for arrays
+     #+begin_src javascript
+         let arr1 = [0, 1, 2];
+         let arr2 = [3, 4, 5];
+         arr3 = [...arr2, ...arr1]; //[ 3, 4, 5, 0, 1, 2 ]
+     #+end_src
+   + for objects, merge the given, attributes of the later overwrite those of the former
+     #+begin_src javascript
+         let person = { name: "John", age: 25 };
+         let job = { title: "boss", age: 26 };
+         let employee = { ...person, ...job }; //{ name: 'John', age: 26, title: 'boss' }
+     #+end_src
+     - However, note that this would only *shallow copy* an object. i.e., update of an copiedObj.attr.attr might change the originalObj.attr.attr, to avoid this, do the deep copy:
+     #+begin_src javascript
+         let person = { name: "John", age: 25, address:{ city: "NY" } };
+         let job = { title: "boss", age: 26 };
+         let employee = { ...person, address:{ ...person.address, city: "TKY"}, ...job };
+     #+end_src
+     - to simply this process, libraries for immutability are introduced.
+
+
