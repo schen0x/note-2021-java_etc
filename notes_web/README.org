@@ -652,7 +652,6 @@ Between the controller and the model sometimes goes a layer which is called a se
      #+end_src
      //for *@Keyframes*, check [[https://www.w3.org/TR/css-animations-1/][CSS-Animations-1]]
 
-     
 *** The art of box
    + border-radius: lt-h, rt-h, rb-h, lb-h / lt-v, rt-v, rb-v, lb-v;
      //[[https://stackoverflow.com/questions/38493828/border-radius-with-division][stackoverflow, Border-radius with division]]
@@ -973,4 +972,33 @@ Between the controller and the model sometimes goes a layer which is called a se
          let job = { title: "boss", age: 26 };
          let employee = { ...person, address:{ ...person.address, city: "TKY"}, ...job };
      #+end_src
-     - to simply this process, libraries for immutability are introduced.
+     - to simply this process, libraries for immutability are introduced:
+       + immutable (facebook) offers immutable data structure
+         #+begin_src javascript
+             import { Map } from 'immutable';
+             let book = Map({ title: "X" });
+             function publish(book){
+                 return book.set("isPublished", true); 
+                 // this will not modify the book, since that is immutable
+             }
+             book = publish(book);
+             console.log(book.toJS());
+             //Hard to work with other libraries.
+         #+end_src
+       + immer (mobX) offers way to work with plain javascript objects
+       + mori
+         
+** *immer*
+   #+begin_src javascript
+       import { produce } from 'immer'; 
+       let book = Map({ title: "X" });
+       function publish(book){
+           return produce(book, draftBook => {
+               draftBook.isPublished = true;
+           })
+           // the draftBook is an proxy that records all the change made to the book object.
+           // while the book hold unchanged.
+       }
+   #+end_src
+         
+
