@@ -240,7 +240,7 @@ Between the controller and the model sometimes goes a layer which is called a se
     
     *Pull-down menues*
     #+begin_src html
-    <form action="cgi-bin/basicForm01.pl" method="post">
+        <form action="cgi-bin/basicForm01.pl" method="post">
             <fieldset><label for="PullDown01">PullDownTest</label>
                 <select name="pd01" id="PullDown01">
                     <option value="real">the fake might be real</option>
@@ -255,26 +255,26 @@ Between the controller and the model sometimes goes a layer which is called a se
         
     *Scrolling menues*
     #+begin_src html
-    <fieldset><label for="Scrolling02">Scrolling01</label>
-        <select name="pd02" size="3" multiple="multiple" for="Scrolling01">
-            <option value="real">the fake might be real</option>
-            <option value="true">the falsy might be true</option>
-            <option >the words have no value</option>
-            <option value="">the story has, but in vain</option>
-        </select>
-    </fieldset>
+        <fieldset><label for="Scrolling02">Scrolling01</label>
+            <select name="pd02" size="3" multiple="multiple" for="Scrolling01">
+                <option value="real">the fake might be real</option>
+                <option value="true">the falsy might be true</option>
+                <option >the words have no value</option>
+                <option value="">the story has, but in vain</option>
+            </select>
+        </fieldset>
     #+end_src
     *Grouping menues*
     #+begin_src html
-    <optgroup label="groupName">
-    </optgroup>
+        <optgroup label="groupName">
+        </optgroup>
     #+end_src
     *File uploading*  use enctype to control encoding.
     #+begin_src html
-    <form action="" method="post" enctype="multipart/form-data">
-        <p><label for="fileUp01">Send a file: </label></p><br/>
-        <input type="file" name="theFile" id="fileUp01"/></p>
-    </form>
+        <form action="" method="post" enctype="multipart/form-data">
+            <p><label for="fileUp01">Send a file: </label></p><br/>
+            <input type="file" name="theFile" id="fileUp01"/></p>
+        </form>
     #+end_src
     *Hidden controls*
     //can be used to achieve some special implementations 
