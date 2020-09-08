@@ -14,11 +14,13 @@
 ** J2EE
 ** MVC (Model, View, Controller)
    //DescriptionModel–view–controller is a software design pattern commonly used for developing user interfaces that divides the related program logic into three interconnected elements. 
-*Model*
++ *Model*
 The central component of the pattern. It is the application's dynamic data structure, independent of the user interface.[5] It directly manages the data, logic and rules of the application.
-*View*
+
++ *View*
 Any representation of information such as a chart, diagram or table. Multiple views of the same information are possible, such as a bar chart for management and a tabular view for accountants.
-*Controller*
+
++ *Controller*
 Accepts input and converts it to commands for the model or view.[6]
 In addition to dividing the application into these components, the model–view–controller design defines the interactions between them.[7]
 
@@ -27,7 +29,7 @@ The view means presentation of the model in a particular format.
 The controller responds to the user input and performs interactions on the data model objects. The controller receives the input, optionally validates it and then passes the input to the model.
 As with other software patterns, MVC expresses the "core of the solution" to a problem while allowing it to be adapted for each system.[8] Particular MVC designs can vary significantly from the traditional description here.[9]
 
-*Service*
++ *Service*
 Between the controller and the model sometimes goes a layer which is called a service. It fetches data from the model and lets the controller use the fetched data. This layer allows to separate data storage (model), data fetching (service) and data manipulation (controller). Since this layer is not part of the original MVC concept, it is optional in most cases but can be useful for code management and reusability purposes in some cases.
 
 ** OSI Model, 7 layers
@@ -177,20 +179,24 @@ Between the controller and the model sometimes goes a layer which is called a se
 
 *** CDATA
     *(Unparsed) Character Data*
-<script type="text/javascript"> 
-// <![CDATA[
+    #+begin_src html
+        <script type="text/javascript"> 
+        // <![CDATA[
 
-// ]]>
-</script> 
+        // ]]>
+        </script> 
+    #+end_src
 
 *** ImageMap
-<img src="" width="" height="" alt="" usemap="#imageMap" />
-//or ismap which indicates a server-side imagemap
-<map name="imageMap">
-    <area shape="rect" coords="0,0,82,126" href="sun.htm" alt="Sun">
-    <area shape="circle" coords="90,58,3" href="mercur.htm" alt="Mercury">
-    <area shape="circle" coords="124,58,8" href="venus.htm" alt="Venus">
-</map>
+    #+begin_src htmp
+        <img src="" width="" height="" alt="" usemap="#imageMap" />
+        //or ismap which indicates a server-side imagemap
+        <map name="imageMap">
+            <area shape="rect" coords="0,0,82,126" href="sun.htm" alt="Sun">
+            <area shape="circle" coords="90,58,3" href="mercur.htm" alt="Mercury">
+            <area shape="circle" coords="124,58,8" href="venus.htm" alt="Venus">
+        </map>
+    #+end_src
 
 *** Basic Table Markup
     [[./Cp2_BasicHTML02.html][Cp2_BasicHTML02]]
@@ -217,16 +223,23 @@ Between the controller and the model sometimes goes a layer which is called a se
 *** Entry Controls
     [[./Cp2_BasicHTML02.html][Cp2_BasicHTML02]]
     *Single Line completion*
+    #+begin_src html
     <li><label for="form01"> TextEntry:</label> <input type="text" &name="nameInURL" value="defaultValue" size="25" maxlength="50" id="form01"/></li>
+    #+end_src
 
     *password*
+    #+begin_src html
     <input name="" type="password" value=""/>
-    
+    #+end_src
+
     *submit and reset*
+    #+begin_src html
     <p><input &name="" type="submit" &value="BottonName"/>
     <input name="" type="reset" value="Reset"/></p>
+    #+end_src
     
     *Pull-down menues*
+    #+begin_src html
     <form action="cgi-bin/basicForm01.pl" method="post">
             <fieldset><label for="PullDown01">PullDownTest</label>
                 <select name="pd01" id="PullDown01">
@@ -238,8 +251,10 @@ Between the controller and the model sometimes goes a layer which is called a se
             </fieldset>
             <input type="submit">
         </form>
+    #+end_src
         
     *Scrolling menues*
+    #+begin_src html
     <fieldset><label for="Scrolling02">Scrolling01</label>
         <select name="pd02" size="3" multiple="multiple" for="Scrolling01">
             <option value="real">the fake might be real</option>
@@ -248,14 +263,19 @@ Between the controller and the model sometimes goes a layer which is called a se
             <option value="">the story has, but in vain</option>
         </select>
     </fieldset>
+    #+end_src
     *Grouping menues*
+    #+begin_src html
     <optgroup label="groupName">
     </optgroup>
+    #+end_src
     *File uploading*  use enctype to control encoding.
+    #+begin_src html
     <form action="" method="post" enctype="multipart/form-data">
         <p><label for="fileUp01">Send a file: </label></p><br/>
         <input type="file" name="theFile" id="fileUp01"/></p>
     </form>
+    #+end_src
     *Hidden controls*
     //can be used to achieve some special implementations 
 ** XHTML Basic
@@ -326,8 +346,10 @@ Between the controller and the model sometimes goes a layer which is called a se
       //However also imprecise and unpredictable
       
       Examples:
-      body { font-size: small; }
-      h1 { font-size: 1.5em; } //Relative to its parent element (body)
+      #+begin_src css
+        body { font-size: small; }
+        h1 { font-size: 1.5em; } //Relative to its parent element (body)
+      #+end_src
       
 **** Font-weight
      *normal*, *bold*, bolder, lighter, 100, 200, ..., 900, inherit
@@ -395,6 +417,7 @@ Between the controller and the model sometimes goes a layer which is called a se
     #RRGGBB
     
 *** background
+    #+begin_src css
     body{
         background-image: url(/img/bgPic01Gears.png);
         background-size: 30em;
@@ -402,10 +425,12 @@ Between the controller and the model sometimes goes a layer which is called a se
         background-color: khaki;
         background-attachment: fixed;
     }
-    or use 
+    //or use 
     background{ background-colr background-image ...}
+    #+end_src
     
 *** Import css
+    #+begin_src html
     <link rel="stylesheet" herf="" type="text/css" />
     ----------------------------------------
     <style type="text/css">
@@ -413,6 +438,7 @@ Between the controller and the model sometimes goes a layer which is called a se
         p{ font-face: Verdana;}
     </style>
     //The later one can be used to import modular css
+    #+end_src
     
     
 ** The BOX
@@ -428,6 +454,7 @@ Between the controller and the model sometimes goes a layer which is called a se
 *** 5.margin
     1. the margin collapse, the bigger value of the adjacent applies to the two.
     2. negative margins push elements together.
+       #+begin_src css
        body {
            margin-left:12%;
            margin-right:12%;
@@ -437,6 +464,7 @@ Between the controller and the model sometimes goes a layer which is called a se
        div.row1 {
            margin: 3em 0; /* T/B L/R */
        }
+       #+end_src
        
 **** display
      .class { display=none/inline/block/inline-block/}
@@ -465,6 +493,7 @@ Between the controller and the model sometimes goes a layer which is called a se
 
 
 ** Floating
+   #+begin_src css
    float {left|right|none|inherit}
    //parent div as class clearfix
    .clearfix::after{
@@ -472,9 +501,13 @@ Between the controller and the model sometimes goes a layer which is called a se
        display: block;
        clear: both;
     }
+   #+end_src
     
 *** More Floating:
+   #+begin_src html
     <p><span class="disclaimer">Disclaimer: content</span>text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text text</p>
+   #+end_src
+   #+begin_src css
     span.disclaimer {
         float: right;
         margin: 1.5 em;
@@ -488,6 +521,7 @@ Between the controller and the model sometimes goes a layer which is called a se
         background-color: #FFF799;
         border: 2px solic #6C4788;
     }
+   #+end_src
     
     //Some Rules of Thumb:
       + Always provide a width for floated text elements.
@@ -555,12 +589,16 @@ Between the controller and the model sometimes goes a layer which is called a se
     + list-style-image:url();
       
 *** Use Lists for Navigation
+    #+begin_src html
     <ul id="nav">
     <li><a href="#">title1</a></li>
     <li><a href="#">title2</a></li>
     <li><a href="#">title3</a></li>
     </ul>
+    #+end_src
+
 **** Inline list items 
+    #+begin_src css
      ul#nav {
          list-style-type: none;
          margin: 0px;
@@ -598,7 +636,7 @@ Between the controller and the model sometimes goes a layer which is called a se
          text-align: center;
          color: black;
      }
-    
+    #+end_src
      
 ** Other keywords:
    + progressive image loading
@@ -607,9 +645,11 @@ Between the controller and the model sometimes goes a layer which is called a se
 ** Summary and suggestions:
    + Font: Verdana, for readbility
    + "@" at rules, or the *conditional group rules*
-     //@media print{
+     #+begin_src css
+         @media print{
              #nav { display: none; }
-       }
+         }
+     #+end_src
      //for *@Keyframes*, check [[https://www.w3.org/TR/css-animations-1/][CSS-Animations-1]]
 
      
@@ -641,11 +681,13 @@ Between the controller and the model sometimes goes a layer which is called a se
 *** Type Checking
    //TODO
      
-*** Arrays
+*** arrays
+    #+begin_src javascript
    var colors;
    colors = [`white`, `black`, `custom`];
    //Usage:
    console.log(colors[0]);
+    #+end_src
    
 *** Handy Functions
     + window.XMLHttpRequest
@@ -678,7 +720,7 @@ Between the controller and the model sometimes goes a layer which is called a se
     
 *** Optional Semicolons
     //Two Exceptions:
-
+    #+begin_src javascript
     //the linebreak after return, break, continue always interpreted as semicolon.
     return
     true;
@@ -690,6 +732,7 @@ Between the controller and the model sometimes goes a layer which is called a se
     y
     //is always parsed as:
     x; ++y;
+    #+end_src
 
     
 ** Chapter 03, Types, Values and Variables
@@ -720,25 +763,27 @@ Between the controller and the model sometimes goes a layer which is called a se
 *** Immutable variables
     
 *** Default type convension
-    empty string is false;
-    0, -0, NaN is false;
-    Infinity, -Infinity or number(?) is true;
-    ----------------------------------------
-    null, undefined is false;
-    object is true;
-    ----------------------------------------
-    null==undefined
-    "0"==0
-    0==false
-    "0"==false
+    + empty string is false;
+    + 0, -0, NaN is false;
+    + Infinity, -Infinity or number(?) is true;
+    + ----------------------------------------
+    + null, undefined is false;
+    + object is true;
+    + ----------------------------------------
+    + null==undefined
+    + "0"==0
+    + 0==false
+    + "0"==false
 
-    
+
 ** Some Tricks
 *** simple input check
-    <input type="submit" value="submit" onclick="return checkForm();"/>
-    <script>
-        function checkForm(){}
-    </script>
+    #+begin_src javascript
+        <input type="submit" value="submit" onclick="return checkForm();"/>
+        <script>
+            function checkForm(){}
+        </script>
+    #+end_src
     
 * Chapter 5, JSP
 ** KeyWords
@@ -777,9 +822,11 @@ Between the controller and the model sometimes goes a layer which is called a se
 ** Some Basic
    
 *** Import
+    #+begin_src jsp
     <%@ page language="java" contentType="text/html; charset=UTF-8">
     <%@ page import="java.util.*">
     <%@ page import="java.io.*, ccdebug.*">
+    #+end_src
     
 * Chapter 10, the Grand Picture
 ** the evolution of the Web model 
@@ -804,6 +851,7 @@ Between the controller and the model sometimes goes a layer which is called a se
 
 * Chapter 20, BootStrap
 ** Basic
+   #+begin_src html
    //12 columns, unlimited rows.
    //class= *"col-sizeCode-numberOfCols"*
    <div class="row">
@@ -815,6 +863,7 @@ Between the controller and the model sometimes goes a layer which is called a se
            <button type="button" class="btn btn-primary">Primary</button>
        </div>
    </div>
+   #+end_src
    
 * Chapter 30, HTML5 Canvas
   
@@ -830,7 +879,7 @@ Between the controller and the model sometimes goes a layer which is called a se
    //e.g.
    + Haskell
    //function is treated as an object.
-   #+BEGIN_SRC  javascript
+   #+begin_src javascript
    function sayHello(){return function(){
        return "Hello";
    }} 
@@ -839,18 +888,18 @@ Between the controller and the model sometimes goes a layer which is called a se
    function(f){
        return f()(); 
    }
-   #+END_SRC
+   #+end_src
 
 ** *lodash* (library) lodash/fp *compose* and *pipe*
    //utility library for functional programming
-   #+BEGIN_SRC  javascript
+   #+begin_src  javascript
        const trim = str => str.trim();
        const wrap = (type, str) => `<${type}>${str}</${type}>`
        const toLowerCase = str => str.toLowerCase();
        transform = losash.compose(wrapInDiv, toLowerCase, trim);
        transform = losash.pipe(trim, toLowerCase, wrapInDiv);
        console.log(transform(input));
-   #+END_SRC
+   #+end_src
    #+begin_src javascript
    function add1(a){
        return function(b){
@@ -925,5 +974,3 @@ Between the controller and the model sometimes goes a layer which is called a se
          let employee = { ...person, address:{ ...person.address, city: "TKY"}, ...job };
      #+end_src
      - to simply this process, libraries for immutability are introduced.
-
-
