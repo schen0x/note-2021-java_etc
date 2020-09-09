@@ -519,7 +519,7 @@ Between the controller and the model sometimes goes a layer which is called a se
     p {
         padding: 1.2em;
         background-color: #FFF799;
-        border: 2px solic #6C4788;
+        border: 2px solid #6C4788;
     }
    #+end_src
     
@@ -895,8 +895,8 @@ Between the controller and the model sometimes goes a layer which is called a se
        const trim = str => str.trim();
        const wrap = (type, str) => `<${type}>${str}</${type}>`
        const toLowerCase = str => str.toLowerCase();
-       transform = losash.compose(wrapInDiv, toLowerCase, trim);
-       transform = losash.pipe(trim, toLowerCase, wrapInDiv);
+       transform = lodash.compose(wrapInDiv, toLowerCase, trim);
+       transform = lodash.pipe(trim, toLowerCase, wrapInDiv);
        console.log(transform(input));
    #+end_src
    #+begin_src javascript
@@ -912,7 +912,7 @@ Between the controller and the model sometimes goes a layer which is called a se
        //we rewrite the following function:
        //const wrap = (type, str) => `<${type}>${str}</${type}>`
        const wrap = type => str => `<${type}>${str}</${type}>`
-       transform = losash.pipe(trim, toLowerCase, wrap("div"));
+       transform = lodash.pipe(trim, toLowerCase, wrap("div"));
        //this gives: 
        //<div>javascript</div>
    #+end_src
@@ -930,7 +930,7 @@ Between the controller and the model sometimes goes a layer which is called a se
    + memory overhead
      //structural sharing is offered by some libraries
 
-   *data in redux should not be mutated*
+   *data in redux, or functional programming in general, should not be mutated*
 *** update an object in redux
     #+begin_src javascript
         const person = { name: "John" };
@@ -941,8 +941,157 @@ Between the controller and the model sometimes goes a layer which is called a se
         console.log(updated); //{ name: "Bob", age: 30 }
         //method2, spread operator
         const updated = {... person, name: "Bob" }
-        
+    #+end_src
+    
+** redux basic
+   + the redux *store*
+   #+begin_src javascript
+       // a store
+       {
+           categories:[],
+           products:[],
+           cart:{},
+           user:{}
+       }
+       // we do not mutate a store. Hence, to update the store,
+       // we write the following function: 
+       //// action is an Event. and the reducer is an EventHandler.
+       //// except that they do not mutate a state.
+       function reducer(aSpecificSliceOfTheStore, action) {
+           const updated = { ...aSpecificSliceOfTheStore };
+       }
+   #+end_src
+     - Action --(dispatch)--> Store --(call)--> Reducer --(returnTheState)--> Store
+     - Then the store could update its state  
+** an example redux application 
+   // a bug tracker
+*** Design the store
+   #+begin_src javascript
+   // the store:
+   {
+       bugs: [
+           {
+               id: 1,
+               description: "",
+               resolved: false
+           },
+       ],
+       currentUser: {}
+   }
+   // the store has two slices, the bugs, and the currentUser.
+   #+end_src
+   // in the example we *only use the bugs list* as a store.
 
+*** Define the actions
+    + add a bug
+    #+begin_src javascript
+        // an redux action object:
+        // a type is necessary for an redux action object.
+        // however any type that is serializable could be assigned to it. 
+        // the "payload" structure is not necessary, but originated from flux.
+        // the payload contains the mininum info we need for the action.
+        {
+            type: "ADD_BUG",
+            // description: "...",
+            payload: {
+                description: "..."
+            }
+        }
+    #+end_src
+    + mark as resolved
+    + delete a bug
+    #+begin_src javascript
+        {
+            type: "REMOVE_BUG",
+            payload: {
+                id: 1
+            }
+        }
+    #+end_src
+
+*** Create a reducer
+    //write *pure function* that mutate or depend on no global state.
+    #+begin_src javascript
+        // reducer.js
+        let lastId = 0;
+        // state = [] set the default param, to initialize the state 
+        // when it is undefined.
+        export default function reducer(state = [], action) {
+            switch (action.type) {
+                case "ADD_BUG":
+                    return [
+                        ...state,
+                        {
+                            id: ++lastId,
+                            description: action.payload.description,
+                            resolved: false
+                        }
+                    ];
+                    // break; // unreachable code
+                case "REMOVE_BUG":
+                    return state.filter(bug => bug.id !== action.payload.id);
+                default:
+                    return state;
+            }
+        }
+    #+end_src
+
+*** Set Up the store (based on the reducer)
+    #+begin_src javascript
+        // store.js
+        import { createStore } from 'redux';
+        import reducer from './reducer';
+
+        const store = createStore(reducer);
+        export default store;
+    #+end_src
+
+    #+begin_src javascript
+    // index.js
+    import store from './store';
+    import React from 'react';
+
+    class reduxTestPage extends React.Component {
+        componentDidMount() {
+            console.log(store); 
+            // {dispatch: f, subscribe: f, getState: f, replaceReducer: f, Symbol(observable): f}
+
+            // UI components subscribe to the store, to update on state change
+            // an corresponding unsubscribe function will be returned.
+            // the unsubscribe need to be called to prevent memory leak.
+            const unsubscribe = store.subscribe(() => {
+                console.log("Changed", store.getState());
+            })
+
+            // add a bug
+            store.dispatch({
+                type: "ADD_BUG",
+                payload: {
+                    description: "Bug1"
+                }
+            });
+
+            unsubscribe();
+
+            // remove a bug
+            store.dispatch({
+                type: "REMOVE_BUG",
+                payload: {
+                    id: 1
+                }
+            });
+        }
+
+        render() {
+            return (
+                <div>
+                    "check the console";
+                </div>
+            )
+        }
+    }
+
+    export default reduxTestPage;
     #+end_src
 
 * Javascript tricks
@@ -995,10 +1144,13 @@ Between the controller and the model sometimes goes a layer which is called a se
        function publish(book){
            return produce(book, draftBook => {
                draftBook.isPublished = true;
-           })
+           });
            // the draftBook is an proxy that records all the change made to the book object.
            // while the book hold unchanged.
        }
-   #+end_src
+       let updatedBook = publish(book); // new objected with updated info
+    #+end_src
+    
+
          
 
