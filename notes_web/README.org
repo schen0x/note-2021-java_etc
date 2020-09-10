@@ -1090,8 +1090,12 @@ Between the controller and the model sometimes goes a layer which is called a se
             )
         }
     }
-
     export default reduxTestPage;
+    #+end_src
+
+*** a better practice
+    #+begin_src javascript
+        
     #+end_src
 
 * Javascript tricks
@@ -1140,7 +1144,7 @@ Between the controller and the model sometimes goes a layer which is called a se
 ** *immer*
    #+begin_src javascript
        import { produce } from 'immer'; 
-       let book = Map({ title: "X" });
+       let book = { title: "X" };
        function publish(book){
            return produce(book, draftBook => {
                draftBook.isPublished = true;
@@ -1150,7 +1154,33 @@ Between the controller and the model sometimes goes a layer which is called a se
        }
        let updatedBook = publish(book); // new objected with updated info
     #+end_src
-    
 
-         
+** defer/async/<default>
+   + defer
+     //<script src="demo_defer.js" defer></script>
+   + async
+     //<script src="demo_defer.js" async></script>
+     - If async is present: The script is executed asynchronously with the rest of the page (the script will be executed *while* the page continues the parsing)
+     - If async is not present and defer is present: The script is executed when the page has finished parsing
+     - If neither async or defer is present: The script is fetched and executed immediately, *before* the browser continues parsing the page
+       
+** ? ways to create memory leak
 
+* Chapter 40, TypeScript
+** basic
+   #+begin_src typescript
+       type shape = "circle" | "rectangle";
+       let anShape: shape;
+       
+       // strong type an object
+       interface Person {
+           first: string;
+           last: string;
+           [key: string]: any; 
+       }
+       
+       // strong type an function
+       function pow(x: number, y: number): string{
+           return Math.pow(x, y).toString();
+       }
+   #+end_src
