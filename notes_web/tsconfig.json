@@ -2,14 +2,14 @@
     "compilerOptions": {
         "target": "ES6",
         "watch": true,
-        "module": "CommonJS",
+        "module": "ESNext",
         "noImplicitAny": false,
         "removeComments": false,
         "preserveConstEnums": true,
         "sourceMap": true,
         "lib": [
             "DOM",
-            "ES2015"
+            "ESNext"
         ]
     },
     "exclude": [
