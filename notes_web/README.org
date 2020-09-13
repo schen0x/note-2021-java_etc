@@ -1167,8 +1167,41 @@ Between the controller and the model sometimes goes a layer which is called a se
 ** ? ways to create memory leak
 
 * Chapter 40, TypeScript
+** merit
+   + Case0: 
+     #+begin_src javascript
+         > ({toString:null}) + "";
+         // Uncaught TypeError: Cannot convert object to primitive value
+         > ({toString:function(){return "123"}}) + ""; //'123'
+         > ({valueOf:function(){return "123"}}) + ""; //'123'
+     #+end_src
+     
+   + Case1:
+   #+begin_src javascript
+       function getLowerCaseStr(myStr) {
+           return myStr.toLowerCase();
+       }
+
+       getLowerCaseStr(); // Cannot read property 'toLowerCase' of undefined;
+   #+end_src
+
+   + Case2:
+   #+begin_src javascript
+       const res = {
+           data: {
+               success: true,
+               msg: "Success!",
+           },
+       }
+       function getMsg(res) {
+           if(res.data.success)
+               return res.msg;  // undefined (accessing an non-existing attribute throws no Runtime error)
+       }
+   #+end_src
+
 ** basic
-   #+begin_src typescript
+   + colon
+     #+begin_src javascript
        type shape = "circle" | "rectangle";
        let anShape: shape;
        
@@ -1183,4 +1216,53 @@ Between the controller and the model sometimes goes a layer which is called a se
        function pow(x: number, y: number): string{
            return Math.pow(x, y).toString();
        }
-   #+end_src
+      #+end_src
+   + typeof guard, redux example
+     #+begin_src javascript
+         // types.ts
+         export const GET_ITEM_SUCCESS = 'GET_ITEM_SUCCESS';
+         export const GET_ITEM_FAILURE = 'GET_ITEM_FAILURE';
+         
+         type ItemInfo = string; 
+
+         interface GetItemSuccess {
+             type: typeof GET_ITEM_SUCCESS;
+             payload: ItemInfo;
+         }
+
+         interface GetItemFailure {
+             type: typeof GET_ITEM_FAILURE;
+         }
+
+         export type GetItemActionType = 
+             | GetItemSuccess
+             | GetItemFailure;
+         
+         export type StateItemInfo {
+             data?: ItemInfo;
+             hasError: boolean;
+             isLoading: boolean;
+         } //...
+     #+end_src
+     #+begin_src javascript
+         // Reducer.ts
+         import * from './types';
+         export default function getItemReducer(
+             state = initState,
+             action: GetItemActionType,
+         ): StateItemInfo {
+             switch (action.type) {
+                 case GET_ITEM_FAILURE:
+                     return {...state, isLoading: false, hasError: true};
+                 case GET_ITEM_SUCCESS:
+                     return {
+                         ...state,
+                         data: action.payload,
+                         isLoading: false,
+                         hasError: false,
+                     };
+                  default:
+                      return state;
+             }
+         }
+     #+end_src
