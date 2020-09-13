@@ -1175,7 +1175,7 @@ Between the controller and the model sometimes goes a layer which is called a se
          > ({toString:function(){return "123"}}) + ""; //'123'
          > ({valueOf:function(){return "123"}}) + ""; //'123'
      #+end_src
-     
+
    + Case1:
    #+begin_src javascript
        function getLowerCaseStr(myStr) {
@@ -1198,6 +1198,17 @@ Between the controller and the model sometimes goes a layer which is called a se
                return res.msg;  // undefined (accessing an non-existing attribute throws no Runtime error)
        }
    #+end_src
+   
+** javascript trivia
+   #+begin_src javascript
+       > let o = {};
+       > o.__proto__
+       // [Object: null prototype] {}
+       > o.toString
+       [Function: toString]
+
+   #+end_src
+   
 
 ** basic
    + colon
