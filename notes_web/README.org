@@ -1177,16 +1177,16 @@ Between the controller and the model sometimes goes a layer which is called a se
      #+end_src
 
    + Case1:
-   #+begin_src javascript
+     #+begin_src javascript
        function getLowerCaseStr(myStr) {
            return myStr.toLowerCase();
        }
 
        getLowerCaseStr(); // Cannot read property 'toLowerCase' of undefined;
-   #+end_src
+     #+end_src
 
    + Case2:
-   #+begin_src javascript
+     #+begin_src javascript
        const res = {
            data: {
                success: true,
@@ -1197,19 +1197,37 @@ Between the controller and the model sometimes goes a layer which is called a se
            if(res.data.success)
                return res.msg;  // undefined (accessing an non-existing attribute throws no Runtime error)
        }
-   #+end_src
+      #+end_src
    
 ** javascript trivia
-   #+begin_src javascript
+   + accessing attr not exist
+     #+begin_src javascript
        > let o = {};
        > o.__proto__
        // [Object: null prototype] {}
        > o.toString
        [Function: toString]
+     #+end_src
 
-   #+end_src
+   + x && x.attr || 0
+     //expr1 && expr2 Returns expr1 if it can be converted to false; otherwise, returns expr2. Thus, when used with Boolean values, && returns true if both operands are true; otherwise, returns false.
    
+   + double exclamation mark(!!)
+     //cast a variable to be a boolean value.
 
+   + double pipe(||), logical or.
+     //If expr1 can be converted to true, returns expr1; else, returns expr2.
+     #+begin_src javascript
+        var a = A || B; //conditional assignment, it is effectively:
+
+        if (!!A) {
+            a = A;
+        } else {
+            a = B;
+        } // or:
+
+        var a = A? A : B;
+     #+end_src
 ** basic
    + colon
      #+begin_src javascript
@@ -1277,3 +1295,63 @@ Between the controller and the model sometimes goes a layer which is called a se
              }
          }
      #+end_src
+
+*** variable scope
+    + var
+      // the nearest parent function
+    + let
+      // the nearest block
+      
+*** types
+    + number, boolean, string, any, number[], any[]
+    + enum Color { Red = 0 , Green, Blue = 2 };
+    + explicit declare:
+      #+begin_src javascript
+          let message;
+          message = 'abc';
+          let endsWithC = (<string>message).endsWith('c');
+          let alternativeWay = (message as string).endsWith('c');
+      #+end_src
+    + let drawPoint = (point: { x:number, y: number }) => {}
+    + Class, Access Modifiers(default is public)
+      [[./typescript-only/src/Cp40_Class.ts]]
+      #+begin_src javascript
+     class Point {
+         private x: number;
+
+         constructor(x?: number, private y?: number) {
+             this.x = x && x || 0;
+             // this.y = y && y || 0; // value assign statement auto generated.
+         }
+
+         draw() {
+             console.log("x = " + this.x, ", y = " + this.y);
+         }
+
+         getDistance(another: Point) {
+             //...
+         }
+     }
+
+     let point = new Point(1, 2);
+     // let point: Point = new Point();
+     // point.x = 1; // point.y = 2;
+     point.draw();
+       #+end_src
+
+*** setter and getter, *property*
+    + the underscore variable to avoid naming collision, since the convention is camel case
+    + the property x maybe a function inside a class combination of getter and setter. 
+    #+begin_src javascript
+        class Point2 {
+            constructor(public _x?: number) { }
+
+            set x(value) { this._x = value }
+            get x() { 
+                return this._x && this._x + 1; }
+        }
+
+        let pt = new Point2(3);
+        pt.x = 1;
+        console.log(pt._x); console.log(pt.x);
+    #+end_src
