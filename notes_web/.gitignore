@@ -1,3 +1,4 @@
 node_modules/
 dist/
 .nuxt/
+test-do-not-include/

@@ -1355,3 +1355,24 @@ Between the controller and the model sometimes goes a layer which is called a se
         pt.x = 1;
         console.log(pt._x); console.log(pt.x);
     #+end_src
+
+    
+*** bind()
+    + the basic
+      #+begin_src javascript
+          const module = {
+              x: 42,
+              getX: function() {
+                  return this.x;
+              }
+              };
+  
+          const unboundGetX = module.getX;
+          console.log(unboundGetX()); // The function gets invoked at the global scope
+          // expected output: undefined
+          
+          const boundGetX = unboundGetX.bind(module);
+          console.log(boundGetX());
+          // expected output: 42
+      #+end_src
+    + bind classname instead of "this" in a constructor?
