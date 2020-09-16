@@ -1383,4 +1383,61 @@ Between the controller and the model sometimes goes a layer which is called a se
           // expected output: 42
       #+end_src
     + bind classname instead of "this" in a constructor?
+      
+*** definite assignment assertions (!)
+    + The definite assignment assertion is a feature that allows a ! to be placed after instance property and variable declarations to relay to TypeScript that a variable is indeed assigned for all intents and purposes, even if TypeScript’s analyses cannot detect so.
+    
+*** the purpose of a self executing function: (function(){})();
+    
 
+** promise
+   #+begin_src javascript
+       // source code from Mozilla:
+       // https://github.com/then/promise/blob/master/src/core.js
+
+       
+   #+end_src
+   
+   + new promise 
+     #+begin_src javascript
+         
+     #+end_src
+     
+     
+
+   
+** How does interfaces with construct signatures work?(stackoverflow)
+   + Construct signatures in interfaces are not implementable in classes; they're only for defining existing JS APIs that define a 'new'-able function. Here's an example involving interfaces new signatures that does work:
+     #+begin_src javascript
+       interface ComesFromString {
+           name: string;
+       }
+
+       interface StringConstructable {
+           new(n: string): ComesFromString;
+       }
+
+       class MadeFromString implements ComesFromString {
+           constructor (public name: string) {
+               console.log('ctor invoked');
+           }
+       }
+
+       function makeObj(n: StringConstructable) {
+           return new n('hello!');
+       }
+
+       console.log(makeObj(MadeFromString).name);  
+     #+end_src
+
+   + This creates an actual constraint for what you can invoke makeObj with:
+     #+begin_src javascript
+        class Other implements ComesFromString {
+            constructor (public name: string, count: number) {
+            }
+        }
+
+        makeObj(Other); // Error! Other's constructor doesn't match StringConstructable
+     #+end_src
+       
+   
