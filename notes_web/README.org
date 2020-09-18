@@ -1098,11 +1098,55 @@ Between the controller and the model sometimes goes a layer which is called a se
         
     #+end_src
 
-* Javascript tricks
+* Chapter 35, JavaScript trivia
 ** array
    + []
 ** object
    + {}
+     
+** *this*
+   //[[https://www.youtube.com/watch?v=zE9iro4r918][Understanding the "this" keyword, call, apply, and bind in JavaScript]]
+   + Implicit Binding
+     #+begin_src javascript
+     var f = function(name){
+         return{
+             name: name,
+             sayName: function(){
+                 console.log(this.name)
+             },
+             mother: {
+                 name: 'Stacey',
+                 sayName: function(){
+                     console.log(this.name)
+                 }
+             }
+         };
+     };
+     f("aName").sayName(); // aName
+     // this is implicitly bind to the variable that invoked it (when?)
+     #+end_src
+   + Explicit Binding
+     #+begin_src javascript
+     var sayName = function(aParam){
+         console.log(this.name + " " + aParam);
+     }
+     
+     var stacey = {
+         name: 'Stacey',
+     }
+
+     sayName.call(stacey, "aParamStr"); // Stacey aParamStr
+     #+end_src
+   + new Binding
+   + window Binding
+
+** *object creation* 
+   #+begin_src javascript
+       Animal.prototype.eat = function (){console.log("eating")};
+       animal = Object.create(Animal.prototype);
+       animal = new Animal(); // calls 
+   #+end_src
+
 ** backticks
    const wrap = (type, str) => `<${type}>${str}</${type}>`
 ** the spread syntax(...)

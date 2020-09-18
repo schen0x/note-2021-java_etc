@@ -4,6 +4,13 @@ function Tree(name) {
   t = this;
 }
 
+// class Tree {
+//   constructor(name) {
+//     this.name = name;
+//     t = this;
+//   }
+// }
+
 let theTree = new Tree('Redwood');
 console.log('theTree.constructor is ' + theTree.constructor)
 console.log('theTree.name is ' + theTree.name)
