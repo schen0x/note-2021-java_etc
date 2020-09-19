@@ -1,7 +1,5 @@
-let t;
-function Tree(name) {
+export function Tree(name) {
   this.name = name;
-  t = this;
 }
 
 // class Tree {
