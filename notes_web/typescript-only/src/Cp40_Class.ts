@@ -20,7 +20,7 @@ let point = new Point(1, 2);
 // point.x = 1; // point.y = 2;
 point.draw();
 
-class Point2 {
+export class Point2 {
     constructor(public _x?: number) { }
 
     set x(value) { this._x = value }

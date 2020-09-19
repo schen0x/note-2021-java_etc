@@ -1397,7 +1397,7 @@ Between the controller and the model sometimes goes a layer which is called a se
           let alternativeWay = (message as string).endsWith('c');
       #+end_src
     + let drawPoint = (point: { x:number, y: number }) => {}
-    + Class, Access Modifiers(default is public)
+    + Class, Access Modifiers(default is public), auto generated value assign statement
       [[./typescript-only/src/Cp40_Class.ts]]
       #+begin_src javascript
      class Point {
@@ -1462,6 +1462,20 @@ Between the controller and the model sometimes goes a layer which is called a se
       
 *** definite assignment assertions (!)
     + The definite assignment assertion is a feature that allows a ! to be placed after instance property and variable declarations to relay to TypeScript that a variable is indeed assigned for all intents and purposes, even if TypeScript’s analyses cannot detect so.
+      #+begin_src javascript
+        abstract class AParentClass implements AnInterface {
+            str!: string;
+            i: number;
+            constructor(i: number) {
+                this.i = i;
+            }
+
+            method1(): void {
+                console.log("i(abstract class): " + this.i);
+                console.log("str(abstract class): " + this.str);
+            }
+        }
+      #+end_src
     
 *** the purpose of a self executing function: (function(){})();
     
@@ -1557,7 +1571,6 @@ Between the controller and the model sometimes goes a layer which is called a se
      #+end_src
      
      
-
 ** How does interfaces with construct signatures work?(stackoverflow)
    + Construct signatures in interfaces are not implementable in classes; they're only for defining existing JS APIs that define a 'new'-able function. Here's an example involving interfaces new signatures that does work:
      #+begin_src javascript
@@ -1593,3 +1606,22 @@ Between the controller and the model sometimes goes a layer which is called a se
      #+end_src
        
    
+   
+** type-assertion
+*** basic
+    + *as* vs <>
+    #+begin_src javascript
+    var foo: any;
+    var bar = <string> foo;
+    // however, since the <> syntax can be confusing in jsx syntax: e.g. ~</string>~
+    // the *as* is recommended.
+    #+end_src
+
+    + bad practice (casting)
+      #+begin_src javascript
+      interface Foo {
+          bar: number;
+      }
+      var foo = {} as Foo;
+      // foo.bar === undefined;
+      #+end_src

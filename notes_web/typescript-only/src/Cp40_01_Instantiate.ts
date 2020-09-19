@@ -3,6 +3,9 @@ interface AnInterface {
     i: number;
 }
 
+/**
+ * definite assignment assertions (!)
+ */
 abstract class AParentClass implements AnInterface {
     str!: string;
     i: number;
@@ -21,16 +24,10 @@ class AChildClass extends AParentClass {
 }
 
 // FIXME
-export default function run() {
-    constructor(){
-
-    }
+export function run(str:string) {
     //! new AnInterface()
     //! new AnClass(1);
     let x = new AChildClass(1);
     x.method1();
     return;
 };
-
-new run();
-run()
