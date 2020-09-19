@@ -1125,20 +1125,53 @@ Between the controller and the model sometimes goes a layer which is called a se
      f("aName").sayName(); // aName
      // this is implicitly bind to the variable that invoked it (when?)
      #+end_src
-   + Explicit Binding
+
+   + Explicit Binding *call(), bind(), apply()* call(thisArg, params...), apply(thisArg, params[])
      #+begin_src javascript
-     var sayName = function(aParam){
-         console.log(this.name + " " + aParam);
+     var sayName = function(param1, param2){
+         console.log(this.name + " " + param1 + " " + param2);
      }
      
      var stacey = {
          name: 'Stacey',
      }
 
-     sayName.call(stacey, "aParamStr"); // Stacey aParamStr
+     // Function.prototype.call(&this, &params);
+     // if this is not explicitly given, implicit bind: this === globalThis === window 
+     sayName.call(stacey, "aParamStr"); // Stacey aParamStr undefined
+     // call(this, args...);
+     sayName.apply(stacey, ["a", "b"]); // Stacey aParamStr undefined
+     // apply(this, args[]); 
+     // hence, sayName.apply([stacey, "a"]); gives: undefined undefined undefined
+
+     // Function.prototype.bind(args...), bind the given arguments to the function.
+     var newFn = sayName.bind(stacey, "aParamStr");
+     newFn(); // Stacey aParamStr undefined
+     newFn("hi") // Stacey aParamStr hi 
      #+end_src
+
    + new Binding
+     #+begin_src javascript
+     var Animal = function(name, color){
+         // this = {}
+         this.name = name;
+         this.color = color;
+     };
+
+     var zebra = new Animal('Zorro', 'black and white'); // this === zebra
+     typeof Animal; // "function"
+     typeof zebra; // "object"
+     #+end_src
    + window Binding
+     #+begin_src javascript
+     var sayName = function(param1, param2){
+         console.log(this.name + " " + param1 + " " + param2);
+     }
+
+     this.name = 1; // window.name = 1;
+     
+     sayName(); // sayName.call() // 1 undefined undefined
+     #+end_src
 
 ** *object creation* 
    #+begin_src javascript
