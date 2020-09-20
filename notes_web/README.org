@@ -1104,6 +1104,62 @@ Between the controller and the model sometimes goes a layer which is called a se
 ** object
    + {}
      
+** execution context
+*** phase1: context creation -- syntax parser (the so called hoist, etc.)
+    + variable and function are malloced.
+      #+begin_src javascript
+      f();
+      a; //undefined
+      function f(){ console.log('..') };
+      var a = 1;
+      #+end_src
+
+*** phase2: code execution
+    + single threaded synchronous execution
+      
+**** the execution stack and the event queue
+     + when the execution stack is empty, if ecent queue is not empty, calls the corresponding event handler.
+
+** primitive types
+   + undefined
+   + boolean
+   + number
+   + string
+     #+begin_src javascript
+     String("s") !== new String("s")
+     new String("s1")[0] //s
+     new String("s1")[1] //1
+     #+end_src
+   + bigInt
+   + symbol
+
+   + null (structural root primitive): ~typeof null === "object"~
+
+** Structural Types
+   + Object
+     // ~typeof instance === "object"~. Special non-data but Structural type for any constructed object instance also used as data structures: new Object, new Array, new Map, new Set, new WeakMap, new WeakSet, new Date and almost everything made with new keyword;
+
+   + Function
+     // a non-data structure, though it also answers for typeof operator: ~typeof instance === "function"~. This is merely a special shorthand for Functions, though every Function constructor is derived from Object constructor.
+
+** coercion, operator precedence, associativity(left-to-right, right-to-left)
+   + [[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence][operator precedence and associativity]]
+   #+begin_src javascript
+   3 < 2 < 1 //true
+   #+end_src
+   
+** Function Constructor
+   + The ~Function constructor~ creates a new ~Function~ object. 
+     #+begin_src javascript
+     const sum = new Function('a', 'b', 'return a + b');
+     console.log(sum(2, 6)); // 8
+     #+end_src
+     // each var name must be a string
+
+** Object.create, Object.setPrototypeOf
+   + Object.create(proto, [propertiesObject])
+   + Object.setPrototypeOf(ocn, Object.prototype)
+
 ** *this*
    //[[https://www.youtube.com/watch?v=zE9iro4r918][Understanding the "this" keyword, call, apply, and bind in JavaScript]]
    + Implicit Binding
