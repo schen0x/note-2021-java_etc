@@ -67,127 +67,142 @@
 
 ** extern
 *** What is the difference between a definition and a declaration? (stack overflow)
-//A declaration introduces an identifier and describes its type, be it a type, object, or function. A declaration is what the compiler needs to accept references to that identifier. 
+    + A declaration introduces an identifier and describes its type, be it a type, object, or function. A declaration is what the compiler needs to accept references to that identifier. 
+
+        *These are declarations*:
+        + extern int bar;
+        + extern int g(int, int);
+        + double f(int, double); //extern can be omitted for function declarations
+        + class foo; //no extern allowed for type declarations
+
+    + A definition actually instantiates/implements this identifier. It's what the linker needs in order to link references to those entities. 
     
-    *These are declarations*:
-    + extern int bar;
-    + extern int g(int, int);
-    + double f(int, double); //extern can be omitted for function declarations
-    + class foo; //no extern allowed for type declarations
+        *These are definitions* corresponding to the above declarations:
+        + int bar;
+        + int g(int lhs, int rhs) {return lhs*rhs;}
+        + double f(int i, double d) {return i+d;}
+        + class foo {};
 
-//A definition actually instantiates/implements this identifier. It's what the linker needs in order to link references to those entities. 
-    
-    *These are definitions* corresponding to the above declarations:
-    + int bar;
-    + int g(int lhs, int rhs) {return lhs*rhs;}
-    + double f(int i, double d) {return i+d;}
-    + class foo {};
-//A definition can be used in the place of a declaration.
+    + A definition can be used in the place of a declaration.
 
-//An identifier can be declared as often as you want. Thus, the following is legal in C and C++:
+    + An identifier can be declared as often as you want. Thus, the following is legal in C and C++:
 
-     + double f(int, double);
-     + double f(int, double);
-     + extern double f(int, double); // the same as the two above
-     + extern double f(int, double);
-However, it must be defined exactly once. If you forget to define something that's been declared and referenced somewhere, then the linker doesn't know what to link references to and complains about a missing symbols. If you define something more than once, then the linker doesn't know which of the definitions to link references to and complains about duplicated symbols.
+        + double f(int, double);
+        + double f(int, double);
+        + extern double f(int, double); // the same as the two above
+        + extern double f(int, double);
+
+    + However, it must be defined exactly once. If you forget to define something that's been declared and referenced somewhere, then the linker doesn't know what to link references to and complains about a missing symbols. If you define something more than once, then the linker doesn't know which of the definitions to link references to and complains about duplicated symbols.
 
 *** How do I use extern to share variables between source files? (stack overflow)
-//Using extern is only of relevance when the program you're building consists of multiple source files linked together, where some of the variables defined, for example, in source file file1.c need to be referenced in other source files, such as file2.c.
-+ A variable is declared when the compiler is *informed* that a variable exists (and this is its type); it does not allocate the storage for the variable at that point.
-+ A variable is defined when the compiler *allocates the storage* for the variable.
+    + Using extern is only of relevance when the program you're building consists of multiple source files linked together, where some of the variables defined, for example, in source file file1.c need to be referenced in other source files, such as file2.c.
+      - A variable is declared when the compiler is *informed* that a variable exists (and this is its type); it does not allocate the storage for the variable at that point.
+      - A variable is defined when the compiler *allocates the storage* for the variable.
   
 *** Best Practice
-//The clean, reliable way to declare and define global variables is to use a header file to contain an extern declaration of the variable.
+    + The clean, reliable way to declare and define global variables is to use a header file to contain an extern declaration of the variable.
 
-The header is included by the one source file that defines the variable and by all the source files that reference the variable. For each program, one source file (and only one source file) defines the variable. Similarly, one header file (and only one header file) should declare the variable. The header file is crucial; it enables cross-checking between independent TUs (translation units — think source files) and ensures consistency.
+        - The header is included by the one source file that defines the variable and by all the source files that reference the variable. For each program, one source file (and only one source file) defines the variable. Similarly, one header file (and only one header file) should declare the variable. The header file is crucial; it enables cross-checking between independent TUs (translation units — think source files) and ensures consistency.
 
-Although there are other ways of doing it, this method is simple and reliable. It is demonstrated by file3.h, file1.c and file2.c:
+        - Although there are other ways of doing it, this method is simple and reliable. It is demonstrated by file3.h, file1.c and file2.c:
 
-  *file3.h*
-      extern int global_variable;  /* Declaration of the variable */
+     #+begin_src c
+       //*file3.h*
+       extern int global_variable;  /* Declaration of the variable */
+     #+end_src
+   
+     #+begin_src c
+       //*file1.c*
+       #include "file3.h"  /* Declaration made available here */
+       #include "prog1.h"  /* Function declarations */
+   
+       /* Variable defined here */
+       int global_variable = 37;    /* Definition checked against declaration */
+       int increment(void) { return global_variable++; }
+     #+end_src
+   
+     #+begin_src c
+       //*file2.c*
+       #include "file3.h"
+       #include "prog1.h"
+       #include <stdio.h>
+       
+       void use_it(void)
+       {
+           printf("Global variable: %d\n", global_variable++);
+       }
+      #+end_src
 
-  *file1.c*
-      #include "file3.h"  /* Declaration made available here */
-      #include "prog1.h"  /* Function declarations */
+    + The next two files complete the source for prog1:
 
-      /* Variable defined here */
-      int global_variable = 37;    /* Definition checked against declaration */
-      int increment(void) { return global_variable++; }
-  
-  *file2.c*
+    + The complete programs shown use functions, so function declarations have crept in. Both C99 and C11 require functions to be declared or defined before they are used (whereas C90 did not, for good reasons). I use the keyword extern in front of function declarations in headers for consistency — to match the extern in front of variable declarations in headers. Many people prefer not to use extern in front of function declarations; the compiler doesn't care — and ultimately, neither do I as long as you're consistent, at least within a source file.
+
+      #+begin_src c
+      //*prog1.h*
+      extern void use_it(void);
+      extern int increment(void);
+      #+end_src
+
+      #+begin_src c
+      //*prog1.c*
       #include "file3.h"
       #include "prog1.h"
       #include <stdio.h>
+      #+end_src
 
-      void use_it(void)
+      int main(void)
       {
-          printf("Global variable: %d\n", global_variable++);
+          use_it();
+          global_variable += 19;
+          use_it();
+          printf("Increment: %d\n", increment());
+          return 0;
       }
+      //prog1 uses prog1.c, *file1.c*, *file2.c*, file3.h and prog1.h.
+      #+end_src
 
-//The next two files complete the source for prog1:
+     #+begin_src
+     //*prog1.mk*
+     # Minimal makefile for prog1
+     PROGRAM = prog1
+     FILES.c = prog1.c file1.c file2.c
+     FILES.h = prog1.h file3.h
+     FILES.o = ${FILES.c:.c=.o}
 
-//The complete programs shown use functions, so function declarations have crept in. Both C99 and C11 require functions to be declared or defined before they are used (whereas C90 did not, for good reasons). I use the keyword extern in front of function declarations in headers for consistency — to match the extern in front of variable declarations in headers. Many people prefer not to use extern in front of function declarations; the compiler doesn't care — and ultimately, neither do I as long as you're consistent, at least within a source file.
+     CC      = gcc
+     SFLAGS  = -std=c11
+     GFLAGS  = -g
+     OFLAGS  = -O3
+     WFLAG1  = -Wall
+     WFLAG2  = -Wextra
+     WFLAG3  = -Werror
+     WFLAG4  = -Wstrict-prototypes
+     WFLAG5  = -Wmissing-prototypes
+     WFLAGS  = ${WFLAG1} ${WFLAG2} ${WFLAG3} ${WFLAG4} ${WFLAG5}
+     UFLAGS  = # Set on command line only
 
-    *prog1.h*
-    extern void use_it(void);
-    extern int increment(void);
+     CFLAGS  = ${SFLAGS} ${GFLAGS} ${OFLAGS} ${WFLAGS} ${UFLAGS}
+     LDFLAGS =
+     LDLIBS  =
 
-    *prog1.c*
-    #include "file3.h"
-    #include "prog1.h"
-    #include <stdio.h>
+     all:    ${PROGRAM}
 
-    int main(void)
-    {
-        use_it();
-        global_variable += 19;
-        use_it();
-        printf("Increment: %d\n", increment());
-        return 0;
-    }
-    //prog1 uses prog1.c, *file1.c*, *file2.c*, file3.h and prog1.h.
+     ${PROGRAM}: ${FILES.o}
+     
 
-    *prog1.mk*
-    # Minimal makefile for prog1
-    PROGRAM = prog1
-    FILES.c = prog1.c file1.c file2.c
-    FILES.h = prog1.h file3.h
-    FILES.o = ${FILES.c:.c=.o}
+     ${CC} -o $@ ${CFLAGS} ${FILES.o} ${LDFLAGS} ${LDLIBS}
 
-    CC      = gcc
-    SFLAGS  = -std=c11
-    GFLAGS  = -g
-    OFLAGS  = -O3
-    WFLAG1  = -Wall
-    WFLAG2  = -Wextra
-    WFLAG3  = -Werror
-    WFLAG4  = -Wstrict-prototypes
-    WFLAG5  = -Wmissing-prototypes
-    WFLAGS  = ${WFLAG1} ${WFLAG2} ${WFLAG3} ${WFLAG4} ${WFLAG5}
-    UFLAGS  = # Set on command line only
+     prog1.o: ${FILES.h}
+     file1.o: ${FILES.h}
+     file2.o: ${FILES.h}
 
-    CFLAGS  = ${SFLAGS} ${GFLAGS} ${OFLAGS} ${WFLAGS} ${UFLAGS}
-    LDFLAGS =
-    LDLIBS  =
+     # If it exists, prog1.dSYM is a directory on macOS
+     DEBRIS = a.out core *~ *.dSYM
+     RM_FR  = rm -fr
 
-    all:    ${PROGRAM}
-
-    ${PROGRAM}: ${FILES.o}
-    
-
-    ${CC} -o $@ ${CFLAGS} ${FILES.o} ${LDFLAGS} ${LDLIBS}
-
-    prog1.o: ${FILES.h}
-    file1.o: ${FILES.h}
-    file2.o: ${FILES.h}
-
-    # If it exists, prog1.dSYM is a directory on macOS
-    DEBRIS = a.out core *~ *.dSYM
-    RM_FR  = rm -fr
-
-    clean:
-    ${RM_FR} ${FILES.o} ${PROGRAM} ${DEBRIS}
+     clean:
+     ${RM_FR} ${FILES.o} ${PROGRAM} ${DEBRIS}
+     #+end_src
     
 *** General Guidelines(stack overflow)
 //Rules to be broken by experts only, and only with good reason:
@@ -205,16 +220,15 @@ Although there are other ways of doing it, this method is simple and reliable. I
       + <limit.h>
       + <float.h>
 
-        
 ** enum
    [[Cp01_Enum.c]]
    
 ** declarations
-   float eps = 1.0e-5;
-   const char msg[] = "msg: ";
+   + float eps = 1.0e-5;
+   + const char msg[] = "msg: ";
    
 ** type conversion
-   //A char is just a small integer, so chars may be freely used in arithmetic expressions.
+   + A char is just a small integer, so chars may be freely used in arithmetic expressions.
    [[Cp01_TypeConversion.c]]
    
    *common library*
@@ -225,30 +239,30 @@ Although there are other ways of doing it, this method is simple and reliable. I
    
 ** math
    + <Math.h>
-     //pow
+     - pow
      
 ** control flow
    + while && for loops
      [[./Cp01_Loop.c]]
   
    + switch
-     [[./Cp01_Switch.c]]
-     //The condition in the switch-statement needs not to be type int exactly but "any expression of integer type (char, signed or unsigned integer, or enumeration)" 
-     //(though a long did not threw compiler error)
+     - [[./Cp01_Switch.c]]
+     - The condition in the switch-statement needs not to be type int exactly but "any expression of integer type (char, signed or unsigned integer, or enumeration)" 
+     - (though a long did not threw compiler error immediately)
      
    + do ... while (expression);
 
    + goto and labels
-     goto found;
-     found: //...
+     - goto found;
+     - found: //...
 
 ** basic function structures
-   //cc main.c getline.c strindex.c
-   //say main.c has error, then possible to recompile with:
-   //cc main.c getline.o strindex.o 
+   + cc main.c getline.c strindex.c
+     - say main.c has error, then possible to recompile with: 
+     - ~cc main.c getline.o strindex.o~
    
    *with header file*
-   //cc Cp01_Bitwise.c Cp00_AnyToBinary.c -o Cp01_Bitwise
+   + cc Cp01_Bitwise.c Cp00_AnyToBinary.c -o Cp01_Bitwise
    [[./Cp01_Bitwise.c]]
 
 ** misc
@@ -261,33 +275,69 @@ Although there are other ways of doing it, this method is simple and reliable. I
      //the former is compiled to source code as a constant.
      //while the later gets load to memory.
      
-     
 ** *scopes*
    + vars without declaration is private to the file.
    + *static variavles*
      [[*Memory Layout of C Programs]]
    
-
 * Chapter 2, program stucture
-** Memory Layout of C Programs
-   //TODO
-   1. Text segment
-   -> stack, heap
-   2. Initialized data segment
-   3. Uninitialized data segment
-   4. Stack
-   5. Heap
+** Memory Layout of C Programs, compilation
+   + the memory layout of a process 
+     - src:
+       #+begin_src c
+       #include <stdio.h>
 
+       int global_initialized = 21;
+       int global_uninitialized;
+
+       int func(){
+           int local_var_inside_func;
+
+           int *pointer = malloc (sizeof(int)); // let rhs int = #dynamic01.int; lhs *pointer = #pointer
+           free(pointer);
+       }
+
+       int main(int argc, char *argv[]) {
+           int local_var_inside_main;
+
+           func();
+           return 0;
+       }
+       #+end_src
+    - the memory layout of the process:
+   | memory                              |                                                           |
+   |-------------------------------------+-----------------------------------------------------------|
+   | Command Line Arguments Memory       | Argv[0], Argv[1], ..., Argv[n]                            |
+   |                                     |                                                           |
+   |-------------------------------------+-----------------------------------------------------------|
+   | Stack (all static memory)           | main(), local_var_inside_main                             |
+   |                                     | called by main(): func(), local_var_inside_func, #pointer |
+   |                                     |                                                           |
+   |-------------------------------------+-----------------------------------------------------------|
+   | stack grows down &darr;             |                                                           |
+   |                                     |                                                           |
+   |                                     |                                                           |
+   | heap grows up &uarr;                |                                                           |
+   |-------------------------------------+-----------------------------------------------------------|
+   |                                     |                                                           |
+   | Heap (all dynamic allocated memory) | #dynamic01.int                                            |
+   |-------------------------------------+-----------------------------------------------------------|
+   | Global Uninitalized Vars            | global_uninitialized                                      |
+   |-------------------------------------+-----------------------------------------------------------|
+   | Global Initialized Vars             | global_initialized                                        |
+   |-------------------------------------+-----------------------------------------------------------|
+   | Text Segment                        | a.out                                                     |
+   |-------------------------------------+-----------------------------------------------------------|
 
 ** static
-   //static variables inside a function. Similar to sequential invocation of a same Class::staticFunction
-   [[./Cp02_Static.c]]
-   //static outside a function
-     //a file local constant storage.
+   + static variables inside a function. Similar to sequential invocation of a same Class::staticFunction
+     - [[./Cp02_Static.c]]
+   + static outside a function
+     - ~For restricting function access from other file, the keyword static is used~
 ** register variable     
-   //A register declaration advises the compiler that the variable in question will be heavily used. The idea is that register variables are to be placed in machine registers, which may result in smaller and faster programs. But compilers are free to ignore the advice.
-   //It's a hint to the compiler that the variable will be heavily used and that you recommend it be kept in a processor register if possible. Most modern compilers do that automatically, and are better at picking them than us humans.
-
+   + A register declaration advises the compiler that the variable in question will be heavily used. The idea is that register variables are to be placed in machine registers, which may result in smaller and faster programs. But compilers are free to ignore the advice.
+   + It's a hint to the compiler that the variable will be heavily used and that you recommend it be kept in a processor register if possible. Most modern compilers do that automatically, and are better at picking them than us humans.
+   #+begin_src c
    register int x;
    register char c;
    f(register unsigned m, register long n)
@@ -295,10 +345,13 @@ Although there are other ways of doing it, this method is simple and reliable. I
        register int i;
        ...
    }
+   #+end_src
 
 ** initialization
-   //In the absence of explicit initialization, external and static variables are guaranteed to be
-initialized to zero; automatic and register variables have *undefined* (i.e., garbage) initial values.
-   // *automatic variables* (local variables within a function):
-      //All variables declared *within a block of code* are automatic by default. An uninitialized automatic variable has an undefined value until it is assigned a valid value of its type.
+   + In the absence of explicit initialization, ~external~ and ~static~ variables are guaranteed to be
+initialized to zero; ~automatic~ (equivalent to Java local vars inside a function or scope) and ~register~ variables have *undefined* (i.e., garbage) initial values.
+     - *automatic variables*:
+       #+begin_quote
+       All variables declared *within a block of code* are automatic by default. An uninitialized automatic variable has an undefined value until it is assigned a valid value of its type.
+       #+end_quote
 
