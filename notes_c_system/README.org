@@ -257,7 +257,7 @@
      - found: //...
 
 ** basic function structures
-   + cc main.c getline.c strindex.c
+   + ~cc main.c getline.c strindex.c~
      - say main.c has error, then possible to recompile with: 
      - ~cc main.c getline.o strindex.o~
    
@@ -282,7 +282,7 @@
    
 * Chapter 2, program stucture
 ** Memory Layout of C Programs, compilation
-   + the memory layout of a process 
+   + the memory layout of a process, with example:
      - src:
        #+begin_src c
        #include <stdio.h>
@@ -304,22 +304,21 @@
            return 0;
        }
        #+end_src
-    - the memory layout of the process:
+    - the memory layout of the above process:
    | memory                              |                                                           |
    |-------------------------------------+-----------------------------------------------------------|
    | Command Line Arguments Memory       | Argv[0], Argv[1], ..., Argv[n]                            |
-   |                                     |                                                           |
    |-------------------------------------+-----------------------------------------------------------|
    | Stack (all static memory)           | main(), local_var_inside_main                             |
    |                                     | called by main(): func(), local_var_inside_func, #pointer |
-   |                                     |                                                           |
    |-------------------------------------+-----------------------------------------------------------|
+   |                                     |                                                           |
+   |                                     |                                                           |
    | stack grows down &darr;             |                                                           |
-   |                                     |                                                           |
-   |                                     |                                                           |
    | heap grows up &uarr;                |                                                           |
-   |-------------------------------------+-----------------------------------------------------------|
    |                                     |                                                           |
+   |                                     |                                                           |
+   |-------------------------------------+-----------------------------------------------------------|
    | Heap (all dynamic allocated memory) | #dynamic01.int                                            |
    |-------------------------------------+-----------------------------------------------------------|
    | Global Uninitalized Vars            | global_uninitialized                                      |
@@ -347,11 +346,31 @@
    }
    #+end_src
 
+** block structure
+   + c is not. no nested functions
+   + the local vars hides the external ones when present. bad practice.
+
 ** initialization
    + In the absence of explicit initialization, ~external~ and ~static~ variables are guaranteed to be
-initialized to zero; ~automatic~ (equivalent to Java local vars inside a function or scope) and ~register~ variables have *undefined* (i.e., garbage) initial values.
-     - *automatic variables*:
+initialized to zero; ~automatic~ and ~register~ variables have *undefined* (i.e., garbage) initial values.
+      *automatic variables*:
        #+begin_quote
        All variables declared *within a block of code* are automatic by default. An uninitialized automatic variable has an undefined value until it is assigned a valid value of its type.
        #+end_quote
 
+   + the initialization is done once, conceptionally before the program begins execution. 
+
+   + ~external~ and ~static~ variables must be initialized by a constant expression.
+
+   + ~automic~ and ~register~ variables can be initialized by any previously defined values or function calls.
+
+   + ~array~
+     #+begin_quote
+     If there are fewer initializers for an array than the specified size, the others will be zero for
+external, static and automatic variables.
+     #+end_quote
+     #+begin_src c
+     int intArr[4]; // 0000
+     int i = 5, intArr2[2] = { 1, 2 }, j;
+     int intArr3[] = { 1, 2, 3 };
+     #+end_src
