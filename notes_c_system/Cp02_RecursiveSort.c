@@ -1,8 +1,11 @@
 #include <stdio.h>
+void swap(int v[], int i, int j);
+void qsort(int v[], int left, int right);
 /* qsort: sort v[left]...v[right] into increasing order */
 void qsort(int v[], int left, int right)
 {
     int i, last;
+    // you can declare a function inside a function 
     // implicit declaration if not declared.
     void swap(int v[], int i, int j);
     if (left >= right) /* do nothing if array contains */
@@ -32,7 +35,7 @@ int main(int argc, char const *argv[])
     int intA[] = {1, 7, 2, 4, 0, 9, 3};
     qsort(intA, 0, 6);
 
-    for (int i = 0; i < (sizeof(intA) / sizeof (intA[0])); i++)
+    for (int i = 0; i < (sizeof(intA) / sizeof(intA[0])); i++)
     {
         int j = intA[i];
         printf("%d", j);
