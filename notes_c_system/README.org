@@ -333,7 +333,7 @@
      - [[./Cp02_Static.c]]
    + static outside a function
      - ~For restricting function access from other file, the keyword static is used~
-** register variable     
+** register variable
    + A register declaration advises the compiler that the variable in question will be heavily used. The idea is that register variables are to be placed in machine registers, which may result in smaller and faster programs. But compilers are free to ignore the advice.
    + It's a hint to the compiler that the variable will be heavily used and that you recommend it be kept in a processor register if possible. Most modern compilers do that automatically, and are better at picking them than us humans.
    #+begin_src c
@@ -374,3 +374,12 @@ external, static and automatic variables.
      int i = 5, intArr2[2] = { 1, 2 }, j;
      int intArr3[] = { 1, 2, 3 };
      #+end_src
+
+** the c preprocessr
+*** file inclusion
+    + replacing all existing #include statement with their content
+      #+begin_src c
+      #include "filename"
+      #include <filename>
+      #+end_src
+*** macro substitution  
