@@ -1,0 +1,11 @@
+;; -*- mode: org; eval: (company-mode -1); mode:emmet; -*-
++ Book1: CISSP_ Certified Information Systems Security Professional Study Guide   (2011, John Wiley & Sons) (788 pages)
++ Book2: GSEC GIAC Security Essentials Certification All-in-One Exam Guide (555 pages)
++ Book3: Offensive Security - Offensive Security OSCP-Offensive Security Ltd (2020) (853 pages)
++ Book4: Internet Core Protocols The Definitive Guide Help for Network Administrators by Eric Hall (424 pages)
++ Book5: Linux Administration  A Beginner’s Guide, Wale Soyinka (2016, McGraw-Hill) (802 pages)
++ Book6:
+================================================================================
+
+* Book1_Chapter1
+  

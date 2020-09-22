@@ -1681,3 +1681,8 @@ Between the controller and the model sometimes goes a layer which is called a se
       var foo = {} as Foo;
       // foo.bar === undefined;
       #+end_src
+
+      
+** extending vs. intersecting(&) interfaces
+   + intersecting combines merge types that has a same name, so that:
+     ~type anArg: string | number;~ without thworing an error.
