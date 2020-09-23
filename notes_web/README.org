@@ -939,7 +939,7 @@ Between the controller and the model sometimes goes a layer which is called a se
         //method1
         const updated = Object.assign({}, person, { name: "Bob", age: 30 })
         console.log(updated); //{ name: "Bob", age: 30 }
-        //method2, spread operator
+        //method2, spread syntax
         const updated = {... person, name: "Bob" }
     #+end_src
     
@@ -1240,6 +1240,8 @@ Between the controller and the model sometimes goes a layer which is called a se
    const wrap = (type, str) => `<${type}>${str}</${type}>`
 ** the spread syntax(...)
    //used to iterate or merge arrays or objects
+   + spread syntax is not an operator, because it do not has a stand-alone version. i.e. let arr1 = ...Array(2) dose not compile;
+   + the spread syntax is equivalent to Object.assign;
    + for arrays
      #+begin_src javascript
          let arr1 = [0, 1, 2];
@@ -1298,6 +1300,11 @@ Between the controller and the model sometimes goes a layer which is called a se
      - If neither async or defer is present: The script is fetched and executed immediately, *before* the browser continues parsing the page
        
 ** ? ways to create memory leak
+
+** sparse array, Array(2) vs [undefined, undefined] 
+   + array memory is sparsed
+   + Array(2).map() may ignore non-existing elements by default.
+   + while e.g. [...Array(2)].map() will not ignore any undefined element.
 
 * Section 39, React
   + double curly braces
@@ -1626,7 +1633,6 @@ Between the controller and the model sometimes goes a layer which is called a se
          
      #+end_src
      
-     
 ** How does interfaces with construct signatures work?(stackoverflow)
    + Construct signatures in interfaces are not implementable in classes; they're only for defining existing JS APIs that define a 'new'-able function. Here's an example involving interfaces new signatures that does work:
      #+begin_src javascript
@@ -1662,7 +1668,6 @@ Between the controller and the model sometimes goes a layer which is called a se
      #+end_src
        
    
-   
 ** type-assertion
 *** basic
     + *as* vs <>
@@ -1682,7 +1687,6 @@ Between the controller and the model sometimes goes a layer which is called a se
       // foo.bar === undefined;
       #+end_src
 
-      
 ** extending vs. intersecting(&) interfaces
    + intersecting combines merge types that has a same name, so that:
      ~type anArg: string | number;~ without thworing an error.
