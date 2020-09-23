@@ -383,3 +383,58 @@ external, static and automatic variables.
       #include <filename>
       #+end_src
 *** macro substitution  
+    + macro names are replaced with real code
+      #+begin_src c
+      #define name replacement text \
+                   use backslash to break line \
+      #define forever for (;;)
+      #define max(A,B) ((A) > (B) ? (A) : (B))
+      // Note the parthensis, without them:
+      #define square(x) x * x /* WRONG */
+      // square(z + 1) == z + 1 * z + 1;
+      #+end_src
+    + ~#undef~ diretive
+      #+begin_quote
+      Removes (undefines) a name previously created with #define.
+      #+end_quote
+    + ~#~ + parameter name => quoted string with parameter replaced by the actual argument
+      #+begin_src c
+      #define dprint(expr) printf(#expr " = %g\n", expr)
+      // When this is invoked, as in:
+      // dprint(x/y)
+      // the macro is expanded into:
+      // printf("x/y" " = &g\n", x/y);
+      // and the strings are concatenated, so the effect is
+      // printf("x/y = &g\n", x/y);
+      #+end_src
+    + ~##~ 
+      #+begin_quote
+      The preprocessor operator ## provides a way to concatenate actual arguments during macro expansion. If a parameter in the replacement text is adjacent to a ##, the parameter is replaced by the actual argument, the ## and surrounding white space are removed, and the result is re-scanned.
+      #+end_quote
+      #+begin_src c
+      #define paste(front, back) front ## back
+      // paste(name, 1) == name1;
+      #+end_src
+
+*** conditional inclusion
+    + ~#if~ or ~ifndef~ , ~#endif~ 
+      #+begin_src c
+      #if !defined(HDR)
+      #define HDR
+      #ifndef HDR
+      #define HDR
+      #endif
+      #if SYSTEM == SYSV
+          #define HDR "sysv.h"
+      #elif SYSTEM == BSD
+          #define HDR "bsd.h"
+      #elif SYSTEM == MSDOS
+          #define HDR "msdos.h"
+      #else
+          #define HDR "default.h"
+      #endif
+      #+end_src
+      
+* Chapter 3, Pointer
+** 
+    
