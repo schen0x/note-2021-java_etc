@@ -1690,3 +1690,33 @@ Between the controller and the model sometimes goes a layer which is called a se
 ** extending vs. intersecting(&) interfaces
    + intersecting combines merge types that has a same name, so that:
      ~type anArg: string | number;~ without thworing an error.
+* Chapter 50, OLTP (Online Transaction Processing)
+** basic
+*** the primary object of an OLTP system
+    + data processing, not data analysis 
+      #+begin_comment
+      for example, a bank transaction that withdraw an amount of money on an account concurrently. The OLTP system ensure the DB operation is atomatic, and earlier valid request be processed first so that a potential error due to the race condition could be avoided. i.e., first-come first-serve.
+      #+end_comment
+      
+*** merit of an OLTP system
+    + It administers daily transactions of an organization.
+    + simplied individual processes.
+
+*** disadvantage of an OLTP system
+    + severely effect online transations on hardware failures.
+    + concurrency issue, since it allow multiple users to access and change the same data at the same time.
+
+*** OLTP vs OLAP
+    | criteria      | OLTP                                 | OLAP                              |
+    |---------------+--------------------------------------+-----------------------------------|
+    | data          | large numbers of short trans.l data  | large volume of data              |
+    | process       | to manage db modification            | to analyse and retrieve data      |
+    | functionality | online db modifying system           | online db query management system |
+    | methods       | DBMS methods                         | data warehousing methods          |
+    | query         | CRUD                                 | SELECT majority                   |
+    | backup        | complete + incremental bk needed     | infrequent backup is OK           |
+    | style         | fast response time: normalized, etc. | sources => one consolidate db     |
+    |               |                                      |                                   |
+    #+begin_comment
+    + trans.l = transactional
+    #+end_comment
