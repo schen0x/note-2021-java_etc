@@ -436,5 +436,19 @@ external, static and automatic variables.
       #+end_src
       
 * Chapter 3, Pointer
-** 
+** & and *
+   #+begin_src c
+   int a;
+   int *p; // declaring an int pointer p
+   p = &a; // p points to a now;
+   a = 5;
+   // p == &a now
+   print *p // 5, dereferencing
+   #+end_src
+   
+** pointer arithmetic
+   [[./Cp03_PointerArithmetic.c]]
+   
+** *memory allocation*
+   
     
