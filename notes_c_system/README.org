@@ -437,18 +437,48 @@ external, static and automatic variables.
       
 * Chapter 3, Pointer
 ** & and *
+   + declaration of a pointer ~p~: ~int *p~, the ~*p~ is an int.
    #+begin_src c
    int a;
-   int *p; // declaring an int pointer p
-   p = &a; // p points to a now;
+   int *p; // declaration
+   p = &a; // p = (the address of a)
    a = 5;
-   // p == &a now
    print *p // 5, dereferencing
+   double *dp, atof(char *) //declaration
    #+end_src
    
 ** pointer arithmetic
    [[./Cp03_PointerArithmetic.c]]
-   
+   + ~*p++~ is not ~(*p)++~, since unary operators like ~*~ and ~++~ associate right to left.
+     
+** pointers and arrays
+   [[./Cp03_PointersAndArrays.c]]
+   + arr = p
+     #+begin_src c
+     int a[10];
+     int *pa;
+
+     pa = a; // 1
+     pa = &a[0]; // 2
+     // they have the same effect, i.e., p == a
+     #+end_src
+     #+begin_quote
+     + By definition, the value of a variable or expression of type array is the address of element zero of the array. 
+
+     + In evaluating a[i], C converts it to *(a+i) immediately; the two forms are equivalent.
+
+     + There is one difference between an array name and a pointer that must be kept in mind. A pointer
+is a variable, so pa=a and pa++ are legal. But an array name is not a variable; constructions like
+a=pa and a++ are illegal.
+     #+end_quote
+   + strlen and sizeof
+     - sizeof("a"); // 2
+     - strlen("a"); // 1
+     - ~"a"~ is stored as ~"a\0"~;
+     - sizeof("");  // 1
+       + char str0[0];
+       + sizeof(str0); // 0
+
 ** *memory allocation*
    
     

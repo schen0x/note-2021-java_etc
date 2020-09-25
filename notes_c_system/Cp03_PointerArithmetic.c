@@ -20,5 +20,14 @@ int main(int argc, char const *argv[])
     **q = *p + 2;
     printf("x = %d\n", x);
 
+    printf("*p = %d\n", *p);
+    printf("p = %d\n", p);
+    *p++; // careful
+    printf("*p = %d\n", *p);
+    printf("p = %d\n", p);
+    printf("-----------------------\n");
+    p = 1; // compiler warning: assignment to ‘int *’ from ‘int’ makes pointer from integer without a cast
+    printf("p = %d\n", p);
+    //! printf("*p = %d\n", *p); // runtime segmentation fault
     return 0;
 }

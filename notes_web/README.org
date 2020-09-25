@@ -1694,9 +1694,9 @@ Between the controller and the model sometimes goes a layer which is called a se
 ** basic
 *** the primary object of an OLTP system
     + data processing, not data analysis 
-      #+begin_comment
+      #+begin_quote
       for example, a bank transaction that withdraw an amount of money on an account concurrently. The OLTP system ensure the DB operation is atomatic, and earlier valid request be processed first so that a potential error due to the race condition could be avoided. i.e., first-come first-serve.
-      #+end_comment
+      #+end_quote
       
 *** merit of an OLTP system
     + It administers daily transactions of an organization.
@@ -1717,6 +1717,4 @@ Between the controller and the model sometimes goes a layer which is called a se
     | backup        | complete + incremental bk needed     | infrequent backup is OK           |
     | style         | fast response time: normalized, etc. | sources => one consolidate db     |
     |               |                                      |                                   |
-    #+begin_comment
     + trans.l = transactional
-    #+end_comment
