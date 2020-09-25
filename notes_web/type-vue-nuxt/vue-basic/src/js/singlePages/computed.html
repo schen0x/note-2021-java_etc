@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>My first Vue app</title>
+    <script src="https://unpkg.com/vue"></script>
+</head>
+
+<body>
+    <div id="app">
+    </div>
+
+    <script>
+        const app = new Vue({
+            data() {
+                return { a: 1, b:2 }
+            },
+            computed: {
+                // get only
+                aDouble() {
+                    return this.a * 2
+                },
+                // both get and set
+                aPlus: {
+                    get() {
+                        return this.a + 1
+                    },
+                    set(v) {
+                        this.a = v - 1
+                    }
+                },
+                bGet: {
+                    get(){
+                        return this.b;
+                    }
+                }
+
+            }
+        }).$mount('#app');
+
+        console.log(app.aPlus) // => 2
+        app.aPlus = 3
+        console.log(app.a) // => 2
+        console.log(app.aDouble) // => 4
+        console.log("bGet = " + app.bGet) // => 2
+        //! app.bGet = 4; // Vue warn no setter  
+        console.log(app.b) // => 2
+    </script>
+</body>
+
+</html>

@@ -7,14 +7,18 @@
 <body>
   <div id="app">
     {{ message }}
-    {app.message}
   </div>
 
   <script>
     var app = new Vue({
       el: '#app',
-      data: {
-        message: 'Hello Vue!'
+      // data: {
+      //   message: 'Hello Vue!'
+      // },
+      data(){
+        return{
+          message: 'Hello Vue',
+        }
       }
     })
   </script>
