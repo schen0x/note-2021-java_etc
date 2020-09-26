@@ -440,18 +440,21 @@ external, static and automatic variables.
    + declaration of a pointer ~p~: ~int *p~, the ~*p~ is an int.
    #+begin_src c
    int a;
-   int *p; // declaration
+   int *p; // declaration, but still uninitialized.
+   // i.e., the memory for ~p~ is assigned, however it still contains unknown value.
+   //! *p = 1; // Bus Error: trying to assign value to the bogus pointer ~p~. it may points to nowhere or everywhere.
    p = &a; // p = (the address of a)
    a = 5;
    print *p // 5, dereferencing
    double *dp, atof(char *) //declaration
    #+end_src
    
-** pointer arithmetic
+** pointer arithmetic, type safety
    [[./Cp03_PointerArithmetic.c]]
    + ~*p++~ is not ~(*p)++~, since unary operators like ~*~ and ~++~ associate right to left.
+   + type safety: let ~**p = x;~, during compilation possible to know if x is a pointer or a raw value, if x is not a pointer which normally it suppose to be, a warn would be thrown.
      
-** pointers and arrays
+** *pointers and arrays*
    [[./Cp03_PointersAndArrays.c]]
    + arr = p
      #+begin_src c
@@ -467,11 +470,15 @@ external, static and automatic variables.
 
      + In evaluating a[i], C converts it to *(a+i) immediately; the two forms are equivalent.
 
-     + There is one difference between an array name and a pointer that must be kept in mind. A pointer
-is a variable, so pa=a and pa++ are legal. But an array name is not a variable; constructions like
-a=pa and a++ are illegal.
+     + There is one difference between an array name and a pointer that must be kept in mind. *A pointer
+is a variable, so pa=a and pa++ are legal. But an array name is not a variable; constructions like a=pa and a++ are illegal.*
      #+end_quote
-   + strlen and sizeof
+
+** array has *no bound checking*
+   + ~int arr[1];~, ~arr[9] = 1~ is accessable.
+   + arr[n] is syntactic sugar for *(arr + n). 
+     
+*** strlen and sizeof
      - sizeof("a"); // 2
      - strlen("a"); // 1
      - ~"a"~ is stored as ~"a\0"~;
@@ -480,5 +487,12 @@ a=pa and a++ are illegal.
        + sizeof(str0); // 0
 
 ** *memory allocation*
-   
-    
+*** ? ~alloc~ and ~afree(p)~
+    + a test: ~if (allocbuf + ALLOCSIZE - allocp >= n)~
+    + on free, free a pointer?
+*** character pointers
+    [[./Cp03_CharacterPointers.c]]
+    #+begin_src c
+    char *pstr;
+    pstr = "some string"; // the pstr is merely but a pointer.
+    #+end_src
