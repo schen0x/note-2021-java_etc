@@ -474,10 +474,24 @@ external, static and automatic variables.
 is a variable, so pa=a and pa++ are legal. But an array name is not a variable; constructions like a=pa and a++ are illegal.*
      #+end_quote
 
-** array has *no bound checking*
-   + ~int arr[1];~, ~arr[9] = 1~ is accessable.
-   + arr[n] is syntactic sugar for *(arr + n). 
-     
+** pointer arrays
+   + best suit for an internal static array.
+     [[./Cp03_PointerArrays.c]]
+   #+begin_src c
+   static char *name[] = { "str 1", "str 2" };
+   // the name is an array of character pointers;
+   #+end_src
+   + drawback: length of a pointer array cannot be determined:
+     [[https://stackoverflow.com/questions/492384/how-to-find-the-sizeof-a-pointer-pointing-to-an-array][how-to-find-the-sideof-a-pointer-pointing-to-an-array]]
+     #+begin_src c
+     static char *arr2[10] = { "a", "b", "c" }; // what is the size of *arr2[] ?
+     #+end_src
+
+*** the memory location of array
+    + [[https://stackoverflow.com/questions/35442414/dynamic-vs-static-array-in-c][dynamic-vs-static-array-in-c]]
+    + [[./Cp03_StaticVarMemoryStructure.c]]
+    + with static, file scope or function scope, without initializer: filled with ~0~(for scalars) or ~NULL~(for pointers)
+
 *** strlen and sizeof
      - sizeof("a"); // 2
      - strlen("a"); // 1
@@ -486,13 +500,60 @@ is a variable, so pa=a and pa++ are legal. But an array name is not a variable; 
        + char str0[0];
        + sizeof(str0); // 0
 
+** array has *no bound checking*
+   + ~int arr[1];~, ~arr[9] = 1~ is accessable.
+   + arr[n] is syntactic sugar for *(arr + n).
+
+** multi-dimensional arrays
+   + ~array[i][j]~, i.e., array[i] is an array.
+
 ** *memory allocation*
 *** ? ~alloc~ and ~afree(p)~
     + a test: ~if (allocbuf + ALLOCSIZE - allocp >= n)~
     + on free, free a pointer?
+
 *** character pointers
     [[./Cp03_CharacterPointers.c]]
     #+begin_src c
     char *pstr;
     pstr = "some string"; // the pstr is merely but a pointer.
     #+end_src
+
+*** arrow notation (struct and uniion)
+    + The Dot(.) operator is used to normally access members of a structure or union.
+    + The Arrow(->) operator exists to access the members of the structure or the unions using pointers.
+    #+begin_src c
+    // C program to show Arrow operator 
+    // used in structure 
+
+    #include <stdio.h> 
+    #include <stdlib.h> 
+
+    // Creating the structure 
+    struct student { 
+        char name[80]; 
+        int age; 
+        float percentage; 
+    }; 
+
+    // Creating the structure object 
+    struct student* emp = NULL; 
+
+    // Driver code 
+    int main() 
+    { 
+        // Assigning memory to struct variable emp 
+        emp = (struct student*) 
+            malloc(sizeof(struct student)); 
+
+        // Assigning value to age variable 
+        // of emp using arrow operator 
+        emp->age = 18; 
+
+        // Printing the assigned value to the variable 
+        printf("%d", emp->age); 
+
+        return 0; 
+    } 
+    #+end_src
+    
