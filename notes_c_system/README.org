@@ -321,18 +321,26 @@
    |-------------------------------------+-----------------------------------------------------------|
    | Heap (all dynamic allocated memory) | #dynamic01.int                                            |
    |-------------------------------------+-----------------------------------------------------------|
-   | Global Uninitalized Vars            | global_uninitialized                                      |
+   | the BSS segment                     | global_uninitialized, and local_static_vars_unitialized   |
    |-------------------------------------+-----------------------------------------------------------|
-   | Global Initialized Vars             | global_initialized                                        |
+   | the data segment                    | global_initialized, and local_static_vars_initialized     |
    |-------------------------------------+-----------------------------------------------------------|
    | Text Segment                        | a.out                                                     |
    |-------------------------------------+-----------------------------------------------------------|
 
 ** static
-   + static variables inside a function. Similar to sequential invocation of a same Class::staticFunction
-     - [[./Cp02_Static.c]]
-   + static outside a function
-     - ~For restricting function access from other file, the keyword static is used~
+   [[./Cp02_Static.c]]
+   + Inside a function, meaning: retains its value between calls (extend the lifetime of the variable to the program, instead of the function)
+     #+begin_quote
+     When the function is called the first time, the static local varables will be stored at the data segment of the process, instead of the stack. Thus among calls its value retains. 
+     If the local var is static declared without an initializer, it will be filled with 0 or NULL and put to the BSS segment.
+     #+end_quote
+     [[https://en.wikipedia.org/wiki/Data_segment][Wikipedia - Data_segment]]
+     - static local variables
+   + Outside a function, at the function level, meaning: visible only in this file(it effect the scope of a global variable or function, i.e., to be "visible within that file only"); usage:
+     - static global variables
+     - static functions
+
 ** register variable
    + A register declaration advises the compiler that the variable in question will be heavily used. The idea is that register variables are to be placed in machine registers, which may result in smaller and faster programs. But compilers are free to ignore the advice.
    + It's a hint to the compiler that the variable will be heavily used and that you recommend it be kept in a processor register if possible. Most modern compilers do that automatically, and are better at picking them than us humans.
@@ -477,15 +485,26 @@ is a variable, so pa=a and pa++ are legal. But an array name is not a variable; 
 ** pointer arrays
    + best suit for an internal static array.
      [[./Cp03_PointerArrays.c]]
-   #+begin_src c
-   static char *name[] = { "str 1", "str 2" };
-   // the name is an array of character pointers;
-   #+end_src
+     #+begin_src c
+     static char *name[] = { "str 1", "str 2" };
+     // the name is an array of character pointers;
+     #+end_src
    + drawback: length of a pointer array cannot be determined:
      [[https://stackoverflow.com/questions/492384/how-to-find-the-sizeof-a-pointer-pointing-to-an-array][how-to-find-the-sideof-a-pointer-pointing-to-an-array]]
      #+begin_src c
      static char *arr2[10] = { "a", "b", "c" }; // what is the size of *arr2[] ?
      #+end_src
+*** pointer array vs multi-dimensional array
+    + Given:
+      #+begin_src c
+      int a[10][20];
+      int *b[10];
+      #+end_src
+      #+begin_quote
+      then a[3][4] and b[3][4] are both syntactically legal references to a single int. But a is a true two-dimensional array: 200 int-sized locations have been set aside, .... For b, however, the definition only allocates 10 pointers and does not initialize them; initialization must be done explicitly, either statically or with code.
+      The important advantage of the pointer array is that the rows of the array may be of different lengths. That is, *each element of b need not point to a twenty-element vector*; some may point to two elements, some to fifty, and some to none at all.
+      #+end_quote
+    + the nested array may vary in length. i.e., in java: ~int[][] arr = new int[10][];~
 
 *** the memory location of array
     + [[https://stackoverflow.com/questions/35442414/dynamic-vs-static-array-in-c][dynamic-vs-static-array-in-c]]
@@ -519,7 +538,7 @@ is a variable, so pa=a and pa++ are legal. But an array name is not a variable; 
     pstr = "some string"; // the pstr is merely but a pointer.
     #+end_src
 
-*** arrow notation (struct and uniion)
+*** arrow notation (struct and union)
     + The Dot(.) operator is used to normally access members of a structure or union.
     + The Arrow(->) operator exists to access the members of the structure or the unions using pointers.
     #+begin_src c
@@ -557,3 +576,15 @@ is a variable, so pa=a and pa++ are legal. But an array name is not a variable; 
     } 
     #+end_src
     
+** command-line arguments
+   [[./Cp03_CommandLineArguments.c]]
+   + ~int main(int argc, char const *argv[])~
+     1. the ~argc~ is total argument count, ~*argv[n]~ is a list of argument strings;
+     2. argv[0] is the name of the program;
+     3. the standard requires argv[argc] to be a null pointer.
+
+        
+*** TODO ? handling the flag
+    ? [[./Cp03_HandlingTheFlag.c]]
+    + print all ~*++argv[0];~
+
