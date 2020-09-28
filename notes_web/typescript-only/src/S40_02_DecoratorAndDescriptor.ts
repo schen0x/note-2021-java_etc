@@ -18,11 +18,13 @@ function time(targetName: string) {
         descriptor: PropertyDescriptor
     ) {
         console.log("target: " + target);
+        let tgt = target;
         console.log("propertyKey: " + propertyKey);
+        let ppk = propertyKey;
         const fn = descriptor.value;
         descriptor.value = (...argv:string[]) => {
             console.time(targetName);
-            let out = fn(...argv);
+            let out = fn(...argv, tgt, ppk);
             console.timeEnd(targetName);
         }
     }
