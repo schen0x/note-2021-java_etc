@@ -784,7 +784,7 @@ Between the controller and the model sometimes goes a layer which is called a se
         </script>
     #+end_src
     
-* Chapter 5, JSP
+* Section 5, JSP
 ** KeyWords
 *** JSP Implicit Objects   
     + request
@@ -827,7 +827,7 @@ Between the controller and the model sometimes goes a layer which is called a se
     <%@ page import="java.io.*, ccdebug.*">
     #+end_src
     
-* Chapter 10, the Grand Picture
+* Section 10, the Grand Picture
 ** the evolution of the Web model 
    MVC - Service - DAO
    //Maybe: Servlet == Controller, then it calls the applications on the server, which is the service layer. 
@@ -848,7 +848,7 @@ Between the controller and the model sometimes goes a layer which is called a se
      //Interface and implementation
    + DAO
 
-* Chapter 20, BootStrap
+* Section 20, BootStrap
 ** Basic
    #+begin_src html
    //12 columns, unlimited rows.
@@ -864,7 +864,7 @@ Between the controller and the model sometimes goes a layer which is called a se
    </div>
    #+end_src
    
-* Chapter 30, HTML5 Canvas
+* Section 30, HTML5 Canvas
   
 ** Canvas Objects:
    + Rectangles
@@ -873,7 +873,7 @@ Between the controller and the model sometimes goes a layer which is called a se
    + Bezier Curves
    + Images
    + Text
-* Chapter 31, Redux
+* Section 31, Redux
 ** functional programming
    //e.g.
    + Haskell
@@ -1098,7 +1098,7 @@ Between the controller and the model sometimes goes a layer which is called a se
         
     #+end_src
 
-* Chapter 35, JavaScript trivia
+* Section 35, JavaScript trivia
 ** array
    + []
 ** object
@@ -1306,6 +1306,24 @@ Between the controller and the model sometimes goes a layer which is called a se
    + Array(2).map() may ignore non-existing elements by default.
    + while e.g. [...Array(2)].map() will not ignore any undefined element.
 
+* Section 38, Vue
+** instance proterties and methods(objects in a vue instance)
+   + el (only allowed on an root instance, i.e., an vue instancte created with ~new~)
+   + data(){} (state of an object)
+     - note that: we might want to call this.someProp, hence data() need to be a normal function rather than an arrow function. The same goes to methods;
+   + props:{} (read-only, managed by the parent objects)
+   + methods:{} 
+     - note that: arrow function should not be used to define a method, since an arrow function does not have its own ~this~.
+       
+** template directives
+   
+     
+*** adding instance porterties
+    + ~Vue.prototype.$propertyName = ...~
+      - ~new Vue( { beforeCreate: ()=>{ console.log(this.$PropertyName) } } );~
+    + ~var App = Object.freeze({ helpers: { f1: ()=>{} });~
+      - ~new Vue( { methods: { f: App.helpers.f1 } } )~
+
 * Section 39, React
   + double curly braces
     #+begin_src javascript
@@ -1313,7 +1331,7 @@ Between the controller and the model sometimes goes a layer which is called a se
         //The exterior set of curly braces are letting JSX know you want a JS expression. The interior set of curly braces represent a JavaScript object, meaning you’re passing in a object to the style attribute.
     #+end_src
     
-* Chapter 40, TypeScript
+* Section 40, TypeScript
 ** merit
    + Case0: 
      #+begin_src javascript
@@ -1690,7 +1708,7 @@ Between the controller and the model sometimes goes a layer which is called a se
 ** extending vs. intersecting(&) interfaces
    + intersecting combines merge types that has a same name, so that:
      ~type anArg: string | number;~ without thworing an error.
-* Chapter 50, OLTP (Online Transaction Processing)
+* Section 50, OLTP (Online Transaction Processing)
 ** basic
 *** the primary object of an OLTP system
     + data processing, not data analysis 

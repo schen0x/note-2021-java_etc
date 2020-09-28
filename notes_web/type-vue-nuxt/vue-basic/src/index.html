@@ -1,26 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <title>My first Vue app</title>
   <script src="https://unpkg.com/vue"></script>
 </head>
+
 <body>
-  <div id="app">
-    {{ message }}
+  <div id="root">
+    <h1>
+      {{ message }}
+    </h1>
+    <app-input />
   </div>
 
   <script>
+    import InputBox from './js/components/InputBox';
+    Vue.components("ib", InputBox);
     var app = new Vue({
-      el: '#app',
+      el: '#root',
       // data: {
       //   message: 'Hello Vue!'
       // },
-      data(){
-        return{
+      data() {
+        return {
           message: 'Hello Vue',
         }
+      },
+      components: {
+        'app-input': InputBox,
       }
     })
+
   </script>
 </body>
+
 </html>
