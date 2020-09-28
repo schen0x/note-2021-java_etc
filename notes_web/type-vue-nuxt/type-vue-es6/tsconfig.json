@@ -33,7 +33,7 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "tests/**/*.ts",
-    "tests/**/*.tsx", "src/utils/logDecorator.js", "src/utils/TestMethod.ts"
+    "tests/**/*.tsx", "src/utils/logDecorator.js", "src/utils/TestMethod.tsx"
   ],
   "exclude": [
     "node_modules"

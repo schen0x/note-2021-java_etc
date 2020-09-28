@@ -2,6 +2,7 @@
 import { createDecorator } from 'vue-class-component'
 
 // Declare Log decorator.
+// @ts-ignore
 export const Log = createDecorator((options, key) => {
   // Keep the original method for later.
   const originalMethod = options.methods[key]

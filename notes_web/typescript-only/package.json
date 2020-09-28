@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "tscp": "tsc --target ES5 --emitDecoratorMetadata --experimentalDecorators --inlineSourceMap ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "chnnn",

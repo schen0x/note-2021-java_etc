@@ -17,6 +17,8 @@ function time(targetName: string) {
         propertyKey: string,
         descriptor: PropertyDescriptor
     ) {
+        console.log("target: " + target);
+        console.log("propertyKey: " + propertyKey);
         const fn = descriptor.value;
         descriptor.value = (...argv:string[]) => {
             console.time(targetName);

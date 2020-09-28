@@ -1,11 +1,12 @@
 // import Vue from 'vue'
 // import Component from 'vue-class-component'
+// // @ts-ignore
 // import Log from './logDecorator';
 
 // @Component
-// class MyComp extends Vue {
+// export default class MyComp extends Vue {
 //   // It prints a log when `hello` method is invoked.
-//   @Log(()=>)
+//   @Log
 //   hello(value:string) {
 //     console.log(value);
 //   }
@@ -13,3 +14,5 @@
 
 // new MyComp().hello("MyComp.hello");
 // new MyComp().hello("MyComp.hello");
+
+// ... FIXME
