@@ -584,7 +584,17 @@ is a variable, so pa=a and pa++ are legal. But an array name is not a variable; 
      3. the standard requires argv[argc] to be a null pointer.
 
         
-*** TODO ? handling the flag
-    ? [[./Cp03_HandlingTheFlag.c]]
-    + print all ~*++argv[0];~
+*** a way to handle the flag
+    + [[./Cp03_HandlingTheFlag.c]]
+    + [[https://en.cppreference.com/w/c/language/operator_precedence][C Operator Precedence]] suffix++ has hight precedence than ++prefix 
+    #+begin_src c
+    (*++argv)[0] // loop through the first letter of all vars, if == '-'
+    *++argv[0] // *argv[i++]
+    // the [0] bind tighter than the *.
+    #+end_src
 
+** *pointers to functions*
+   + function is not a variable but can be referenced using a pointer.
+     #+begin_src c
+     (int (*)(void*,void*))(numeric ? numcmp : strcmp));
+     #+end_src
