@@ -14,6 +14,7 @@
         "noEmit": true,
         "removeComments": false,
         "baseUrl": ".",
+        "experimentalDecorators": true,
         "paths": {
             "~/*": [
                 "./*"

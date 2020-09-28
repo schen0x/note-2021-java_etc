@@ -1316,7 +1316,6 @@ Between the controller and the model sometimes goes a layer which is called a se
      - note that: arrow function should not be used to define a method, since an arrow function does not have its own ~this~.
        
 ** template directives
-   
      
 *** adding instance porterties
     + ~Vue.prototype.$propertyName = ...~
@@ -1392,7 +1391,7 @@ Between the controller and the model sometimes goes a layer which is called a se
         } // or:
 
         var a = A? A : B;
-     #+end_src
+        #+end_src
 ** basic
    + colon
      #+begin_src javascript
@@ -1685,7 +1684,6 @@ Between the controller and the model sometimes goes a layer which is called a se
         makeObj(Other); // Error! Other's constructor doesn't match StringConstructable
      #+end_src
        
-   
 ** type-assertion
 *** basic
     + *as* vs <>
@@ -1708,6 +1706,41 @@ Between the controller and the model sometimes goes a layer which is called a se
 ** extending vs. intersecting(&) interfaces
    + intersecting combines merge types that has a same name, so that:
      ~type anArg: string | number;~ without thworing an error.
+** decorators (annotations)
+   + AOP, Logger And Timer? [[./S40_02_DecoratorAndDescriptor.ts]]
+   + a decorator:
+     #+begin_src javascript
+     function Frozen(constructor: Function){
+         Object.freeze(constructor);
+         Object.freeze(constructor.protopyte);
+     }
+     @Frozen
+     export class IceCreamComponent { // the class can no longer be extended now.
+     }
+     console.log(Object.isFrozen(IceCreamComponent)); 
+     #+end_src
+   + a factory as a decorator:
+     #+begin_src javascript
+     function Emoji() {
+     // the target is the parent class, the key is the name of the property being decorated
+         return function(target: Object, key: string | symbol) {
+             let val = target[key];
+             const getter = () => {
+                 return val;
+             };
+             const setter = () => { 
+                 console.log("updating flavor...");
+                 val = `www ${next} www`;
+             };
+             Object.defineProperty(target, key, {
+             get: getter,
+             set: setter,
+             enumerable: true,
+             configurable: true,
+             });
+         };
+     }
+     #+end_src
 * Section 50, OLTP (Online Transaction Processing)
 ** basic
 *** the primary object of an OLTP system
