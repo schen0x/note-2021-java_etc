@@ -1299,6 +1299,28 @@ Between the controller and the model sometimes goes a layer which is called a se
      - If async is not present and defer is present: The script is executed when the page has finished parsing
      - If neither async or defer is present: The script is fetched and executed immediately, *before* the browser continues parsing the page
        
+** async/await, functional programming     
+   + example 1, basic usage:
+     #+begin_src javascript
+     async function hello() { return "Hello" };
+
+     hello().then(value => console.log(value)); // 1
+     hello().then(console.dir); // 2
+     try {
+         let res = await hello(); 
+         console.dir(res); // 3
+     } catch(e) {
+         console.dir(e)
+     }
+     #+end_src
+   + example 2, if async function throws an error, the value is parsed as the "rejected": 
+     #+begin_src javascript
+     async function rejectSample() {
+         throw new Error('reject!!');
+     }
+     rejectSample().catch(console.dir); // 'reject!!'
+     #+end_src
+
 ** ? ways to create memory leak
 
 ** sparse array, Array(2) vs [undefined, undefined] 
@@ -1307,6 +1329,7 @@ Between the controller and the model sometimes goes a layer which is called a se
    + while e.g. [...Array(2)].map() will not ignore any undefined element.
 
 ** prototype
+*** the PoC code for the Summary
    + [[https://stackoverflow.com/questions/650764/how-does-proto-differ-from-constructor-prototype][how does proto differ from constructor prototype]]
    + the PoC:
    #+begin_src javascript
@@ -1326,6 +1349,43 @@ Between the controller and the model sometimes goes a layer which is called a se
     console.dir(mycat);
     console.dir(o);
    #+end_src
+
+*** Summary
+**** function:
+     #+begin_quote
+     (typeof Function === "function") && (typeof Function.prototype === "function") //true
+     Function.__proto__.constructor.F1 <=== Function.F1;
+     Function.__proto__.__proto__.Op1 <=== Object.prototype.Op1;
+     Function.prototype.__proto__.constructor.O1 <=== Object.O1;
+     Function.prototype.__proto__.Op1 <=== Object.prototype.Op1;
+     #+end_quote
+     #+begin_quote
+     (typeof Object === "function") && (typeof Object.prototype === "object") //true
+     Object.__proto__.constructor.Fp1 <=== Function.Fp1;
+     Object.__proto__.Fp1 <=== Function.prototype.Fp1;
+     Object.prototype.__proto__ <=== *null*
+     #+end_quote
+     #+begin_quote
+     (typeof o === "object") //true
+     o.__proto__.Op1 <=== Object.prototype.Op1;
+     #+end_quote
+     #+begin_quote
+     ~Cat = function() {}~
+     Cat.prototype.constructor === Cat; // true
+     //See: [[function has a prototype property]], auto added attribute on definition of a function.
+     //What if this is modified?
+     Cat.__proto__.constructor.F1 <=== Function.F1
+     Cat.__proto__.Fp1 <=== Function.prototype.Fp1
+
+     Cat.__proto__.__proto__.constructor.O1 <=== Object.O1
+     Cat.__proto__.__proto__.Op1 <=== Object.prototype.Op1
+     #+end_quote
+     #+begin_quote
+     ~mycat = new Cat();~
+     mycat.__proto__.constructor.C1 <=== Cat.C1
+     mycat.__proto__.Cp1 <=== Cat.prototype.Cp1
+     #+end_quote
+
    #+begin_src javascript
        let f1 = function(){this.i = 3;}
        f1.prototype.pti = 4;
@@ -1335,12 +1395,24 @@ Between the controller and the model sometimes goes a layer which is called a se
        x.prototype.value.pti === 123 //true
        x.__proto__.constructor === Object // true
    #+end_src
-   
+
+*** the *new* keywords
+    + the PoC code:
+    #+begin_src javascript
+    let e = Object.create(null);
+    e.prototype = Function.prototype;
+    let f = function (){console.log("printing f")};
+    f.prototype.constructor = function(){console.log("modified");}
+    ff = new f();
+    console.dir(ff.__proto__);
+    ff.__proto__ = f.__proto__;
+
+    #+end_src
 *** who has a prototype property
 **** summary
      + the prototype property is recognized when constructing a new object, so it is logical to think that, objects that have a constructor signiture have it by default.
      
-**** function has a prototy property
+**** function has a prototype property
      + a constructor is added to its prototype when a function is initialized.
        #+begin_src javascript
        function Foo() {} // the following is added automatically:
@@ -1392,7 +1464,7 @@ Between the controller and the model sometimes goes a layer which is called a se
       The value is only read-only for primitive values such as 1, true, and "test"
 
       Description: 
-         
+      // TODO   
       #+end_quote
       #+begin_src javascript
       let o = {};
@@ -1413,7 +1485,7 @@ Between the controller and the model sometimes goes a layer which is called a se
       // hence:
       o.constructor === Object.prototype.constructor; // true
       #+end_src
-
+      
 *** Object.create(null)
     + ~{} == Object.create(Object.prototype)~
     + while Object.create(null) has no prototype
