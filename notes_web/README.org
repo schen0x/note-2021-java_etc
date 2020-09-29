@@ -1306,6 +1306,118 @@ Between the controller and the model sometimes goes a layer which is called a se
    + Array(2).map() may ignore non-existing elements by default.
    + while e.g. [...Array(2)].map() will not ignore any undefined element.
 
+** prototype
+   + [[https://stackoverflow.com/questions/650764/how-does-proto-differ-from-constructor-prototype][how does proto differ from constructor prototype]]
+   + the PoC:
+   #+begin_src javascript
+    Object.O1='';
+    Object.prototype.Op1='';
+
+    Function.F1 = '';
+    Function.prototype.Fp1 = '';
+
+    Cat = function(){};
+    Cat.C1 = '';
+    Cat.prototype.Cp1 = '';
+
+    mycat = new Cat();
+    o = {};
+
+    console.dir(mycat);
+    console.dir(o);
+   #+end_src
+   #+begin_src javascript
+       let f1 = function(){this.i = 3;}
+       f1.prototype.pti = 4;
+       new f1().pti === 4; // true
+       // inspect:
+       let x = Object.getOwnPropertyDescriptors(f1)
+       x.prototype.value.pti === 123 //true
+       x.__proto__.constructor === Object // true
+   #+end_src
+   
+*** who has a prototype property
+**** summary
+     + the prototype property is recognized when constructing a new object, so it is logical to think that, objects that have a constructor signiture have it by default.
+     
+**** function has a prototy property
+     + a constructor is added to its prototype when a function is initialized.
+       #+begin_src javascript
+       function Foo() {} // the following is added automatically:
+       Foo.prototype = { constructor: Foo };
+       #+end_src
+
+**** object has a prototype property 
+    [[https://stackoverflow.com/questions/7929159/does-a-new-object-in-javascript-have-a-prototype-property][does a new object in javascript have a prototype property]]
+    + ~{ a: 1 }~ create an instance of ~Object~ constructor
+    + but ~Object.create~ create an instance which inherit an additional prototype chain:
+      #+begin_src javascript
+      let o = { a: 1 };
+      let p = Object.create(o);
+      // then:
+      p.hasOwnProperty === Object.prototype.hasOwnProterty; // true
+      p.a === o.a // true
+      // and:
+      Object.getPrototypeOf(p) === o; // true
+      Object.getPrototypeOf(o) === Object.prototype; // true
+      // and:
+      o.constructor === Object // true
+      p.constructor === Object // true
+      #+end_src
+     
+*** constructors, prototypes trivia, who is who
+    + Function() constructor
+      #+begin_quote
+      The Function constructor creates a new Function object. Calling the constructor directly can create functions dynamically, but suffers from security and similar (but far less significant) performance issues to eval. However, unlike eval, the Function constructor creates functions which execute in the global scope only.
+
+      Description: 
+          1. Function objects created with the Function constructor are parsed when the function is created. This is less efficient than declaring a function with a function expression or function statement and calling it within your code because such functions are parsed with the rest of the code.
+
+          2. All arguments passed to the function are treated as the names of the identifiers of the parameters in the function to be created, in the order in which they are passed. Omitting an argument will result in the value of that parameter being undefined.
+
+          3. Invoking the Function constructor as a function (without using the new operator) has the same effect as invoking it as a constructor.
+
+      Syntax: ~new Function([arg1 [, arg2 [, ...argN]] ,] functionBody)~
+      Example: ~const sum = new Function('a', 'b', 'return a + b');~
+      #+end_quote
+
+      #+begin_src javascript
+      Function === Function.constructor === Function.prototype.constructor // true
+      #+end_src
+
+    + Object.prototype.constructor
+      #+begin_quote
+      The constructor property returns *a reference to the Object constructor function that created the instance object*. Note that the value of this property is a reference to the function itself, not a string containing the function's name.
+
+      The value is only read-only for primitive values such as 1, true, and "test"
+
+      Description: 
+         
+      #+end_quote
+      #+begin_src javascript
+      let o = {};
+      o.constructor === Object; // true
+      o.constructor === Object.prototype.constructor; // true
+      o.constructor === Object.constructor; // false (new must be called)
+      Object.constructor === Function; // true
+      #+end_src
+   
+    + [[https://stackoverflow.com/questions/9959727/proto-vs-prototype-in-javascript][__proto__ vs prototype]]
+      #+begin_quote
+      + __proto__ is the actual object that is used in the lookup chain to resolve methods, etc.
+      + prototype is the object that is used to build __proto__ when you create an object with new.
+      #+end_quote
+      #+begin_src javascript
+      let o = {};
+      o.__proto__ === Object.prototype; // true
+      // hence:
+      o.constructor === Object.prototype.constructor; // true
+      #+end_src
+
+*** Object.create(null)
+    + ~{} == Object.create(Object.prototype)~
+    + while Object.create(null) has no prototype
+      
 * Section 38, Vue
 ** instance proterties and methods(objects in a vue instance)
    + el (only allowed on an root instance, i.e., an vue instancte created with ~new~)
