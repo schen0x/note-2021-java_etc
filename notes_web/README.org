@@ -1351,6 +1351,53 @@ Between the controller and the model sometimes goes a layer which is called a se
    #+end_src
 
 *** Summary
+    
+**** how does ~new~ work on Function
+     // When the code new Foo(...) is executed, the following things happen:
+     1. A new object is created, inheriting from Foo.prototype.
+     2. The constructor function Foo is called with the specified arguments, and with this bound to the newly created object. new Foo is equivalent to new Foo(), i.e. if no argument list is specified, Foo is called without arguments.
+     3. The object (not null, false, 3.1415 or other primitive types) returned by the constructor function becomes the result of the whole new expression. If the constructor function doesn't explicitly return an object, the object created in step 1 is used instead.(Normally constructors don't return a value, but they can choose to do so if they want to override the normal object creation process.)
+    
+     + the PoC code: 
+       #+begin_src javascript
+       // Case1, function has no return value; 
+       // A new object is created, f0n.__proto__ === f0.prototype
+       let f0 = function() {};
+       f0.prototype.f0p = "f0p";
+       
+       let f0n = new f0();
+       console.log(f0n) // f0n is a new Object, inheriting from f0.prototype
+       console.log(f0n.__proto__.f0p); // "f0p"
+       #+end_src
+
+       #+begin_src javascript
+       // Case3, function has an explicit return value, the value is an object
+       // (not null, false, 3.1415 or other primitive types); 
+       // the return value becomes the new object value.
+       let f3 = function() {
+         return {
+           "f3": "f3"
+         }
+       };
+       f3.prototype.f3p = "f3p";
+       
+       let f3n = new f3();
+       console.log(f3n) // {f3: "f3"}, f3n is an Object, the return value of its constructor function `f3`
+       console.log(f3n.__proto__.f3p); // undefined
+       #+end_src
+
+       #+begin_src javascript
+       // Case4 (or Case1 again), function has an **implicit** return value.
+       let f4 = function(a) {
+         return (a + a)
+       };
+       f4.prototype.f4p = "f4p";
+       
+       let f4n = new f4();
+       console.log(f4n.__proto__.f4p); // "f4p"
+       #+end_src
+     + in case we want an Callable (a function), follow the Case3, ~let f5 = function() { return function () {}; };~, then the ~f5~ will be an function thus callable.
+       
 **** function:
      #+begin_quote
      (typeof Function === "function") && (typeof Function.prototype === "function") //true
