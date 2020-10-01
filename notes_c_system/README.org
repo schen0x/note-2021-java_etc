@@ -598,3 +598,42 @@ is a variable, so pa=a and pa++ are legal. But an array name is not a variable; 
      #+begin_src c
      (int (*)(void*,void*))(numeric ? numcmp : strcmp));
      #+end_src
+
+* Chapter 4, Memory allocation
+** malloc ~void *malloc(size_t size)~
+   + [[./Cp4_Malloc.c]]
+   + note that malloc does initialize the memory content
+   #+begin_src c
+   int n = 3;
+   int *A = (int*)malloc(n*sizeof(int));
+   free(A);
+   #+end_src
+
+** calloc ~void calloc(size_t num, size_t size)~
+   + calloc initial the memory content to zero
+   #+begin_src c
+   int *A = (int*)calloc(n, sizeof(int))
+   #+end_src
+
+** realloc ~void realloc(*void ptr, size_t size)~
+   + note that the realloc may change the initial memory address on enlarging.
+   + so that the original pointer should either be overwrited or set to NULL.
+   #+begin_src c
+   int n = 3;
+   int *A = (int*)malloc(n*sizeof(int));
+   int *B = (int*)realloc(NULL, n*sizeof(int)) // equivalent to a malloc
+   int *B = (int*)realloc(A, 2*n*sizeof(int))
+   int *B = (int*)realloc(A, 0) // equivalent to free(A) 
+   #+end_src
+
+** free and good practice
+   #+begin_src c
+   int *A = (int*)malloc(n*sizeof(int));
+   free(A);
+   A = NULL;
+   free(A); // free do nothing if A is a null.
+   #+end_src
+  
+* Chapter 5, Struct
+
+** 3 ways to pass data
