@@ -598,6 +598,8 @@ is a variable, so pa=a and pa++ are legal. But an array name is not a variable; 
      #+begin_src c
      (int (*)(void*,void*))(numeric ? numcmp : strcmp));
      #+end_src
+   + function pointer not slower than a direct function call.
+     [[https://stackoverflow.com/questions/2438539/does-function-pointer-make-the-program-slow]]
 
 * Chapter 4, Memory allocation
 ** malloc ~void *malloc(size_t size)~
