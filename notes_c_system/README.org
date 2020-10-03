@@ -636,6 +636,38 @@ is a variable, so pa=a and pa++ are legal. But an array name is not a variable; 
    free(A); // free do nothing if A is a null.
    #+end_src
   
+** memory address   
+   + [[./Cp05_Struct.c]]
+   + pointers are 12*4=48 bits int in x86-64 system, 2**48 * 1 byte == 256TB
+   #+begin_src c
+    int main(){
+        struct point origin, *pp;
+        pp = &origin;
+        printf("%p\n", (void*)(pp)); // 0x7fff ffff dd60
+        printf("%x\n", pp); // ffff dd60
+    }
+   #+end_src
+
 * Chapter 5, Struct
+
+** basic
+   + [[./Cp05_Struct.c]]
+     
+   + the pointer of a struct initially point to its first element.
+     #+begin_src c
+     struct point origin, *pp;
+     pp = &origin;
+     origin.x = 1, origin.y = 2;
+     printf("%d\n", pp), printf("%d\n", &(*pp).x); // same
+     #+end_src
+     
+   + define an array of struct
+     #+begin_src c
+     struct key {
+         char *word;
+         int count;
+     } keytab[NKEYS]; // FIXME? TODO
+     #+end_src
+
 
 ** 3 ways to pass data
