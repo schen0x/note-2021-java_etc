@@ -621,6 +621,7 @@ is a variable, so pa=a and pa++ are legal. But an array name is not a variable; 
 * Chapter 4, Memory allocation
 ** when to use, or how does dynamic memory allocation differ from variable initialization?
    + the initializers are static while dynamic memory allocation functions allow the size be decided in runtime.
+   + the malloc functions behave in accordance with all alignment restrictions of modern machine.
 
 ** malloc ~void *malloc(size_t size)~
    + [[./Cp4_Malloc.c]]
@@ -715,4 +716,60 @@ is a variable, so pa=a and pa++ are legal. But an array name is not a variable; 
    #+end_src
 
 ** self-referential structure
-   
+   + consider a tree, holding words and its frequence:
+     #+begin_src c
+     struct tnode{
+         char *word;
+         int count;
+         struct tnode *left; // legal, since only declaring a pointer of the type tnode.
+         struct tnode *right;
+     }
+     #+end_src
+
+   + for two structures that refers to each other:
+     #+begin_src c
+     struct t {
+         // ...
+         struct s *p;
+     };
+     struct s {
+         // ...
+         struct t *q;
+     };
+     #+end_src
+
+   + adding a nodes to a tree
+     #+begin_src c
+     #include <stdlib.h>
+     /* talloc: make a tnode */
+     struct tnode *talloc(void)
+     {
+         return (struct tnode *) malloc(sizeof(struct tnode));
+     }
+
+     char *strdup(char *s)
+     {
+         char *p;
+         /* make a duplicate of s */
+         p = (char *) malloc(strlen(s)+1); /* +1 for '\0' */ // malloc returns NULL if no space is available
+         if (p != NULL)
+         strcpy(p, s);
+         return p; // if not enough memory, the NULL is sent to the parent.
+     }
+     #+end_src
+
+   + how to free a tree linked list?
+     #+begin_src c
+     void freeTree(struct tnode* root)
+     {
+         while(root != NULL)
+         {
+             free(word);
+             word = NULL;
+             free(root->left);
+             root->left = NULL;
+             free(root->right);
+             root->right = NULL;
+         }
+     }
+     #+end_src
