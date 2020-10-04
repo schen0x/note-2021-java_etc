@@ -494,6 +494,7 @@ is a variable, so pa=a and pa++ are legal. But an array name is not a variable; 
      #+begin_src c
      static char *arr2[10] = { "a", "b", "c" }; // what is the size of *arr2[] ?
      #+end_src
+     
 *** pointer array vs multi-dimensional array
     + Given:
       #+begin_src c
@@ -518,6 +519,22 @@ is a variable, so pa=a and pa++ are legal. But an array name is not a variable; 
      - sizeof("");  // 1
        + char str0[0];
        + sizeof(str0); // 0
+
+         
+** compound literal as implicit variable is not available before C90 or in C++
+   + General better idea: assign a variable, then allocate a pointer to it.
+   + ~int *p = &(int){42};~ [[https://stackoverflow.com/questions/24805673/declare-and-initialize-pointer-concisely-i-e-pointer-to-int][compund literal]], should be avoided.
+   + use [[./Cp03_PointerInitialization.c]]
+     #+begin_src c
+     char arr[] = { 'a', 'b' };
+     char *pa = arr;
+     printf("%c\n", *++pa); // b
+     #+end_src
+   + or:
+     #+begin_src c
+     int *i = malloc(sizeof *i);
+     int i = 42, *p = &i;
+     #+end_src
 
 ** array has *no bound checking*
    + ~int arr[1];~, ~arr[9] = 1~ is accessable.
@@ -602,6 +619,9 @@ is a variable, so pa=a and pa++ are legal. But an array name is not a variable; 
      [[https://stackoverflow.com/questions/2438539/does-function-pointer-make-the-program-slow]]
 
 * Chapter 4, Memory allocation
+** when to use, or how does dynamic memory allocation differ from variable initialization?
+   + the initializers are static while dynamic memory allocation functions allow the size be decided in runtime.
+
 ** malloc ~void *malloc(size_t size)~
    + [[./Cp4_Malloc.c]]
    + note that malloc does initialize the memory content
@@ -663,11 +683,36 @@ is a variable, so pa=a and pa++ are legal. But an array name is not a variable; 
      
    + define an array of struct
      #+begin_src c
+     int ARRAY_LENGTH = 2;
      struct key {
          char *word;
          int count;
-     } keytab[NKEYS]; // FIXME? TODO
+     } keytab[ARRAY_LENGTH]; // the length of keytab is 2
      #+end_src
+     
+** the arrow operator
+   + Usage: pointerToAStructure->elementOfTheStructure
+   + Description: Structure and union member access through pointer;
+   + Associativity: Left-to-right;
+   + Precendence: 1;
 
+   #+begin_src c
+   struct point
+   {
+       int x;
+       int y;
+   } p0, p1, points[] = {2, 3, 4, 5};
+   printf("%p\n", points), printf("%p\n", &points->x);
+   //! printf("%d\n", points.x);
+   printf("%d\n", points->x);
+   #+end_src
 
-** 3 ways to pass data
+** pointer to a struct array
+   #+begin_src c
+   typedef struct point pointArray[];
+   pointArray *pointsListPointer;
+   pointsListPointer = &points;
+   #+end_src
+
+** self-referential structure
+   
