@@ -773,3 +773,60 @@ is a variable, so pa=a and pa++ are legal. But an array name is not a variable; 
          }
      }
      #+end_src
+
+** #line
+   #+begin_src c
+   #include <assert.h>
+   #define FNAME "test.c"
+   int main(void)
+   {
+   #line 777 FNAME
+           assert(2+2 == 5);
+   }
+   #+end_src
+
+** how to implement #define, lookup table
+   1. generate a hash(lookup) table for all keywords to be replaced.
+      #+begin_src c
+      struct nlist 
+      {
+          struct nlist *next;
+          char *name;
+          char *definition;
+      };
+      #+end_src
+   2. iter over all words, hash each and do the lookup in the hash-table, replace text on hit.
+      + time complexity: O(n);
+
+** typedef
+   + ~typedef int Length;~
+   + ~typedef char *String~
+     #+begin_src c
+     typedef char *String;
+     int strcmp(String, String);
+     String p;
+     p = (String) malloc(10);
+     #+end_src
+   + typedef a struct
+     + [[https://stackoverflow.com/questions/1675351/typedef-struct-vs-struct-definitions][typedef-struct vs struct]]
+     #+begin_src c
+     // original:
+     struct tnode *talloc(void)
+     {
+         return (struct tnode *) malloc(sizeof(struct tnode));
+     }
+
+     // typedef:
+     typedef struct tnode *Treeptr;
+     typedef struct tnode { /* the tree node: */
+     char *word;
+     int count;
+     struct tnode *left;
+     struct tnode *right;
+     } Treenode;
+     
+     Treeptr talloc(void)
+     {
+         return (Treeptr) malloc(sizeof(Treenode));
+     }
+     #+end_src
