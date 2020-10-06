@@ -830,3 +830,19 @@ is a variable, so pa=a and pa++ are legal. But an array name is not a variable; 
          return (Treeptr) malloc(sizeof(Treenode));
      }
      #+end_src
+
+   + typedef a function pointer
+     #+begin_src c
+     typedef void (*myfunc)();
+     myfunc f;      // compile equally as  void (*f)();
+
+     typedef int (*PF)(char *, char *);
+     PF strcmp, numcmp;
+
+     #+end_src
+     
+*** why use typedef
+    + e.g. for machine-dependent dependent variables, only changing the typedef is enough, without changing the whole program
+    + self documented code
+     
+** unions
