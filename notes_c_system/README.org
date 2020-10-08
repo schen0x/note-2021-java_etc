@@ -889,3 +889,24 @@ is a variable, so pa=a and pa++ are legal. But an array name is not a variable; 
    + %=
    + <<=
    + >>=
+     
+*** bit-fields // TODO
+    [[./Cp05_BitFields.c]]
+    [[https://stackoverflow.com/questions/8564532/colon-in-c-struct-what-does-it-mean][colon in c struct what does it mean]]
+
+    + however the size of the bitfield, it is aligned and stored as the type specified (if int then int no matter the real size of the field)
+
+*** flags (bit mask)
+    [[./Cp05_Flags.c]]
+    #+begin_src c
+    #define KEYWORD 01
+    #define EXTRENAL 02
+    #define STATIC 04
+    // or: 
+    enum { KEYWORD = 01, EXTERNAL = 02, STATIC = 04 };
+    unsigned int flags;
+    flags &= ~(EXTERNAL | STATIC); // flags off
+    flags |= EXTERNAL | STATIC;    // flags on
+    // if ((flags & (EXTERNAL | STATIC)) == 0) // is true if both bits are off.
+    #+end_src
+    
