@@ -1323,6 +1323,9 @@ Between the controller and the model sometimes goes a layer which is called a se
 
 ** ? ways to create memory leak
 
+** TODO when to use singleton.
+   + i.e., in Vue reactive api, is it possible that an concurrency might occur, in a client side or server side (nuxt) server?
+
 ** sparse array, Array(2) vs [undefined, undefined] 
    + array memory is sparsed
    + Array(2).map() may ignore non-existing elements by default.
