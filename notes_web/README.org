@@ -1975,6 +1975,13 @@ Between the controller and the model sometimes goes a layer which is called a se
          };
      }
      #+end_src
+** map, record
+   #+begin_src javascript
+   new map()
+   a.set("k", 1)
+   a.get("k")
+   a.has("k")
+   #+end_src
 * Section 50, OLTP (Online Transaction Processing)
 ** basic
 *** the primary object of an OLTP system
