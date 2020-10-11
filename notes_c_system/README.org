@@ -263,6 +263,7 @@
    
    *with header file*
    + cc Cp01_Bitwise.c Cp00_AnyToBinary.c -o Cp01_Bitwise
+   + //TODO q: is bitwise shift direction affected by Endianess?
    [[./Cp01_Bitwise.c]]
 
 ** misc
@@ -890,7 +891,7 @@ is a variable, so pa=a and pa++ are legal. But an array name is not a variable; 
    + <<=
    + >>=
      
-*** bit-fields // TODO
+*** ? bit-fields
     [[./Cp05_BitFields.c]]
     [[https://stackoverflow.com/questions/8564532/colon-in-c-struct-what-does-it-mean][colon in c struct what does it mean]]
 
@@ -907,6 +908,6 @@ is a variable, so pa=a and pa++ are legal. But an array name is not a variable; 
     unsigned int flags;
     flags &= ~(EXTERNAL | STATIC); // flags off
     flags |= EXTERNAL | STATIC;    // flags on
-    // if ((flags & (EXTERNAL | STATIC)) == 0) // is true if both bits are off.
+    // if ((flags & (EXTERNAL | STATIC)) // true if both bits are on.
     #+end_src
     

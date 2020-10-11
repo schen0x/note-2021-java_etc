@@ -4,7 +4,8 @@
 + Book3: Offensive Security - Offensive Security OSCP-Offensive Security Ltd (2020) (853 pages)
 + Book4: Internet Core Protocols The Definitive Guide Help for Network Administrators by Eric Hall (424 pages)
 + Book5: Linux Administration  A Beginner’s Guide, Wale Soyinka (2016, McGraw-Hill) (802 pages)
-+ Book6:
++ Book6: Windows Internals 7ed, Part 1, User Mode, (Win 10 and Win Server 2016) by David Solomon, etc. (805 pages)
++ Book7: Windows Internals 6ed, Part 2, Developer Reference, (Win 7 and Win Server 2008 R2) by David Solomon, etc. (594 pages)
 ================================================================================
 
 * Book1_Chapter1
