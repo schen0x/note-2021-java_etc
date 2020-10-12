@@ -1937,9 +1937,16 @@ Between the controller and the model sometimes goes a layer which is called a se
       // foo.bar === undefined;
       #+end_src
 
-** extending vs. intersecting(&) interfaces
-   + intersecting combines merge types that has a same name, so that:
-     ~type anArg: string | number;~ without thworing an error.
+** ? intersecting(&) interfaces
+   [[./S40_02_ExtendsVsIntersection.ts]]
+   + care: ~number & string~ is reduced to ~never~
+   + but the overload seems to be preserved
+     
+** Interfaces vs. Type Aliases
+   [[https://www.typescriptlang.org/docs/handbook/advanced-types.html][advanced-types]]
+   + interface extends is similar to type intersect(&)
+   + Almost all features of an interface are available in type, the key distinction is that a type cannot be re-opened to add new properties vs a interface which is always extendable.
+
 ** decorators (annotations)
    + AOP, Logger And Timer? [[./S40_02_DecoratorAndDescriptor.ts]]
    + a decorator:
