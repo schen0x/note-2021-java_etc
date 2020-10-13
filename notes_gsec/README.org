@@ -8,5 +8,27 @@
 + Book7: Windows Internals 6ed, Part 2, Developer Reference, (Win 7 and Win Server 2008 R2) by David Solomon, etc. (594 pages)
 ================================================================================
 
-* Book1_Chapter1
+* Book4_Chapter 01 An Introduction to TCP/IP
   
+** a brief history
+   + initially devices exchange info through a common communication controller 
+     - ~network node -> communication controller -> network node~
+   + with TCP/IP, devices could function as a network end-point
+
+*** the internet today
+   + Toplevel Internet Service Providers(ISPs)
+   + Regional Internet Access Providers(IAPs)
+   + End-User Nets
+
+** TCP/IP architecture
+   #+begin_quote
+   TCP/IP is a collection of of protocols that range from application-specific functions like web
+browsing down to the low-level networking protocols like IP and TCP.
+   #+end_quote
+*** OSI reference model 
+    + presentation
+    + session
+    + transport
+    + network
+    + data-link
+    + physical
