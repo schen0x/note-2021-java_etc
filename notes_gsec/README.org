@@ -25,10 +25,38 @@
    TCP/IP is a collection of of protocols that range from application-specific functions like web
 browsing down to the low-level networking protocols like IP and TCP.
    #+end_quote
+
 *** OSI reference model 
     + presentation
+      - other detailed transmission utility service that applications may or may not use. e.g., data-compression.
+      - since it is better to have a dedicated session layer that purely manage sesions, hence separate the optional services into the presentation layer.
     + session
+      - responsible for establishing, and later destroying connections between systems, applications, or users. It may receive the request from any higher layer, and then negotiate a connection using the lower layers. Once a connection is established, the layer simply provides an interface for the higher layers to communicate with.
     + transport
+      - may provide reliability services usually lacking from the network layer, for basic transmission services.
     + network
+      - identify the addresses of systems on the network, and the actual transmission of data between the systems.
+      - must be aware of the physical nature of the network, and package the information in a format that can be further transmitted by the data-link layer.
     + data-link
+      - must deal with possible physical layer error, either attempting to retransmit or report the failure to the network layer.  
     + physical
+      - strict standards for the wiring systems, specifying e.g., voltage, impedance, etc.
+
+*** TCP/IP basic
+    + IP <-> OSI-network-layer
+    + TCP or UDP <-> OSI-transport-layer, manage connections.
+      - the session management is handled by TCP in browsing.
+      - TCP/IP does not provide a formal presentation layer service(e.g. data compression) that an application *must* use, but do provide a few presentation layer service(IBM's NetBIOS, Sun's XDR) that an application *may* use.
+    + ? data-link layer
+      - data-link protocols are specific to wire, e.g. voltage, 
+      - Media Access Control(MAC)
+      - Data-Link Connection Identifier(DLCI)
+      
+**** ? nested package and header structure
+     + wireshark, 
+     + how is segment marked in data-link layer
+     + header + data, in each layer.
+       
+    
+       
+
