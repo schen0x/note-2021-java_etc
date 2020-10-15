@@ -51,7 +51,25 @@ browsing down to the low-level networking protocols like IP and TCP.
       - data-link protocols are specific to wire, e.g. voltage, 
       - Media Access Control(MAC)
       - Data-Link Connection Identifier(DLCI)
+        
+**** Data-Link Services
+     + implemented by each physical network, the implemetation might different depending on the physical medium. IP datagram is translated to a format that can be understand and delivered in the physical layer.
+       
+**** the Internet
+     + on each local network, data-link or physical level:
+       #+begin_quote
+       When an IP-enabled device wants to send data to another IP node, the data-link services on that device convert the IP datagrams into a format usable by the local network medium, and then send the data to the destination system using the addressing and framing mechanisms *dictated by the network*.
+       #+end_quote
+     + Also, IP assume data packets are unreliable and would get lost.
+
+**** the address resolution protocol(ARP)
+     + two IP devices must locate each other's hardware addresses before any data exchange. An protocol applicapable to all physical network topology is needed.
+     + ARP(who is .40?) -> Response with Hardware Address(I am .40)
       
+**** the Internet Control Message Protocol(ICMP)
+     + ICMP relies on IP, deliver control message backward.
+     + ICMP error message are only sent when there is a detectable problem that is preventing certain packets or datagrams from being delivere due to a specific reason. It indicates that the esnding host should probably stop trying to sent those kinds of datagrams to this specific destination system, or that a different path should be used. 
+
 **** ? nested package and header structure
      + wireshark, 
      + how is segment marked in data-link layer
