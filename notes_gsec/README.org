@@ -75,6 +75,15 @@ browsing down to the low-level networking protocols like IP and TCP.
      + how is segment marked in data-link layer
      + header + data, in each layer.
        
-    
-       
-
+**** ? local loopback network 
+     
+**** routing table, specify router for each destination network.
+     + popular protocol popular for private networks
+       - Routing Information Protocal(RIP)
+       - Open Shrortest Path First(OSPF)
+     + those dynamic routing protocols tends to consume a lot of CPU cycles, hence are often ran on routers instead of the host
+       - set destination 0.0.0.0 <= default router(e.g., 192.168.100.100), on system boot using protocol such as BOOTP or DHCP, or protocol called Router Discorery 
+          
+**** Route aggregation
+     + the routing table method cost lots of resources, is not applicable to Internet.
+     + address assignment scheme, separate by physical location, leave routing to ISP, only a few(50,000 routes) super-routes need to be suggested. 
