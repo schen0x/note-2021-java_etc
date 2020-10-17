@@ -1352,6 +1352,46 @@ Between the controller and the model sometimes goes a layer which is called a se
     Promise.all([happy('happy', 100), sad('sad', 50)])
     .then(console.log).catch(console.log) // resolving sad\n, 'sad'\n, resolving happy\n
     #+end_src
+    
+    + Promise.all with Promise<void>
+      #+begin_src javascript
+    const fa = (v, ms) => new Promise((resolve) => setTimeout(() =>{ 
+        console.log('resolving fa');
+        resolve(v);
+    }, ms));
+    function foo(){}; 
+    // console.log(foo()) // undefined
+    async function bar(){ console.log('resolving bar')}; 
+    // bar().then(res => console.log(res)) // undefined
+    const fc = (v, ms) => new Promise((resolve, _reject) => setTimeout(() =>{ 
+       console.log('resolving fc');
+       resolve();
+    }, ms));
+
+    Promise.all([fc('fc', 100), fa('fa', 50), bar()]).then(console.log).catch(console.log);
+    
+    // [undefined, "fa", undefined]
+      #+end_src
+*** without promise.all, await execute synchronously
+    #+begin_src javascript
+    const fa = (v, ms) => new Promise((resolve) => setTimeout(() =>{ 
+        console.log('resolving fa');
+        resolve(v);
+    }, ms));
+    const fb = (v, ms) => new Promise((resolve) => setTimeout(() =>{ 
+        console.log('resolving fb');
+        resolve(v);
+    }, ms));
+
+    (async () => {
+        await fa('fa', 50);
+        await fb('fb', 25);
+    })().then(console.log);
+    // functions invoked in synchronouse order
+    // resolving fa
+    // resolving fb
+    // undefined
+    #+end_src
 ** ? ways to create memory leak
 
 ** TODO when to use singleton.
