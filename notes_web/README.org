@@ -1321,6 +1321,37 @@ Between the controller and the model sometimes goes a layer which is called a se
      rejectSample().catch(console.dir); // 'reject!!'
      #+end_src
 
+*** await functions are not executed in parallel naturally
+    + but with Promise.all it might be:
+      - note that in the second case, ~console.log('resolving fb')~ is called first, proves that Promise.all(Promises[]) resolve the Promises asynchronously, while the first case is an edge case, showing that if any Promises returns at a same time, they follows the original order.
+    #+begin_src javascript
+    // Promise.all returns an array of resolved value in order.
+    const fa = (v, ms) => new Promise((resolve) => setTimeout(() =>{ 
+        console.log('resolving fa');
+        resolve(v);
+    }, ms));
+    const fb = (v, ms) => new Promise((resolve) => setTimeout(() =>{ 
+        console.log('resolving fb');
+        resolve(v);
+    }, ms));
+    Promise.all([fa('fa', 50), fb('fb', 50)]).then(console.log).catch(console.log);
+    Promise.all([fa('fa', 50), fb('fb', 25)]).then(console.log).catch(console.log);
+    #+end_src
+
+    + also, the Promise.all fail fast:
+    #+begin_src javascript
+    const happy = (v, ms) => new Promise((resolve) => setTimeout(() =>{ 
+        console.log('resolving happy');
+        resolve(v);
+    },  ms))
+    const sad = (v, ms) => new Promise((_, reject) => setTimeout(() => { 
+        console.log('resolving sad');
+        reject(v);
+    }, ms))
+
+    Promise.all([happy('happy', 100), sad('sad', 50)])
+    .then(console.log).catch(console.log) // resolving sad\n, 'sad'\n, resolving happy\n
+    #+end_src
 ** ? ways to create memory leak
 
 ** TODO when to use singleton.
