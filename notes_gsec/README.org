@@ -70,6 +70,20 @@ browsing down to the low-level networking protocols like IP and TCP.
      + ICMP relies on IP, deliver control message backward.
      + ICMP error message are only sent when there is a detectable problem that is preventing certain packets or datagrams from being delivere due to a specific reason. It indicates that the esnding host should probably stop trying to sent those kinds of datagrams to this specific destination system, or that a different path should be used. 
 
+**** IP datagrams vs. IP packets
+     + IP datagram is a more abstract concept, while packets are what been sent in data-link layer:
+       #+begin_quote
+       IP datagrams get sent as IP packets, which are used to relay the IP data- grams to the destination system, one hop at a time. Although in many cases an IP datagram and an IP packet will be exactly the same, they are conceptually different entities.
+       IP datagrams contain whatever data is being sent (and the associated IP headers), while IP packets are used to get the datagram to the destination system (as specified in the IP headers).
+       #+end_quote
+
+     + i.e., say: src -> router -> dst, then: src send datagrams to dst, while src send packets to router, in those packets contains datagrams.
+       #+begin_quote
+       These IP packets are sent using the framing mechanisms defined for the specific network medium in use on the local network, and are sub-ject to network events such as fragmentation or loss. However, the datagram itself will always remain as the original piece of data that was sent by the original sender, regardless of anything that happens to any of the packets that are used to
+relay the datagram.
+       #+end_quote
+     + for example, a 4kb datagram being sent might be too big to fit in a simple frame for transmition in a dial-up access network, hence, the datagram might be split into four IP packets, each of which are sent as individual entities in individual frames. Then on the destination system, once all of the IP packets are received, into the original datagram they will be reassembled and processed.
+
 **** ? nested package and header structure
      + wireshark, 
      + how is segment marked in data-link layer
@@ -77,13 +91,20 @@ browsing down to the low-level networking protocols like IP and TCP.
        
 **** ? local loopback network 
      
-**** routing table, specify router for each destination network.
+**** ? routing table, specify router for each destination network.
      + popular protocol popular for private networks
        - Routing Information Protocal(RIP)
        - Open Shrortest Path First(OSPF)
      + those dynamic routing protocols tends to consume a lot of CPU cycles, hence are often ran on routers instead of the host
        - set destination 0.0.0.0 <= default router(e.g., 192.168.100.100), on system boot using protocol such as BOOTP or DHCP, or protocol called Router Discorery 
           
-**** Route aggregation
+**** ? Route aggregation Q: super route, how to separate local vs internet
      + the routing table method cost lots of resources, is not applicable to Internet.
      + address assignment scheme, separate by physical location, leave routing to ISP, only a few(50,000 routes) super-routes need to be suggested. 
+
+**** datagram independence
+     + IP networks treat every individual IP datagram as an independent entity, which means they might take whatever path that the router deems fit when forwarding the datagram.
+
+**** datagram/packet intergrity
+     + a *packet* will always be inspected when it arrives a system(including a router) along the delivery path. If corruption or any transient errors is detected, the packet will be destroyed immediately. If a semi-permanent problem, e.g., no rounting table entry for the next destination network is found, is dectected, the IP may also use the Internet Control Message Protocol(ICMP) to return the error message back to the original sender.
+     + ? header checksum: Q: on each packet or each datagram?
