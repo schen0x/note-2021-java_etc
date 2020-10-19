@@ -108,3 +108,29 @@ relay the datagram.
 **** datagram/packet intergrity
      + a *packet* will always be inspected when it arrives a system(including a router) along the delivery path. If corruption or any transient errors is detected, the packet will be destroyed immediately. If a semi-permanent problem, e.g., no rounting table entry for the next destination network is found, is dectected, the IP may also use the Internet Control Message Protocol(ICMP) to return the error message back to the original sender.
      + ? header checksum: Q: on each packet or each datagram?
+
+**** header checksums
+     + IP datagram header
+     #+begin_quote
+     Every device that receives an IP datagram must examine the IP header and compare that information with the value stored in the header's checksum field.
+     The data portion ... is not verified, for (two?) reasons:
+     #+end_quote
+       1. for efficiency.
+       2. the data portion always consists of a higher-level datagram, e.g., TCP/UDP. Since those portocol might also provide error-checking routines, the data portions might be examed later anyway.
+          
+**** time-to-live
+     + the time-to-live field in the IP header.
+       #+begin_quote
+       Every system that forwards the packet decreases the value of the Time-to-Live field by one, before sending the datagram on. If the Time-To-Live value reaches zero before the datagram gets to its final destination, then the gacket is destroyed.
+       The purpose of the Time-to-Live field is to keep datagrams that are caught in an undeliverable loop from tying up network resources. ... This safeguard prevents routing loops from causing network meltdowns.
+       ...
+       The strict definition of the Time-to-Live field states that the value is a measure of time in seconds, or any forwarding act that took less than one second to perform. However, there are very few Internet routers that require a full second to perform forwarding, so this definition is somewhat misrepresentative. In actual practice, the Time-to-Live value is decremented for every hop, regardless of the actual time required to forward a datagram from one network segment to another.
+       #+end_quote
+       
+     + the default
+       #+begin_quote
+       The default value for the Time-to-Live field should be set to 64 according to the Assigned Numbers registry([[http://www.iana.org/][IANA]]). In addition, some of the higher-layer protocols also have default Time-to-Live values that they are supposed to use(e.g., 64 for TCP, and 1 for IGMP). These values are really only suggestions, ... .
+       #+end_quote
+       
+**** fragmentation and reassembly
+     + 
