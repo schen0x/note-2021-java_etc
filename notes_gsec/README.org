@@ -109,14 +109,15 @@ relay the datagram.
      + a *packet* will always be inspected when it arrives a system(including a router) along the delivery path. If corruption or any transient errors is detected, the packet will be destroyed immediately. If a semi-permanent problem, e.g., no rounting table entry for the next destination network is found, is dectected, the IP may also use the Internet Control Message Protocol(ICMP) to return the error message back to the original sender.
      + ? header checksum: Q: on each packet or each datagram?
 
-**** header checksums
-     + IP datagram header
+**** header checksums(the checksum *for the IP header* in the IP header)
+     + in every package header, for the header itself, not for the body
      #+begin_quote
      Every device that receives an IP datagram must examine the IP header and compare that information with the value stored in the header's checksum field.
-     The data portion ... is not verified, for (two?) reasons:
+     The data portion ... is not verified, for three reasons:
      #+end_quote
        1. for efficiency.
        2. the data portion always consists of a higher-level datagram, e.g., TCP/UDP. Since those portocol might also provide error-checking routines, the data portions might be examed later anyway.
+       3. not all but some high level applications might be able to work with corrupted data, discard those then might be disservice
           
 **** time-to-live
      + the time-to-live field in the IP header.
@@ -133,4 +134,16 @@ relay the datagram.
        #+end_quote
        
 **** fragmentation and reassembly
-     + 
+     + Maximum Transmission Unit(MTU): the maximum bytes in a single frame.
+       #+begin_quote
+       Ethernet can pass only 1500 bytes in a single frame, while the typical MTU for 16-Mb/s Token Ring is 17,914 bytes per frame.
+       RFC 791 specifies that the maximum allowed MTU size is 65,535 bytes, and that the minimum allowed MTU size is 68 bytes. 
+       #+end_quote
+     + if datagram > maximum 8 byte alignment to MTU, need to be fragmentated. For example, a 4464-byte datagram(20 bytes header + 4444 bytes data) senting to a network where MTU = 1500, will be fragmented to (20 bytes header + 1480 data)*3 + (20 bytes header + 4 bytes data)*1.
+     + in the header:
+       - 16-bit Fragment Identifier(like a very short uuid), same for all fragments of a datagram.
+       - the Fragmentation Offset, counting by the No.s of 8 bytes blocks.
+       - 3-bit Flags field: Reserved(must be marked 0), (the packet) May be further Fragmented Flag(0 if possible), More Fragments(0 if no more)
+     + the IP software find the first packet whose fragment offset field is 0, and find the last packet whose More Fragments flag is 0, and assemble the rest in order, once all of the segments arrives.
+       
+
