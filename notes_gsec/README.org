@@ -146,4 +146,58 @@ relay the datagram.
        - 3-bit Flags field: Reserved(must be marked 0), (the packet) May be further Fragmented Flag(0 if possible), More Fragments(0 if no more)
      + the IP software find the first packet whose fragment offset field is 0, and find the last packet whose More Fragments flag is 0, and assemble the rest in order, once all of the segments arrives.
        
+**** prioritization and service-based routing
+     + 8-bit type of service(TOS) field, or the TOS byte
+       - 3-bit(0-7) precedence field marking prioritization (8 levels of prioritization)
+         | Precedence | Definition           |
+         |------------+----------------------|
+         |          0 | Routine(normal)      |
+         |          1 | Priority             |
+         |          2 | Immediate            |
+         |          3 | Flash                |
+         |          4 | Flash Override       |
+         |          5 | Critical             |
+         |          6 | Internetwork Control |
+         |          7 | Network Control      |
+
+       - 4-bit(0-15) the Type-of-Service value predefined by IANA, in RFC 1349.
+         | Value | Service               |                        |
+         |-------+-----------------------+------------------------|
+         |     0 | Normal                | all flags off          |
+         |     1 | Minimize Cost         |                        |
+         |     2 | Maximize Realiability |                        |
+         |     4 | Maximize Throughput   | 1 for high throughput  |
+         |     8 | Minimize Delay        | 1 for low delay        |
+         |    15 | Maximize Security     | RFC 1455, experimental |
+
+       - the IANA also published suggested TOS values for common application protocols.
+         
+     + there values are more respected in unix/linux environment.
+
+     + in conjunction with TOS-aware router, it is possible to provide deterministic routing service across the managed network, provide different routing depending on the needs of each packet.
+
+*** the IP Header
+    #+begin_quote
+    An IP datagram is made up of at least thirteen fields, with twelve fields being used for the IP header, and one field being used for data. In addition, there are also a variety of supplemental fields that may show up as “options” in the header. The total size of the datagram will vary according to the size of the data and the options in use.
+    #+end_quote
+
+**** the mandatory fields
+     | Field                  |   Bits | Notes                                                         |
+     |------------------------+--------+---------------------------------------------------------------|
+     | Version                |      4 | IPv4/v6                                                       |
+     | Header Length          |      4 | in 32-bit multiples, 20 bytes = 5 * 32/8bits                  |
+     | ToS Flags              |      8 | type of service flags                                         |
+     | Total Packet Length    |     16 | length of (header + body), in bytes                           |
+     | Fragment Identifier    |     16 | Identifier of a datagram                                      |
+     | Fragmentation Offset   |     13 | in 8 bytes, the start position of this fragment               |
+     | Time-to-Live           |      8 | the remaining hops a datagram can take                        |
+     | Protocol Identifier    |      8 | Identifies the higher-layer protocol used in the data section |
+     | Header Checksum        |     16 | checksum of the IP header                                     |
+     | Source IP Address      |     32 | the 32-bit IP address of the original sender                  |
+     | Destination IP Address |     32 | the 32-bit IP address of the final destination                |
+     | Options(optional)      | varies | cache specific data if ToC Source Routing or Timestamp, etc.  |
+     | Padding(if required)   | varies | an IP datagram header must be a multiple of 32 bits long.     |
+     | Data                   | varies | Normally could contain a complete TCP/UDP message,            |
+     |                        |        | although it could also be a fragment of another IP datagram.  |
+
 
