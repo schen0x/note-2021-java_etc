@@ -233,14 +233,14 @@ relay the datagram.
     
     + 0.0.0.0 the default route for this device 
     + 192.168.10.255 broadcast address for the local network
-    + each network have a different ip address(interface): in this case, a loopback network(this machine) and a local network connection using two different interface
+    + in each network the device should have an unique ip address(assigned to the interface): in this case, the system is connected to a loopback network(this machine) and a local Ethernet network.
     + 127.0.0.0 vs 127.0.0.1:
       #+begin_quote
       the 127.0.0.0 is a network address. Together with mask 255.0.0.0 it gives you a hint that ... 127.*.*.* will contain loopback addresses.
       the 127.0.0.1 is a loopback address, so does 127.0.0.2 or 127.0.0.3 and etc.
       #+end_quote
       
-*** subnet mask and multicast address
+**** subnet mask and multicast address
     + 172.16.0.0/12:
       | Note |                            Binary form |    Dot-decimal |
       |------+----------------------------------------+----------------|
@@ -259,3 +259,4 @@ relay the datagram.
       255.255.255.255 is the broadcast address of the zero network or 0.0.0.0, which in Internet Protocol stands for *this network*, i.e. the local network. Transmission to this address is limited by definition, in that it is never forwarded by the routers connecting the local network to other networks.
       #+end_quote
 
+**** possible routing problem and debugging
