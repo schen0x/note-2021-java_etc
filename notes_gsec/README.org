@@ -222,8 +222,8 @@ relay the datagram.
        - option-length (8 bits)
        - option-data (varies)
          
-*** TODO IP in Action, basic routing table
-    |    Destination |         Netmask |       Gateway |     Inferface |
+*** IP in Action, basic routing table
+    |    Destination |         Netmask |       Gateway |     Interface |
     |----------------+-----------------+---------------+---------------|
     |        0.0.0.0 |         0.0.0.0 |  192.168.10.3 | 192.168.10.10 |
     |      127.0.0.0 |       255.0.0.0 |     127.0.0.1 |     127.0.0.1 |
@@ -231,9 +231,14 @@ relay the datagram.
     | 192.168.10.255 | 255.255.255.255 | 192.168.10.10 | 192.168.10.10 | 
     |                |                 |               |               |
     
-    + 0.0.0.0the default route for this device 
+    + 0.0.0.0 the default route for this device 
     + 192.168.10.255 broadcast address for the local network
-
+    + each network have a different ip address(interface): in this case, a loopback network(this machine) and a local network connection using two different interface
+    + 127.0.0.0 vs 127.0.0.1:
+      #+begin_quote
+      the 127.0.0.0 is a network address. Together with mask 255.0.0.0 it gives you a hint that ... 127.*.*.* will contain loopback addresses.
+      the 127.0.0.1 is a loopback address, so does 127.0.0.2 or 127.0.0.3 and etc.
+      #+end_quote
       
 *** subnet mask and multicast address
     + 172.16.0.0/12:
