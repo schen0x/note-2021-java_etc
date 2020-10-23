@@ -260,3 +260,5 @@ relay the datagram.
       #+end_quote
 
 **** possible routing problem and debugging
+
+**** ?Q: ARP and peers on an VPN
