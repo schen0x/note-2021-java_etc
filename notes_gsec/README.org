@@ -262,3 +262,12 @@ relay the datagram.
 **** possible routing problem and debugging
 
 **** ?Q: ARP and peers on an VPN
+     + ?(lack reference)dial-up vs VPN:
+       - dial-up use telephone line, but I think they share a similar topology(packet switching), i.e. client-server-Internet
+       - while all IP devices are treated as independence entities, both dial-up and VPN delegate ip communication with the Internet to a "server".
+
+     + ?(lack reference)peers on VPN
+       - if any communication between clients may happen, it should be after they dial in to the VPN server.
+       - so potential arp attack might happen only if the clients are sharing an environment which is behind the VPN server(a shared lab, for example.) A client may send ARP through a shared lab machine. (detail?)
+       - ? other angle on the VPN server?
+
