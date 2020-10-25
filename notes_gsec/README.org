@@ -260,6 +260,33 @@ relay the datagram.
       #+end_quote
 
 **** possible routing problem and debugging
+    1. the pinciple: 
+      - ip devices try to connect each other directly whenever possible, and use route when direct connection is not possible.
+      #+begin_quote
+      Since IP is designed as a node-centric networking protocol, every device has equal access to the network. In this model, any device can communicate with any other device directly, without requiring the services of a centralized host. Nodes do not send traffic to a central host for processing and relay services, but instead communicate directly with the destination system, if possible.
+
+      When this is not possible—such as when the two hosts are on separate networks—then the sending device has to locate another device to relay the traffic to the destination system on its behalf. Even in this situation the sending device is still self-deterministic, since it chooses which local device it will send the datagrams to for forwarding.
+
+      The process of choosing an intermediate forwarding device is called routing. Whenever a device needs to choose a forwarder, it looks at a local list of available networks and forwarders (called the “routing table”), and decides which interface and forwarder is the most appropriate for the specific datagram that needs to be sent.
+      #end_quote
+
+      - fragmentation problem might be detected by sending large size ICMP datagram using ping.
+     
+      - use the ICMP protocol to debug, since almost all problems are related with delivery difficulties.
+        #begin_quote
+        Since IP provides only simple delivery services, almost all of the problems with IP are related to delivery difficulties. Perhaps a network segment is down, or a router has been misconfigured, or a host is no longer accepting packets.
+
+        In order to effectively debug problems with IP delivery, you should rely on the ICMP protocol. It is the function of ICMP to report on problems that will keep IP datagrams from getting delivered to their destination effectively. 
+        #end_quote
+    2. routing table misconfigured
+       - traceroute
+    3. media related issues
+       - possible infractructure problem
+       #begin_quote
+       Since IP packets are sent inside of media-specific frames, there can be problems with some network media that will manifest when used with IP packets. For example, some network managers have reported problems with network infrastructure equipment such as Ethernet hubs and switches that have problems dealing with full-sized (1500-byte) packets. In those situations, you will need to use ICMP to probe the network for delivery problems through equipment that is acting suspicious.
+       #end_quote
+  
+    4. TODO p95
 
 **** ?Q: ARP and peers on an VPN
      + ?(lack reference)dial-up vs VPN:
@@ -271,4 +298,3 @@ relay the datagram.
        - so potential arp attack might happen only if the clients are sharing an environment which is behind the VPN server(a shared lab, for example.) A client may send ARP through a shared lab machine. (detail?)
        - ? other angle on the VPN server?
 
-**** pushtest2
