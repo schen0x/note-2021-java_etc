@@ -8,6 +8,30 @@
 + Book7: Windows Internals 6ed, Part 2, Developer Reference, (Win 7 and Win Server 2008 R2) by David Solomon, etc. (594 pages)
 ================================================================================
 
+* Book3_Chapter 02 the basics
+*** the linux filesystem hierachy standard(FHS)
+   + /bin - basic programs (ls, cd, cat, etc.)
+   + /sbin - system programs (fdisk, mkfs, sysctl, etc)
+   + /etc - configuration files
+   + /tmp - temporary files (typically deleted on boot)
+   + /usr/bin - applications (apt, ncat, nmap, etc.)
+   + /usr/share - application support and data files 
+
+*** the man page sections
+   + the sections:
+     | Section | Contents                                       |
+     |---------+------------------------------------------------|
+     | 1       | User Commands                                  |
+     | 2       | Programming interfaces for kernel system calls |
+     | 3       | Programming interfaces to the C library        |
+     | 4       | Special files such as device nodes and drivers |
+     | 5       | File formats                                   |
+     | 6       | Games and amusements such as screen-savers     |
+     | 7       | Miscellaneous                                  |
+     | 8       | System administration commands                 |
+
+  + Apart from the normal search, ~man -k keywords~: keyword search
+     
 * Book4_Chapter 01 An Introduction to TCP/IP
   
 ** a brief history
