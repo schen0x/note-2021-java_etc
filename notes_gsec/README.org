@@ -31,6 +31,50 @@
      | 8       | System administration commands                 |
 
   + Apart from the normal search, ~man -k keywords~: keyword search
+  + ~man 5 passwd~
+
+*** apropos keyword
+     + searching the keyword in man page description section for possible instances.
+
+*** mkdir -p(parent)
+     + mkdir -p test/{recon,exploit,report} 
+
+*** locate
+     + sudo updatedb
+     + locate sbd.exe
+
+*** find
+     + sudo find / -name sbd* 
+
+     + *find vs locate*
+       - find search, while locate use index; find is more flexible, while locate is faster.
+       #+begin_quote
+       The main advantage of find over locate is that it can search for files and directories by more than just the name. With find, we can search by file age, size, owner, file type, timestamp, permissions, and more.
+       #+end_quote
+       
+*** ss -antlp
+     + to dump socket statistics.
+     + similar to netstat. It can display more TCP and state information than other tools. 
+
+*** systemctl 
+     + systemctl list-units
+     + systemctl list-sockets
+     + systemctl list-timers
+     + systemctl list-dependencies
+     + *systemctl list-unit-files*
+
+*** env
+
+*** apt(Advanced Package Tool)
+    + apt update: update the db info
+    + apt upgrade [packageName]
+    + apt-cache search <keyword>: search in the cached package *description* for the keyword
+    + apt show <packageName>
+    + apt install
+    + apt remove --purge
+
+*** dpkg -i <package.deb>
+    + dpkg can call apt or use offline package
      
 * Book4_Chapter 01 An Introduction to TCP/IP
   
