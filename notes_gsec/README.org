@@ -122,6 +122,7 @@
 
      + ls ./nonExisting 2>error.txt
      + ls ./nonExisting 2>&1
+     + wc -mwl < filename
       
 *** apt(Advanced Package Tool)
     + apt update: update the db info
@@ -134,6 +135,25 @@
 *** dpkg -i <package.deb>
     + dpkg can call apt or use offline package
      
+*** grep
+    + grep -ri keyword /usr/bin
+      - //read all files under each directory recursively, search for what matches the "keyword"
+      - //i for --ignore-case 
+
+*** <<< (here string)
+    + [Here Strings](https://tldp.org/LDP/abs/html/x17837.html)
+    + [what does <<< mean](https://unix.stackexchange.com/questions/80362/what-does-mean)
+
+    + read first second <<< "hello world"
+    + cat <<< "string"
+    + //the tricky part is, it pass the rhs as a string, as the "stdin" of the lhs function. But not all function work with "/dev/stdin".
+    + xargs kill <<< "-1 $$"
+
+    //TODO
+
+*** sed
+    //TODO p56
+
 * Book4_Chapter 01 An Introduction to TCP/IP
   
 ** a brief history
