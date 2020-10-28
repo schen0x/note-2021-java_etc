@@ -17,6 +17,7 @@
    + /usr/bin - applications (apt, ncat, nmap, etc.)
    + /usr/share - application support and data files 
 
+** linux shell utilities
 *** the man page sections
    + the sections:
      | Section | Contents                                       |
@@ -64,10 +65,67 @@
      + *systemctl list-unit-files*
 
 *** env
+     + echo $path
+     + x=1 && echo $x
+       - echo x //x
+       - echo "x" //x
+     + export x="2"
+     + $$ //current shell pid
 
+**** bash string literal
+     + x=2
+       - echo $((x++))
+       - echo $((x + $x + x))
+
+*** history
+    + history
+    + !number //or !!
+    + ctrl+r //backward search
+    + ctrl+s //forward search
+
+    + //effected by 3 env params:
+      - HISTSIZE //take effect immediately, numbers of commands stored in memory for the current session
+      - HISTFILESIZE //numbers of commands to be stored in the .bash_history file
+*** //File Descriptor
+    + A File Descriptor (FD) is a number which refers to an open file.
+    #+begin_quote
+    Each process has its own private set of FDs, but FDs are inherited by child processes from the parent process.
+
+    Every process should inherit three open FDs from its parent: 0 ("standard input"), open for reading; and 1 ("standard output") and 2 ("standard error"), open for writing. A process that is started without one or more of these may behave unpredictably. (So never close stderr. Always redirect to /dev/null instead.)
+    #+end_quote
+    + FD 3,4, ..., 9 are for additional files, need to be open first before used. For more info see:
+      - [Advanced Bash-Scripting Guide: Chapter 20. I/O Redirection.](https://tldp.org/LDP/abs/html/io-redirection.html)
+      - [how do file descriptors work](https://stackoverflow.com/questions/7082001/how-do-file-descriptors-work)
+
+    #+begin_src
+    exec 5<> /tmp/foo  #open fd 5, touch foo if not exist.
+    echo "1\n2\n 3456789" >&5
+    exec 5>&- #close fd 3.
+    cat /tmp/foo
+    rm /tmp/foo
+    #+end_src
+
+**** FD and redirecting
+     + :> filename //truncates file "filename" to zero length, touch if not exist.
+     + 1>> filename //redirect and append stdout to file "filename"
+     + M>N 
+       - //"M" is a FD, which is defaults to 1 if not explicitly set.
+       - //"N" is a filename.
+       - //File descriptor "M" is redirect to file "N."
+     + M>&N
+       - //"M" is a FD, which is defaults to 1 if not explicitly set.
+       - //"N" is another FD.
+       - //"M" is redirected to "N". All output of file pointed to by M gets sent to file pointed to by N.
+
+     + 0<filename, <filename //accept input from a file "filename"
+       - cat 0<filename, cat <filename //are semantically equivalent
+
+     + ls ./nonExisting 2>error.txt
+     + ls ./nonExisting 2>&1
+      
 *** apt(Advanced Package Tool)
     + apt update: update the db info
-    + apt upgrade [packageName]
+    + apt upgrade [<packageName>]
     + apt-cache search <keyword>: search in the cached package *description* for the keyword
     + apt show <packageName>
     + apt install
