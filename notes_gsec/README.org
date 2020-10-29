@@ -147,7 +147,7 @@
     + read first second <<< "hello world"
     + cat <<< "string"
     + //the tricky part is, it pass the rhs as a string, as the "stdin" of the lhs function. But not all function work with "/dev/stdin".
-    + xargs kill <<< "-1 $$"
+    + xargs kill <<< "-1 $$" //because xargs works with "stdin"
 
     //TODO
 
