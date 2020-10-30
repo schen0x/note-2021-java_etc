@@ -152,7 +152,24 @@
     //TODO
 
 *** sed
-    //TODO p56
+    + ~sed -i.bak -e 's/sed/script/gi' fileName~ //edit --in-place, with backup fileName.bak, and --expression
+    + ~echo 'sed in a shell' | sed 's/shell/subshell/g'~ //the last part is *regex flag*
+      #+begin_quote
+      If no ~-e script~, ~--expression=script~, ~-f script-file~, or ~--file=script-file~ option is given, then the first non-option argument is taken as the sed script to interpret. *All remaining arguments are names of input files; if no input files are specified, then the standard input is read.*
+      #+end_quote
+
+*** cut 
+    + ~echo "one two, three" | cut -f 2 -d ','~ //-f for field number[ -ge 1 ], -d for the delimiter instead of the default TAB, [ $delimiter.length -eq 1 ]
+
+*** awk
+    + ~echo "one::two::three" | awk -F "::" '{print $1, $3}'~
+    + should multiple cut are involved, consider switching to awk
+
+// TODO p57
+
+** bash scripting
+   + man bash
+   + 
 
 * Book4_Chapter 01 An Introduction to TCP/IP
   
