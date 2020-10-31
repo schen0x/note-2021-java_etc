@@ -165,7 +165,19 @@
     + ~echo "one::two::three" | awk -F "::" '{print $1, $3}'~
     + should multiple cut are involved, consider switching to awk
 
-// TODO p57
+*** head
+    + ~head -vn linesNumber file~ //if no file presented, read stdin
+
+*** sort
+    + ~sort -urn~ //unique, reverse, numeric order
+
+*** uniq
+    + ~uniq -e~ //count the number of occurrences
+
+*** comm
+    + ~comm -[123] fileA fileB~ //output three columns: UniqueOfFileA UniqueOfFileB CommonOfFileAB, use -[123] to specify the column to suppress. 
+
+//TODO p62
 
 ** bash scripting
    + man bash
