@@ -132,7 +132,9 @@
     + apt install
     + apt remove --purge
 
-*** dpkg -i <package.deb>
+*** dpkg
+    + ~dpkg -i <package.deb>~
+    + ~dpkg -l [packageName]~ //with or without packageName
     + dpkg can call apt or use offline package
      
 *** grep
@@ -169,7 +171,11 @@
     + ~head -vn linesNumber file~ //if no file presented, read stdin
 
 *** sort
-    + ~sort -urn~ //unique, reverse, numeric order
+    + ~sort -urn~ //unique, reverse, numeric order.
+    + ~ps -ef | sort [-t [delimiter]] -k 1d,1 -k 2n,2~ // d for dictionary-order(effected by LC_ALL), n for numeric, [delimiter] could be ":" "\t" "<tab>", etc.; *must specify an end position in multiple key scenario, otherwise an option will effect the whole line*.
+      #+begin_quote
+      KEYDEF is F[.C][OPTS][,F[.C][OPTS]] for start and stop position, where F is a field number and C a character position in the field; both are origin 1, and the stop position defaults to the line's end.  If neither -t nor -b is in effect, characters in a field are counted from the beginning of the preceding whitespace. OPTS is one or more single-letter ordering options [bdfgiMhnRrV], which override  global  ordering  options for that key. If no key is given, use the entire line as the key. Use --debug to diagnose incorrect key usage.
+      #+end_quote
 
 *** uniq
     + ~uniq -e~ //count the number of occurrences
@@ -177,7 +183,64 @@
 *** comm
     + ~comm -[123] fileA fileB~ //output three columns: UniqueOfFileA UniqueOfFileB CommonOfFileAB, use -[123] to specify the column to suppress. 
 
-//TODO p62
+*** diff
+    + ~diff -c fileA fileB~ //context, in separate context
+    + ~diff -u fileA fileB~ //unified format, all in one.
+
+*** vimdiff
+    + ~vimdiff fileA fileB~
+      - ~do~ //diffget (o for obtain): get from the other file
+      - ~dp~ //diffput: put change to the other file
+      - ~]c~ //jump to the next diff
+      - ~[c~ //jump to the previous diff
+      - ~C-w~ //change window
+    + ~:h [vimCommands]~
+
+*** process management
+    + job(linux) vs. process: ~cat error.log | wc -m~ is a pipeline of two processes, which the shell consider as a single job.
+
+*** background tasks
+    + ~ping localhost &~
+    + ~ping localhost~ ~C-z~ //suspend
+    + ~bg~ or ~%1 &~ //resume the suspended task at background
+    + ~fg~ or ~%1~ //resume the task at foreground
+    + ~%~
+      - ~%Number(a job-identifier)~ //a job spec(ification), for more info check man bash.
+      - ~%String~ //%ping, strings that the command job begins with.
+      - ~%+~ ~%%~ //current job
+      - ~%-~ //previous job
+*** process control
+    + ~ps aux~
+    + ~ps -ef~ //every, full-format listing
+    + ~ps -t 0 -f~ //0 for tty0, - for no tty
+    + ~ps -ef f~ //output modifier f as --forest, ASCII art forest tree
+    + ~ps -fC [commandNameLessThan15Chars]~
+
+*** kill
+    + ~kill -L~ //list kill-signal names in a nice table 
+    + ~kill -l 11~ //translate number 11 into a signal name
+    + ~kill -9 -1~ //send SIGKILL to almost every processes, since a PID of -1 is special, it indicates all processes except the kill process itself and init.
+    + ~kill [pid|jobSpec]~ //send default signal: SIGTERM, to the process|job.
+
+*** tail
+    + ~tail -f logFile.log~ //follow the update.
+    + ~tail -n[LinesToDisplay]~ //default 10 lines if not specified
+  
+*** watch
+    + ~watch -n 5 w~ //watch the w command(who is logged on and what they are doing) with interval of 5 seconds (default 2 seconds)
+    + ~watch -n 1 'ps -ef | sort -k 4nr,4 | head -n 5'~ //watch at 1 second interval for the top 5 processes that has the highest cpu usage, among all processes.
+
+*** wget: downloads files using the HTTP/HTTPS and FTP protocols.
+    + ~wget -O report_wget.pdf https://www.offensive-security.com/reports/penetr ation-testing-sample-report-2013.pdf~ // -O as --output-document
+
+*** curl
+    + ~curl -o report.pdf https://www.offensive-security.com/reports/penetration -testing-sample-report-2013.pdf~ 
+
+*** axel: FTP/HTTP/HTTPS download accelerator, use multiple connections
+    + ~axel -a -n 20 -o report_axel.pdf https://www.offensive-security.com/repor ts/penetration-testing-sample-report-2013.pdf~
+
+*** bash ENV variables: see man bash
+    + ~HISTCONTROL=ignoredups~
 
 ** bash scripting
    + man bash
