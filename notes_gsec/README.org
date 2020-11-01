@@ -34,7 +34,7 @@
   + Apart from the normal search, ~man -k keywords~: keyword search
   + ~man 5 passwd~
 
-*** apropos keyword
+*** apropos [keyword]
      + searching the keyword in man page description section for possible instances.
 
 *** mkdir -p(parent)
@@ -239,8 +239,9 @@
 *** axel: FTP/HTTP/HTTPS download accelerator, use multiple connections
     + ~axel -a -n 20 -o report_axel.pdf https://www.offensive-security.com/repor ts/penetration-testing-sample-report-2013.pdf~
 
-*** bash ENV variables: see man bash
+*** bash ENV variables: see ~man bash~
     + ~HISTCONTROL=ignoredups~
+// TODO p71
 
 ** bash scripting
    + man bash
