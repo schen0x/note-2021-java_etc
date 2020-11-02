@@ -243,18 +243,21 @@
     + ~HISTCONTROL=ignoredups~
 
 *** netcat //has several versions: nmap-ncat, nc
-    + //the original version, ~nc~:
-    + nc -[u]vnlp 1337 //[u]dp, verbose, nodns, listening, port
-    + nc -[u]vn 127.0.0.1 1337
-    + nc -znv[u] [ip] 1-100; //(stealth)scan for listening daemons without sending any data to them. 
-    + //the nmap maintained version, ~ncat~: ipv6 support, ssl, etc.
+    + //the original version, ~nc -h ==> [v1.10-46]~
+    + ~nc -[u]nlvp 1337~ //[u]dp, verbose, nodns, listening, port
+    + ~nc -[u]nv 127.0.0.1 1337~
+    + ~nc -znv[u] [ip] 1-100~ //(stealth)scan for listening daemons without sending any data to them. 
+    + ~nc -nlvp 1337 > fileReceived~
+    + ~nc -nv 127.0.0.1 1337 < fileToSend~
+    + ~nc -nlvp 1337 < fileAvailable~
+    + ~nc -nv 127.0.0.1 1337 > fileDownloaded~
+    + //the nmap maintained version, ~ncat -h ==> [Ncat 7.91 (...nmap.org/ncat)]~: ipv6 support, ssl, etc.
     + ~nc -e cmd.exe --allow [ip] -vnlp 1337 --ssl~ //ssl
     + ~nc -vn [ip] 1337 --ssl~ //the nmap ver. ncat ssl connection
-    + nc 
     //TODO TCP handshaking and attack vector.(SYN -> SYN/ACK -> ACK)
 
 **** TODO stealth scan (gsec stealth port scanning methods 1985)
-    //TODO how nc stealth scan work. (wireshark) (it is definitely not stealth because it break nc listening process.)
+    //TODO how nc stealth scan work. (wireshark) (it is definitely not stealth: it break nc listening process.)
     + Inverse Mapping
     + Half Open Scan //scanner SYN, target SYN/ACK, scanner RST
     + FIN Scan //FIN on, closed port send RST, open port ignore the packet
@@ -262,7 +265,12 @@
     + Null Scan //all flags off, same as FIN
     + //FIN, Xmas, Null scan does not work on Windows family/Cisco, HP/UX, IRIX, since they use somewhat different implementation which deviate from the standard.
 
-
+*** ip
+    + ~ip l(ink) show [device]~
+    + ~ip a(ddress) show [device]~
+    + ~ip r(oute) show~
+    + ~ip link set device { up | down | arp { on | off } }~
+      - ~ip l set ~
 
 
 ** bash scripting
