@@ -244,7 +244,7 @@
 
 *** netcat //has several versions: nmap-ncat, nc
     + //the original version, ~nc -h ==> [v1.10-46]~
-    + ~nc -[u]nlvp 1337~ //[u]dp, verbose, nodns, listening, port
+    + ~nc -[u]nlvp 1337 --allow 192.168.140.0/24~ //[u]dp, verbose, nodns, listening, port, allow access from a local network only.
     + ~nc -[u]nv 127.0.0.1 1337~
     + ~nc -znv[u] [ip] 1-100~ //(stealth)scan for listening daemons without sending any data to them. 
     + ~nc -nlvp 1337 > fileReceived~
@@ -270,8 +270,18 @@
     + ~ip a(ddress) show [device]~
     + ~ip r(oute) show~
     + ~ip link set device { up | down | arp { on | off } }~
-      - ~ip l set ~
 
+**** ~ip neigh~ //RFC 4861, neighbor discovery && ipv6 slaac
+    - *NS(neighbor solicitation)*: msg.dst === *solicited-node multicast address*
+    - *NA(neighbor advertisement)*: the neighbor response with lladdr
+    - *RS(router solicitation)*: msg.src === self generated link-local; msg.dst === ff02::2( *all router multicast address* )
+    - *RA(router advertisement)*: msg.src === fe80::x(router link-local); msg.dst === ipv6 unicast address of the requester || ff02::1 ( *all nodes multicast address* )
+
+***** *ipv6 slaac* (IPv6 Stateless Address Autoconfiguration)
+      1. the device calculate a EUI-64 or random link-local address for itself, say *addrD*
+      2. the device perform Duplicate Address Detection(DAD) by sending a *NS* message, in which, src = ::/128(unspecified address), dst = $addrD
+      3. confirming no conflict, the device send a *RS* message, in which, src = $addrD, dst = ff02::2
+      4. in response, the ipv6 router unicast an *RA* message, in which, src = fe80::x(router link-local), dst = $addrD; the message also contains ipv6 prefix, with which the device configure its *Global Unicast Address* (since the prefix and link-local is always 64 bits long); the message also contains other info such as MTU.
 
 ** bash scripting
    + man bash
