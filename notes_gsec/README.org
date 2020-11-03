@@ -283,6 +283,30 @@
       3. confirming no conflict, the device send a *RS* message, in which, src = $addrD, dst = ff02::2
       4. in response, the ipv6 router unicast an *RA* message, in which, src = fe80::x(router link-local), dst = $addrD; the message also contains ipv6 prefix, with which the device configure its *Global Unicast Address* (since the prefix and link-local is always 64 bits long); the message also contains other info such as MTU.
 
+** TODO powershell scripting
+*** TODO basic params(-nop, -c, etc.)
+*** amsi evasion (//"this script contains malicious content and has been blocked by your antivirus software")
+     + $evil_0 = "amsicontext"
+**** evasion 1: concatenation
+     + $not_evil = "amsi" + "context"
+
+**** evasion 2: type-casting
+     + $not_evil = [char]97 + [char]109 + [char]115 + [char]99
+     + use-a-command $not_evil
+     + use-a-command ([char]97 + [char]109 + [char]115 + [char]99)
+
+**** evasion 3: variable-insersion
+     + $var = "context"
+     + $not_evil = "amsi$var"
+
+**** evasion 4: format-string
+     + $not_evil = "amsi{0}{1}" -f "con","text"
+
+**** evasion 5: string-replacement
+     + $not_evil = "amsiNOTEVIL" -replace "NOTEVIL", "context"
+
+**** TODO use encoding? 
+
 ** bash scripting
    + man bash
    + 
