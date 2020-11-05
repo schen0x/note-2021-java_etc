@@ -352,7 +352,74 @@
    + ~Get-Help(help)~
    + ~Set-ExecutionPolicy Unrestricted~
    + ~Get-ExecutionPolicy~
-   + FIXME ? ~powershell -c ""~
+   + #!/bin/bash ~powershell -c ""~ //powershell parse syntax like $var within the parentheses while bash does not
+
+*** basic syntax
+**** $() //Subexpression operator 
+     #+begin_quote
+     Returns the result of one or more statements. For a single result, returns a scalar. For multiple results, returns an array. Use this when you want to use an expression within another expression.
+     #+end_quote
+     + ~Folder list: $((dir c:\ -dir).Name -join ', ')~ //Folder list: Program Files, Program Files (x86), Users, Windows
+
+**** @() //Array subexpression operator
+     #+begin_quote
+     Returns the result of one or more statements as an array. If there is only one item, the array has only one member.
+     #+end_quote
+     + ~@(Get-CimInstance win32_logicalDisk)~
+
+**** & //Call operator
+     #+begin_quote
+     Runs a command, script, or script block.
+     #+end_quote 
+
+     + ~$c = "get-executionpolicy"; & $c~
+     + ~& "./file name with spaces.ps1"~ //invoke the .ps1 script
+
+**** //script block
+     #+begin_quote
+     A script block returns the output of all the commands in the script block, either as a single object or as an array. 
+     You can also specify a return value using the return keyword. The return keyword does not affect or suppress other output returned from your script block. However, the return keyword exits the script block at that line.
+     #+end_quote
+
+     + //example:
+       #+begin_src
+       $sb = {
+           param($p1,$p2)
+           $OFS=','
+           "p1 is $p1, p2 is $p2, rest of args: $args"
+       }
+       Invoke-Command $sb -ArgumentList 1,2,3,4 //p1 is 1, p2 is 2, rest of args: 3,4 
+       &$sb -p2 2 -p1 1 3 //p1 is 1, p2 is 2, rest of args: 3
+       &$sb 2 1 3 //p1 is 2, p2 is 1, rest of args: 3
+       #+end_src 
+     + 
+
+**** .. //range operator
+     + ~1..10~
+     + ~foreach ($a in 1..$max) {Write-Host $a}~
+     + ~'a'..'f'~
+
+**** $_ //delay bind operator TODO
+     + ~10..1~
+     + ~5..-5 | ForEach-Object {Write-Output $_}~
+
+**** , //comma operator
+     #+begin_quote
+     As a binary operator, the comma creates an array or appends to the array being created. In expression mode, as a unary operator, the comma creates an array with just one member. Place the comma before the member.
+     #+end_quote
+
+     + ~$myArray = 1,2,3~
+     + ~$SingleArray = ,1~
+     + ~Write-Output (,1)[0]~
+      
+**** -f //format operator
+     #+begin_quote
+     Formats strings by using the format method of string objects. Enter the format string on the left side of the operator and the objects to be formatted on the right side of the operator.
+     #+end_quote
+     
+     + ~"{0} {1,-10} {2:N}" -f 1,"hello",[math]::pi~
+
+     
 
 *** powershell DownloadFile && *DownloadString*
    + ~powershell -c "(new-object System.Net.WebClient).DownloadFile('http://127.0.0.1/wget.exe','./wget.exe')"~
