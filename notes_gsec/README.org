@@ -213,7 +213,7 @@
     + ~echo "one two, three" | cut -f 2 -d ','~ //-f for field number[ -ge 1 ], -d for the delimiter instead of the default TAB, [ $delimiter.length -eq 1 ]
 
 *** awk
-    + ~echo "one::two::three" | awk -F "::" '{print $1, $3}'~
+    + ~echo "one::two::three" | awk -F "::" '{print $1, $3}'~ //F to set the field separator
     + should multiple cut are involved, consider switching to awk
 
 *** head
@@ -227,7 +227,8 @@
       #+end_quote
 
 *** uniq
-    + ~uniq -e~ //count the number of occurrences
+    + ~uniq -c~ //count the number of occurrences
+    + //use this after sort, since ~uniq~ only eliminate identical neighbour strings
 
 *** comm
     + ~comm -[123] fileA fileB~ //output three columns: UniqueOfFileA UniqueOfFileB CommonOfFileAB, use -[123] to specify the column to suppress. 
@@ -477,6 +478,24 @@
 
 **** TODO use encoding? 
      + simple base64 encoding now still trigger amsi || Windows virus threat protection
+
+** utility tools
+*** wireshark //for more filter info check wiki || ref
+    + *capture filter*: ~net 192.168.140.0/24~
+    + *display filter*: ~ip.dst==192.168.140.128 and tcp.port==1337~
+    + //follow the tcp stream.
+    + //TODO, practice.
+
+*** tcpdump //TODO advanced if necessary
+    + ~sudo tcpdump -r dump.pcapng | awk -F " " '{print $3}' | sort | uniq -c | head~ //find the top most frequent active address.
+    + ~sudo tcpdump -n src host 192.168.140.1 and port 137 -r dump.pcapng~//n for no hostName converting.
+    + ~sudo tcpdump -nX dst host 192.168.140.128 -r dump.pcapng~ //X for hex dump.
+    + ~sudo tcpdump -nA dst host 192.168.140.128 -r dump.pcapng~ //A for ASCII, useful for capturing web pages.
+    + ~sudo tcpdump -nA 'tcp[13]=24'~ //the 14th bytes of tcp header, i.e. the flag, with ACK and PSH on, echo "$((2#00011000))" -> decimal 24, [check man tcpdump]
+
+**** tcpdump capture //maybe verbose
+     + ~sudo tcpdump -X -s0 port 80~ //s0 raise the single package-size limit to >256kb.
+     + ~sudo tcpdump -i eth0 -n -s0 -vX port 80~ //verbose
 
 * Book4_Chapter 01 An Introduction to TCP/IP
   

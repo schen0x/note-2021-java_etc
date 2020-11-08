@@ -6,6 +6,7 @@ class ut_EncodeStrToUTF8:
     @staticmethod
     def readStrPrintUTF8(stdin:TextIOWrapper):
         print(stdin.read().encode('utf-8'))
+        # print(stdin.read().encode('utf-8', 'ignore'))
         return
 
 ut_EncodeStrToUTF8.readStrPrintUTF8(sys.stdin) 
