@@ -380,6 +380,8 @@
    + ~echo ([System.Text.Encoding]::Default)~ //get system default text encoding
    + //the *square brackets*. No reference. But seems [.Net TypeName]::staticMethod is legal in powershell.
 
+*** TODO breakpoint?
+
 *** Base64 encoding in powershell
    + base 64 encoding
      #+begin_quote
