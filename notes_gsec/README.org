@@ -356,6 +356,21 @@
 ** TODO bash scripting
    + man bash
 
+** cmd utilities
+   + ~pathping -n ip~ //route tracing utility.
+   + ~tracert ip~ //route tracing utility, less info than pathping.
+   + ~netstat -an~ //display all connections and listening ports, in numerical form.
+   + ~systeminfo~
+   + ~tasklist /svc~ // display services hosted in each process; /v for verbose
+   + ~taskkill /pid 1 /pid 2 /T~ //terminate all specified processes and their child processes; /F for forcefully end.
+   + ~driverquery -v~
+   + ~assoc~ //e.g. assoc .txt
+   + ~ipconfig~ // /flushdns, /rebase, /renew
+   + ~powercfg~ // /A list all available sleep states; /hibernate on | off; /energy 
+
+   + ~shutdown~ // /h for hiberanate; /r /o restart to advanced start-up 
+   + ~sfc /SCANNOW~ //Windows Resource Checker
+
 ** TODO powershell scripting
    + ~(Get-Host).version~
    + ~Get-Help(help)~
