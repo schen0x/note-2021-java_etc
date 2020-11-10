@@ -7,6 +7,7 @@
 + Book6: Windows Internals 7ed, Part 1, User Mode, (Win 10 and Win Server 2016) by David Solomon, etc. (805 pages)
 + Book7: Windows Internals 6ed, Part 2, Developer Reference, (Win 7 and Win Server 2008 R2) by David Solomon, etc. (594 pages)
 ================================================================================
++ CEH v9 gitbook?
 
 * Book3_Chapter 02 the basics
 *** the linux filesystem hierachy standard(FHS)
@@ -356,6 +357,9 @@
 
 ** TODO bash scripting
    + man bash
+   + debug view: ~#!/bin/bash -x~
+   + Q: what get eval between double quotation mark
+   + Q: subshell?
 
 ** cmd utilities
    + ~pathping -n ip~ //route tracing utility.
@@ -866,9 +870,30 @@ relay the datagram.
      - static caching
 *** Proxy ARP p102
 
+* Book4_Related Other Protocals
+** Simple Network Management Protocol(SNMP)
+*** the basic
+   + the info structure:
+     - Object Identifier (OID) 
+     - Management Information Base (MIB tree)
+   + versions:
+     - 1: auth with community string, no encryption.
+     - 2c: feature rich, auth with community string, no encryption.
+     - 3: auth, encryption with des, maybe aes depend on devices
+   + tools: 
+     - prtg: ~snmp-server view/group/user ?~
+   + info:
+     - SNMP Object Navigator, the MIB tree.
+
+*** v3 attributes:
+    + view: what can a user see
+    + group: security policies
+    + user: auth + data encryption key
+    
+
 
 * S2 python#utilities
-** char, string processing
+** char, string processing (python)
 *** encoding and decoding in python
    [[ut#EncodeDecodeAFile.py]]
    + ~str("こ").encode("utf-8")~ //<class 'bytes'> b'\xe3\x81\x93' 
@@ -917,6 +942,10 @@ relay the datagram.
       two_bytes_big = an_int.to_bytes(2,'big') # b'\x00\x05'
       two_bytes_little = an_int.to_bytes(2,'little') # b'\x05\x00'
       #+end_src
+
+** network utilities (python)
+*** socket
+    + //socket(type, semantics)
 
 * S2 python#scripting
 ** basic
