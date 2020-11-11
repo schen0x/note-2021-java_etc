@@ -358,8 +358,47 @@
 ** TODO bash scripting
    + man bash
    + debug view: ~#!/bin/bash -x~
-   + Q: what get eval between double quotation mark
-   + Q: subshell?
+
+*** basic syntax
+    + // *the dollar sign is evaluated within double quotes, but not within single quotes*
+    #+begin_src
+    x=1; echo $x        # variables. Note: no space 
+    echo "1 + $x"       # '1 + 1'.
+    echo '1 + $x'       # '1 + $x'
+    y2=1+$x             # "1+1"
+    #+end_src
+
+    + // *command substitution and subshell*:
+      - ~$(command)~
+        #+begin_src
+        user=$(whoami)
+        echo $user 
+        #+end_src
+   
+      - ~`command`~
+        #+begin_src
+        #!/bin/bash -x
+        var1=1
+        echo $var1
+        var2=2
+        echo $var2
+
+        $(var1=11)        # ++ var1...
+        echo $var1        # + echo 1
+                          # 1
+        `var2=22`         # ++ var2...
+        echo $var2        # + echo 2
+                          # 2
+        `echo ls`         # ++ echo ls
+                          # + ls
+                          # fileName.sh ...
+        #+end_src
+      - //note: the following commands are equivalent.
+        + ~`echo ls`~ 
+        + ~`ls`~
+
+    
+
 
 ** cmd utilities
    + ~pathping -n ip~ //route tracing utility.
