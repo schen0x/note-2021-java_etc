@@ -357,6 +357,7 @@
 
 ** TODO bash scripting
    + man bash
+   + ~#!~ //the "shebang"
    + debug view: ~#!/bin/bash -x~
 
 *** basic syntax
@@ -397,8 +398,46 @@
         + ~`echo ls`~ 
         + ~`ls`~
 
-    
+*** arguments
+| Sign      | Description                                      |
+|-----------+--------------------------------------------------|
+| $0        | argv[0]                                          |
+| $1-$9     | argv[1]-argv[9]                                  |
+| $#        | argc                                             |
+| $@        | argv                                             |
+| $?        | The exit status of the most recently run process |
+| $$        | The process ID of the current script             |
+| $USER     | The username of the user running the script      |
+| $HOSTNAME | The hostname of the machine                      |
+| $RANDOM   | A random number                                  |
+| $LINENO   | The current line number in the script            |
 
+*** ~read~ //userInput
+    #+begin_src
+    #!/bin/bash
+    echo "y/N?"
+    read answer
+    echo "answer: $answer" 
+    read -p 'id: ' id
+    read -sp 'pw: ' pw;
+    printf "\n\nid: $id, pw: $pw
+    #+end_src
+
+*** if //conditioning
+    #+begin_src
+    if [ <some test> ]
+    then
+      <actions>
+    elif [ <some test> ] 
+    then
+      <actions>
+    else
+      <actions>
+    fi
+    #+end_src
+
+*** TODO test operators
+    
 
 ** cmd utilities
    + ~pathping -n ip~ //route tracing utility.
