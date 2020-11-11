@@ -894,6 +894,8 @@ relay the datagram.
 
 * S2 python#utilities
 ** char, string processing (python)
+*** TODO string formating
+
 *** encoding and decoding in python
    [[ut#EncodeDecodeAFile.py]]
    + ~str("こ").encode("utf-8")~ //<class 'bytes'> b'\xe3\x81\x93' 
@@ -947,6 +949,18 @@ relay the datagram.
 *** socket
     + //socket(type, semantics)
 
+** misc utilities
+*** timer
+    + basic usage
+      #+begin_src python
+      import time
+      t1 = time.perf_counter() # monotonic, high resolution, os-wide global(including time elapsed during sleep)
+      t2 = time.perf_counter()
+      print(t2 - t1)
+      #+end_src
+    + ~time.get_clock_info('monotonic' || 'perf_counter' || 'process_time' || 'thread_time' || 'time')~ //show info of each clock in detail
+      - monotonic means a clock never go backwards, and is not affected by system clock updates.
+
 * S2 python#scripting
 ** basic
     + ~python -m module argv[]~
@@ -962,7 +976,7 @@ relay the datagram.
     + ~exit~
     + ~pipenv run python~
 
-** tricks
+** useful syntax
   + ~list(range(1,3))~ //[1, 2]
   + ~a, *b, _ = (1, 2, 3, 4)~ // *b = [2, 3]
   + ~setattr(obj, key, value); getattr(obj, key); hasattr(obj, key); delattr(obj, key)~
@@ -983,3 +997,67 @@ relay the datagram.
     for k,v in d.items():
         print(k, v)
     #+end_src
+
+*** generator && <list | dictionary | set> comprehension
+    + // *basic generator*:
+      #+begin_src python
+      def basicGenerator ():
+          for i in [1, 2, 3]:
+              yields i
+
+      gen = basicGenerator()
+      next(gen)                # 1
+      for e in gen:
+          print(e)             # 2 3
+
+      # //! next(gen)          # error  
+
+      list(basicGenerator()) # fetch all results into a list 
+      #+end_src
+
+    + // *basic list comprehension*:
+      - ~a_list = [x*x for x in [1, 2, 3]]~ // [1, 4, 9]
+
+    + // *generator in list comprehension*:  
+      #+begin_src python
+      genLC = (i for i in [1, 2, 3])
+      #+end_src
+    
+    + // *the nth element of a generator*:
+      #+begin_src python
+      from itertools import islice, count 
+      iterable = (i for i in [1, 2, 3]) # a same generator
+      start = 1 # -ge 0
+      stop = None; # to the end
+
+      x = islice(iterable, start, None) 
+      # islice(iterable, start, None[, step]) 
+      # Make an iterator that returns selected elements from the iterable. If start is non-zero, then elements from the iterable are skipped until start is reached.
+      next(x) # 2
+      next(x) # 3 
+      #+end_src
+
+    + // *advanced list comprehension*
+      #+begin_src python
+      l1 = map(lambda n: n*n, nums)
+      l1 = [n*n for n in nums] # equivalent
+
+      l2 = [n for n in nums if n%2 ==0]
+      l2 = filter(lambda n: n%2 ==0, num]
+      
+      l3 = [(letter, num) for letter in 'abcd' for num in range(4)]
+      #+end_src
+    
+    + // *dictionary comprehension*
+      #+begin_src python
+      names = ['Peter', 'Hank']
+      heros = ['Batman', 'Whom']
+      d1 = {name: hero for name, hero in zip (names, heros) if name != 'Peter'}
+      # {'Hank': 'Whom'}
+      #+end_src
+    
+    + // *set comprehension*
+      #+begin_src python
+      nums = [1, 1, 2]
+      nums_set = { n for n in nums }
+      #+end_src
