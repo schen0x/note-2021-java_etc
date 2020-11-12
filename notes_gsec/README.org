@@ -437,7 +437,37 @@
     #+end_src
 
 *** TODO test operators
+
     
+    
+** cmd scripting
+*** basic
+    #+begin_src bat
+    @echo off
+    echo hi
+    pause
+
+    goto end
+    echo 'skipped'
+    :end
+
+    @echo off 
+    #+end_src
+**** ~set~ //variables
+     #+begin_src bat
+     REM set                                  //list all existing env variables
+     REM set [<variable>=[<string>]]
+     REM set [/p] <variable>=[<promptString>]
+     REM set /a <variable>=<expression>
+    
+     SETLOCAL
+     SET /A a = 5  # natural
+     SET /A b = 10 
+     SET /A c = %a% + %b% 
+     echo %c%
+     ENDLOCAL
+     #+end_src
+
 
 ** cmd utilities
    + ~pathping -n ip~ //route tracing utility.
