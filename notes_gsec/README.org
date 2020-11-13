@@ -1018,6 +1018,13 @@ relay the datagram.
 ** char, string processing (python)
 *** TODO string formating
 
+*** ~split~, ~join~
+    #+begin_src
+    l=[1,2]
+    s = ' - '.join(l)
+    l2 = s.split(' - ')
+    #+end_src
+
 *** encoding and decoding in python
    [[ut#EncodeDecodeAFile.py]]
    + ~str("こ").encode("utf-8")~ //<class 'bytes'> b'\xe3\x81\x93' 
@@ -1066,6 +1073,23 @@ relay the datagram.
       two_bytes_big = an_int.to_bytes(2,'big') # b'\x00\x05'
       two_bytes_little = an_int.to_bytes(2,'little') # b'\x05\x00'
       #+end_src
+
+** data utilities
+*** sort
+    #+begin_src
+    class C:
+        def __init__(self, name, attr1, attr2):
+            self.name = name
+            self.attr1 = attr1
+            self.attr2 = attr2 
+
+    e1 = C('n', 1, 100)
+    e3 = C('n', 3, 103)
+    e2 = C('y', 2, 102)
+    l = [e1, e3, e2]
+    s_l = sorted(l, key=lambda e: e.attr1)
+    s_l = sorted(l, key=attrgetter('name'), reverse=true)
+    #+end_src
 
 ** network utilities (python)
 *** socket
