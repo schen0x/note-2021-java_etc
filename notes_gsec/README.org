@@ -442,8 +442,27 @@
     #+end_src
 
 *** TODO test operators
-
+    | Operator              | Description: Expression True if...     |
+    |-----------------------+----------------------------------------|
+    | !EXPRESSION           |                                        |
+    | -n STRING             | STRING length is greater than zero     |
+    | -z STRING             | The length of STRING is zero (empty)   |
+    | STRING1 != STRING2    |                                        |
+    | STRING1 = STRING2     |                                        |
+    | INTEGER1 -eq INTEGER2 |                                        |
+    | INTEGER1 -ne INTEGER2 |                                        |
+    | INTEGER1 -gt INTEGER2 |                                        |
+    | INTEGER1 -lt INTEGER2 |                                        |
+    | INTEGER1 -ge INTEGER2 |                                        |
+    | INTEGER1 -le INTEGER2 |                                        |
+    | -d FILE               | FILE exists and is a directory         |
+    | -e FILE               | FILE exists                            |
+    | -r FILE               | FILE exists and has read permission    |
+    | -s FILE               | FILE exists and it is not empty        |
+    | -w FILE               | FILE exists and has write permission   |
+    | -x FILE               | FILE exists and has execute permission |
     
+    //TODO
     
 ** cmd scripting
 
