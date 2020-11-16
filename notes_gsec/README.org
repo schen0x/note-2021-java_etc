@@ -1343,3 +1343,19 @@ relay the datagram.
       nums = [1, 1, 2]
       nums_set = { n for n in nums }
       #+end_src
+      
+** usuful modules
+*** subprocess (shell intereaction)
+    + // input argv[], capure the result, redirect the output and input, ? text or bytes output.
+    #+begin_src python
+      import subprocess
+      p1 = subprocess.run(['ls', '-la'], capture_output=True)
+      print(p1.stdout)
+      print(p1.stdout.decode())
+      print(p1.stdout.decode('utf-8'))
+      
+      with open('f', 'w') as f:
+          p1 = subprocess.run([], stdout = f,  text=True, check=True)
+      
+      p2 = subprocess.run(['grep', '-n', 'str'], capture_output=True, text=True, input=p1.stdout)
+    #+end_src
