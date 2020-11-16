@@ -383,7 +383,15 @@
    + debug view: ~#!/bin/bash -x~
 
 *** basic syntax
-**** double quotes, single quotes, dollar sign
+**** *EXPANSIONs*: (man bash::"expansion") 7(8?) kinds of expansions. including dollar sign, with or without single/double parenthesis
+     #+begin_quote
+       The order of expansions is: brace expansion; tilde expansion, parameter and variable expansion, arithmetic expansion, and command substitution (done in a left-to-right fashion); word splitting; and pathname expansion.
+       On systems that can support it, there is an additional expansion available: process substitution. This is performed at the same time as tilde, parameter, variable, and arithmetic expansion and command substitution.
+       After  these  expansions  are performed, quote characters present in the original word are removed unless they have been quoted themselves (quote removal).
+       Only brace expansion, word splitting, and pathname expansion can increase the number of words  of  the  expansion; other expansions expand a single word to a single word. The only exceptions to this are the expansions of "$@" and "${name[@]}", and, in most cases, $* and ${name[*]} as explained above (see PARAMETERS).
+     #+end_quote
+
+***** (misc) double quotes, single quotes, dollar sign
     + // *the dollar sign is evaluated within double quotes, but not within single quotes*
       #+begin_src
       x=1; echo $x        # variables. Note: no space 
@@ -392,38 +400,6 @@
       y2=1+$x             # "1+1"
       #+end_src
 
-**** command substitution* and *subshell*:
-    1. dollar sign and single parenthesis: ~$(command)~ means:
-       + execute the command in the parens in a subshell and return its stdout. Example:
-         #+begin_src
-         user=$(whoami)
-         echo $user 
-         #+end_src
-   
-    2. backtick: ~`command`~
-      #+begin_src
-      #!/bin/bash -x
-      var1=1
-      echo $var1
-      var2=2
-      echo $var2
-
-      $(var1=11)        # ++ var1...
-      echo $var1        # + echo 1
-                        # 1
-      `var2=22`         # ++ var2...
-      echo $var2        # + echo 2
-                        # 2
-      `echo ls`         # ++ echo ls
-                        # + ls
-                        # fileName.sh ...
-      #+end_src
-      - //note: the following commands are equivalent.
-        + ~`echo ls`~ 
-        + ~`ls`~
-          
-**** bash *EXPANSIONs*: 7 kinds of expansions. including dollar sign, with or without single/double parenthesis
-     
 ***** 1. brace expansion
          + ~echo a{b,c}e~ # abe ace
            #+begin_src bash
@@ -444,37 +420,53 @@
            ls ~someLoginName
            #+end_src
            
-***** 3. parameter expansion
-      + # The `$' character introduces parameter expansion, command substitution, or arithmetic expansion.
+***** 3. parameter (and variable) expansion 
+      + # The `$' character introduces *parameter expansion*, command substitution, or arithmetic expansion.
           #+begin_src bash
           a=; b=1;
-          echo ${a:-$b}             # 1. a is null, use default value $b.
-          echo ${a:=$b}             # 1. a is null, assign a default value $b to a. Now a === $b.
-          a=; echo ${a:?errorMsg}   # a is null | unset, output errorMsg to stderr
-          a=2; echo ${a:+$b}        # nothing happens if a is null | unset, else, output $b
+          echo ${a:-$b}             # 1   # a is null, use default value $b.
+          echo ${a:=$b}             # 1   # a is null, assign a default value $b to a. Now a === $b.
+          a=; echo ${a:?'err'}      # err # a is null | unset, output errMsg to stderr
+          a=2; echo ${a:+$b}        # 1   # nothing happens if a is null | unset, else, output $b
           
-          a='abcde'; 
-          ${a: -1}                  # 'cde' ${param:offset}, note the space if [offset -lt 0]
-          ${a:2:2}                  # 'cd' ${param:offset:length}
+          a='abcde'; arr=($(seq 1 10));
+          echo ${a: -1}              # 'cde' # ${param:offset}, note the space if [offset -lt 0]
+          echo ${a:2:2}              # 'cd'  # ${param:offset:length}
+          echo ${arr[@]: -2}         # 9 10
+          echo ${!arr[@]}            # 0..9  # print array keys
+          echo ${#a}                 # 5     # print
           
-
+          # ... a few more syntax with patterns are not included. see man bash::"parameter expansion"
           #+end_src
-         - ~${parameter}~
-         - ~${parameter:-word}~            # use default value
-         - ~${parameter}~
-         - ~${parameter}~
-         - ~${parameter}~
 
+***** 4. command substitution: ~$(command)~ or ~`command`~
+      #+begin_quote
+        Bash performs the expansion by executing command in a subshell environment and replacing the  command  substitution  with  the  standard  output of the command, with any trailing newlines deleted.
+      #+end_quote
+        
+***** 5. arithmetic expansion: ~$((expression))~: eval the arithmetic expression and substitute the result.
+         - ~echo $(((1+1)**(1+2)))~     # 8
+         - ~echo $(((1+1) % (1+2)))~    # 2
           
-     + ~$(...)~ means: execute the command in the parens in a subshell and return its stdout.
+***** 6. process substitution: ~<(list) or >(list)~
+      #+begin_quote
+        Process substitution allows a process's input or output to be referred to using a filename. It takes the form of <(list) or >(list). *The process list is run asynchronously*, and its input or output appears as  a filename. This filename is passed as an argument to the current command as the result of the expansion. If the >(list) form is used, writing to the file will provide input for list. If the <(list) form is used, the file passed as an argument should be read to obtain the output of list. Process substitution is supported on systems that support named pipes (FIFOs) or the /dev/fd method of naming open files. When available, process substitution is performed simultaneously with parameter and variable expansion, command substitution, and arithmetic expansion.
+      #+end_quote
+      
+***** ? 7. word splitting: *IFS*
+
+***** 8. pathname expansion: man bash::"pattern matching"
+      
+***** # conclusion:
+     + ~$(command)~: command substitution, execute the command in a subshell then substitute the expression with the stdout of the subshell.
        - ~user=$(whoami)~
-     + ~(...)~ means: execute the commands listed in the parens in a subshell. 
+     + ~(command)~: 
        - ~a=1;(a=2; echo $a); echo $a~       # 2\n1
-     + ~$((...))~ means: perform arithmetic and return the result of the calculation.
+     + ~$((...))~ arithmetic expansion. substitute the expression with the result of the calculation.
        - ~a=$((1+1)); echo $a~               # 2
-     + ~((...))~ means: perform arithmetic, possibly changing the values of shell variables, but return no value
+     + ~((...))~ *math context* 
        - ~((a=1+1)); echo $a~                # 2
-     + ~${...}~ means: return the value of the shell variable named in the braces.
+     + ~${...}~ parameter (and variable) expansion 
        - ~echo ${a}, ${SHELL}~               # 2, /bin/bash
      + ~{...}~ means: execute the commands in the braces as a group.
          #+begin_src bash
@@ -484,12 +476,43 @@
          
      + other related:
        - ~a="ls"; $a -la;~                             # ls -la
+
+**** *compound commands* (man bash::"compound commands")
+***** ~(commands)~: *fork* and execute the commands in a *subshell*, shared FDs with the parent shell.
+     + [[https://unix.stackexchange.com/questions/138463/do-parentheses-really-put-the-command-in-a-subshell][StackExchange::do parentheses really put the command in a subshell]]
+       #+begin_quote
+         A subshell starts out as an almost identical copy of the original shell process. Under the hood, the shell calls the *fork* system call, which creates a new process whose code and memory are copies. When the subshell is created, there are very few differences between it and its parent. In particular, they have the same variables. Even the $$ special variable keeps the same value in subshells: it's the original shell's process ID. Similarly $PPID is the PID of the parent of the original shell.
+         *A subshell created by (…) has the same file descriptors as its creator*. *Some other means of creating subshells modify some file descriptors before executing user code*; for example, the left-hand side of a pipe runs in a subshell3 with standard output connected to the pipe. The subshell also starts out with the same current directory, the same signal mask, etc. ...
+       #+end_quote
+     
+***** ~((expression))~: math context.
+      #+begin_quote
+        The expression is evaluated according to the rules described below under ARITHMETIC EVALUATION.  If the value of the expression is non-zero, the return status is 0; otherwise the return status is 1.  This is exactly equivalent to ~let "expression"~.
+      #+end_quote
+      #+begin_src bash
+      let a=17+23; echo $a
+      let a="17 + 23"; echo $a
+      
+      # (()) works identical to ~let~
+      ((a += 7))
+      if ((a > 5)); then echo 'a > 5'; fi
+      (( 1 + 1 == 2 ? 1 : $(echo 'hi' >& 2; echo 1)))   # hi
+      $(( 1 + 1 == 2 ? 1 : $(echo 'hi' >& 2; echo 1)))  # hi 1
+      #+end_src
+      
+***** ~{ commands; }~: a *group command*. executed in the current shell environment
+      #+begin_quote
+        (the commands are simply) executed in the current shell environment. list must be terminated with a newline or semicolon. This is known as a group command. The return status is the exit status of list. ...
+      #+end_quote
+
+***** ? loop
+      + ~for name [ [ in [ word ... ] ] ; ] do list ; done~
+      + ~for (( expr1 ; expr2 ; expr3 )) ; do list ; done~
+      + ~select name [ in word ] ; do list ; done~
          
 *** bash array (man bash::"Arrays")
      + ~arr=($(seq 1 10)); echo ${arr[2]}~             # 3
        
-*** bash for loop
-         
 *** bash arguments
     | Sign      | Description                                                          |
     |-----------+----------------------------------------------------------------------|
