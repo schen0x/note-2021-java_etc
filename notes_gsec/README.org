@@ -458,22 +458,21 @@
 ***** 8. pathname expansion: man bash::"pattern matching"
       
 ***** # conclusion:
-     + ~$(command)~: command substitution, execute the command in a subshell then substitute the expression with the stdout of the subshell.
+     + ~$(command)~: *command substitution*. execute the command in a subshell then substitute the expression with the stdout of the subshell.
        - ~user=$(whoami)~
-     + ~(command)~: 
+     + ~(command)~: fork and execute the commands in a subshell, shared FDs with the parent shell. see *compound commands*
        - ~a=1;(a=2; echo $a); echo $a~       # 2\n1
-     + ~$((...))~ arithmetic expansion. substitute the expression with the result of the calculation.
+     + ~$((expression))~: *arithmetic expansion*. substitute the expression with the result of the calculation.
        - ~a=$((1+1)); echo $a~               # 2
-     + ~((...))~ *math context* 
+     + ~((expression))~ *math context*. see *compound commands*.
        - ~((a=1+1)); echo $a~                # 2
-     + ~${...}~ parameter (and variable) expansion 
+     + ~${...}~ *parameter (and variable) expansion*
        - ~echo ${a}, ${SHELL}~               # 2, /bin/bash
-     + ~{...}~ means: execute the commands in the braces as a group.
+     + ~{ commands; }~: *group command*. execute the commands in the braces as a group in the current execution context.
          #+begin_src bash
          a=5; echo '5cContent' > 5c
          cat ${a}c                              # 5cContent
          #+end_src
-         
      + other related:
        - ~a="ls"; $a -la;~                             # ls -la
 
@@ -485,7 +484,7 @@
          *A subshell created by (…) has the same file descriptors as its creator*. *Some other means of creating subshells modify some file descriptors before executing user code*; for example, the left-hand side of a pipe runs in a subshell3 with standard output connected to the pipe. The subshell also starts out with the same current directory, the same signal mask, etc. ...
        #+end_quote
      
-***** ~((expression))~: math context.
+***** ~((expression))~: *math context*.
       #+begin_quote
         The expression is evaluated according to the rules described below under ARITHMETIC EVALUATION.  If the value of the expression is non-zero, the return status is 0; otherwise the return status is 1.  This is exactly equivalent to ~let "expression"~.
       #+end_quote
