@@ -504,9 +504,22 @@
       #+end_quote
 
 ***** ? loop
+      #+begin_src bash
+      for i in {1,{10..60..10}}; do echo 10.11.1.$i; done         # note that no spaces between braces
+      
+      counter=1
+      while [ $counter -lt 10 ]
+      do
+      echo "10.11.1.$counter";
+      ((counter++))
+      done
+
+
+      #+end_src
       + ~for name [ [ in [ word ... ] ] ; ] do list ; done~
       + ~for (( expr1 ; expr2 ; expr3 )) ; do list ; done~
       + ~select name [ in word ] ; do list ; done~
+
          
 *** bash array (man bash::"Arrays")
      + ~arr=($(seq 1 10)); echo ${arr[2]}~             # 3
