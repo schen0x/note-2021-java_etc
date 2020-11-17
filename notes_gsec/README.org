@@ -219,7 +219,6 @@
         MEOW
         #+end_src
 
-
 *** sed
     + ~sed -i.bak -e 's/sed/script/gi' fileName~ //edit --in-place, with backup fileName.bak, and --expression
     + ~echo 'sed in a shell' | sed 's/shell/subshell/g'~ //the last part is *regex flag*
@@ -1359,3 +1358,30 @@ relay the datagram.
       
       p2 = subprocess.run(['grep', '-n', 'str'], capture_output=True, text=True, input=p1.stdout)
     #+end_src
+
+* S3 binary walk
+** radare2
+*** basic commands
+   
+** gdb
+*** basic commands
+    + gdb
+    + q(uit)
+    + n(ext)                             # next line
+    + s(tep)                             # step into
+    + l(ist) [lineNumber]                # list src code
+    + b(reakpoint) <functionName>
+    + c(ontinue)
+    + p(rint) <varName> [=<nuwValue>]    # print/alter an var
+    + print *<pointerName>               # print len(*p)
+    + print *<pName>[@<arrLength>]       # print *p (e.g. array elements)
+    + r(un)                              # (re)run program
+    + info locals                        # list local vars
+    + make <fileName>                    # makefile
+    + disable                            # disable all breakpoints
+      
+    + layout next                        # show src in GUI
+    + layout reg                         # show reg in GUI
+    + refresh                            # refresh the GUI
+    + backtrace full                     # backtrace, use after crach
+
