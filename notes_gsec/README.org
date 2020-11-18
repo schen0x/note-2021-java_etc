@@ -1274,6 +1274,58 @@ relay the datagram.
       - monotonic means a clock never go backwards, and is not affected by system clock updates.
 
 
+** regex (the ~re~ module)
+   + basic syntax
+#+begin_src python
+import re
+text_to_search = ```
+abcd-efg
+1234567
+ABCD_EFG
+```
+
+pattern = re.compile('(a|b)[cC](d)', re.IGNORECASE)
+matches = pattern.finditer(text_to_search)
+for match in matches:
+    print(match)
+    print(match.group(0)) # group(0) for all, (1) for content inside the first parentheses
+print(pattern.sub(r'\1 | \2', text_to_search)) # substitute the match in text_to_search with r'\1 | \2'
+
+print text_to_search[1:4] # string slice
+#+end_src
+
+   + special characters
+     | .  | any char except new line                                      |
+     | \d | digit (0-9)                                                   |
+     | \D | not a digit                                                   |
+     | \w | a word char(a-z, A-Z, 0-9, _), note that dash is not included |
+     | \s | whitespace(space, tab, newline)                               |
+     | \S | not whitespace                                                |
+     | \b | wordboundary                                                  |
+     | \B | wordboundary                                                  |
+
+    + *quantifier*
+     | *     | 0 or more                   |
+     | +     | 1 or more                   |
+     | ?     | 0 or one                    |
+     | {3}   | exact number                |
+     | {3,4} | range of numbers (min, max) |
+
+    + character set
+      - [^ab] // any char but a or b
+      
+    + grouping
+      - //group(0) is all groups, group(n) is the nth parentheses from left to right
+      - (com|org|co\.uk)
+    
+    + //examples:
+      - ~re.compile(r'Mr\.?\s[A-Z]\w+')~
+      - ~re.compile(r'[a-zA-Z_0-9.+-]+@[a-zA-Z0-9-]+\.(com|edu|net)')~
+      - ~re.compile(r'M(r|s|rs)\.?\s[A-Z]\w*')~
+
+    + flags:
+      - re.IGNORECASE
+
 * S2 python#scripting
 ** basic
     + ~python -m module argv[]~
