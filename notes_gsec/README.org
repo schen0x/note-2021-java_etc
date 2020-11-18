@@ -9,7 +9,7 @@
 ================================================================================
 + CEH v9 gitbook?
 
-* Book3_Chapter 02 the basics
+* Book3_Chapter 02-05 the basics
 *** the linux filesystem hierachy standard(FHS)
    + /bin - basic programs (ls, cd, cat, etc.)
    + /sbin - system programs (fdisk, mkfs, sysctl, etc)
@@ -17,6 +17,7 @@
    + /tmp - temporary files (typically deleted on boot)
    + /usr/bin - applications (apt, ncat, nmap, etc.)
    + /usr/share - application support and data files 
+
 
 ** linux shell utilities
 *** the man page sections
@@ -376,6 +377,7 @@
     var = $( cat v.txt )
     #+end_src
 
+
 ** bash scripting
    + man bash
    + ~#!~ //the "shebang"
@@ -510,17 +512,13 @@
       counter=1
       while [ $counter -lt 10 ]
       do
-      echo "10.11.1.$counter";
-      ((counter++))
+      echo "10.11.1.$counter"; ((counter++))
       done
-
-
       #+end_src
       + ~for name [ [ in [ word ... ] ] ; ] do list ; done~
       + ~for (( expr1 ; expr2 ; expr3 )) ; do list ; done~
       + ~select name [ in word ] ; do list ; done~
 
-         
 *** bash array (man bash::"Arrays")
      + ~arr=($(seq 1 10)); echo ${arr[2]}~             # 3
        
@@ -593,8 +591,13 @@
     printf '%X\n' "$(( ~ 0x2C8B ))"                    # Bitwise NOT
     #+end_src
     
-** cmd scripting
+    
 
+
+
+
+
+** cmd scripting
 *** basic
     #+begin_src bat
     @echo off
@@ -631,6 +634,7 @@
 *** cat to variable
     + ~powershell -c "$v=cat file; $v"~
 
+
 ** cmd utilities
    + ~pathping -n ip~ //route tracing utility.
    + ~tracert ip~ //route tracing utility, less info than pathping.
@@ -644,6 +648,7 @@
    + ~powercfg~ // /A list all available sleep states; /hibernate on | off; /energy 
    + ~shutdown~ // /h for hiberanate; /r /o restart to advanced start-up 
    + ~sfc /SCANNOW~ //Windows Resource Checker
+
 
 ** TODO powershell scripting
    + ~(Get-Host).version~
@@ -767,7 +772,7 @@
 **** evasion 5: string-replacement
      + $not_evil = "amsiNOTEVIL" -replace "NOTEVIL", "context"
 
-**** TODO use encoding? 
+**** use encoding? 
      + simple base64 encoding now still trigger amsi || Windows virus threat protection
 
 ** utility tools
@@ -791,8 +796,16 @@
 *** Fuzzer
     + AFL, libFuzzer, honggfuzz, KAFL(kernel), syscall fuzzer, syzkaller
 
+
+** TODO practical examples
+   
+    
+* Book3_Chapter 06 Pasive Information Gathering
+* Book3_Chapter 07 Active Information Gathering
+
 * Book4_Chapter 01 An Introduction to TCP/IP
   
+
 ** a brief history
    + initially devices exchange info through a common communication controller 
      - ~network node -> communication controller -> network node~
@@ -802,6 +815,7 @@
    + Toplevel Internet Service Providers(ISPs)
    + Regional Internet Access Providers(IAPs)
    + End-User Nets
+
 
 ** TCP/IP architecture
    #+begin_quote
@@ -1140,6 +1154,7 @@ relay the datagram.
      - static caching
 *** Proxy ARP p102
 
+
 * Book4_Related Other Protocals
 ** Simple Network Management Protocol(SNMP)
 *** the basic
@@ -1222,6 +1237,7 @@ relay the datagram.
       two_bytes_little = an_int.to_bytes(2,'little') # b'\x05\x00'
       #+end_src
 
+
 ** data utilities
 *** sort
     #+begin_src
@@ -1239,9 +1255,11 @@ relay the datagram.
     s_l = sorted(l, key=attrgetter('name'), reverse=true)
     #+end_src
 
+
 ** network utilities (python)
 *** socket
     + //socket(type, semantics)
+
 
 ** misc utilities
 *** timer
@@ -1254,6 +1272,7 @@ relay the datagram.
       #+end_src
     + ~time.get_clock_info('monotonic' || 'perf_counter' || 'process_time' || 'thread_time' || 'time')~ //show info of each clock in detail
       - monotonic means a clock never go backwards, and is not affected by system clock updates.
+
 
 * S2 python#scripting
 ** basic
@@ -1269,6 +1288,7 @@ relay the datagram.
     + ~pip -V~ //the version & path of the pip, which reveals the env path.
     + ~exit~
     + ~pipenv run python~
+
 
 ** useful syntax
   + ~list(range(1,3))~ //[1, 2]
@@ -1356,6 +1376,7 @@ relay the datagram.
       nums_set = { n for n in nums }
       #+end_src
       
+
 ** usuful modules
 *** subprocess (shell intereaction)
     + // input argv[], capure the result, redirect the output and input, ? text or bytes output.
@@ -1372,10 +1393,12 @@ relay the datagram.
       p2 = subprocess.run(['grep', '-n', 'str'], capture_output=True, text=True, input=p1.stdout)
     #+end_src
 
+
 * S3 binary walk
 ** radare2
 *** basic commands
    
+
 ** gdb
 *** basic commands
     + gdb
