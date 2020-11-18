@@ -188,10 +188,30 @@
     + dpkg can call apt or use offline package
      
 *** grep
+    + ~grep [option] <regex> <file>~
+      - //without group capturing
     + ~grep -n(--line-number) <keyword> <fileName>~ //show the line number
     + ~grep -ri <keyword> <directory>~
       - //read all files under each directory recursively, search for what matches the "keyword"
       - //i for --ignore-case 
+        
+**** bash regex group capturing (planB only. if group capturing is necessary, better use python)
+     + [[https://stackoverflow.com/questions/1891797/capturing-groups-from-a-grep-regex][bash regex group capturing]]
+#+begin_src bash
+files="*.jpg"
+regex="[0-9]+_([a-z]+)_[0-9a-z]*"
+for f in $files    # unquoted in order to allow the glob to expand
+do
+    if [[ $f =~ $regex ]]     # bash regex matcher
+    then
+        name="${BASH_REMATCH[1]}"
+        echo "${name}.jpg"    # concatenate strings
+        name="${name}.jpg"    # same thing stored in a variable
+    else
+        echo "$f doesn't match" >&2 # this could get noisy if there are a lot of non-matching files
+    fi
+done
+#+end_src
 
 *** <<< (here string)
     + [Here Strings](https://tldp.org/LDP/abs/html/x17837.html)
