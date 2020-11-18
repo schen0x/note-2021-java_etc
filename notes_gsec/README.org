@@ -193,7 +193,10 @@
     + ~grep -n(--line-number) <keyword> <fileName>~ //show the line number
     + ~grep -ri <keyword> <directory>~
       - //read all files under each directory recursively, search for what matches the "keyword"
-      - //i for --ignore-case 
+    + // some options:
+      - i for --ignore-case 
+      - v for --reverse(not contain pattern)
+      - o for print --only-matching
         
 **** bash regex group capturing (planB only. if group capturing is necessary, better use python)
      + [[https://stackoverflow.com/questions/1891797/capturing-groups-from-a-grep-regex][bash regex group capturing]]
@@ -1303,16 +1306,21 @@ abcd-efg
 1234567
 ABCD_EFG
 ```
-
-pattern = re.compile('(a|b)[cC](d)', re.IGNORECASE)
+pattern = re.compile('(a|b)[cC](d)', re.IGNORECASE) # compile
 matches = pattern.finditer(text_to_search)
 for match in matches:
     print(match)
     print(match.group(0)) # group(0) for all, (1) for content inside the first parentheses
-print(pattern.sub(r'\1 | \2', text_to_search)) # substitute the match in text_to_search with r'\1 | \2'
+
+print(pattern.sub(r'\1 | \2', text_to_search)) # substitute the match in text_to_search with group 1, 2 r'\1 | \2'
 
 print text_to_search[1:4] # string slice
 #+end_src
+
+   + pattern methods(pattern = re.compile(r'regex', flag))
+     - ~pattern.finditer(str)~
+     - ~pattern.findall(str)~   //print --only-matching str[], *if the pattern has no capturing groups*.
+     - ~print(pattern.sub(r'\1 | \2', text_to_search))~ //substitute the match in text_to_search with group 1, 2 r'\1 | \2'
 
    + special characters
      | .  | any char except new line                                      |
