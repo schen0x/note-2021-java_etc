@@ -256,6 +256,13 @@ done
 *** awk
     + ~echo "one::two::three" | awk -F "::" '{print $1, $3}'~ //F to set the field separator
     + should multiple cut are involved, consider switching to awk
+    + BEGIN and END block
+#+begin_src bash
+awk '
+BEGIN { print "Analysis of \"li\"" }
+/<regex>/  { ++n }
+END   { print "\"<regex>\" appears in", n, "records." }' mail-list
+#+end_src
 
 *** head
     + ~head -vn linesNumber file~ //if no file presented, read stdin
@@ -821,10 +828,26 @@ done
 
 
 ** TODO practical examples
+*** example1   
+   //p123 pass
+   //TODO host
    
+*** example2
+    //p125 pass
+    //TODO grep and analise raw
     
-* Book3_Chapter 06 Pasive Information Gathering
+*** example3
+    //namp
+    *cutycapt*
+    
+* Book3_Chapter 06 Pasive Information Gathering (OSINT) checklist?
+** email, social media account on website
+
 * Book3_Chapter 07 Active Information Gathering
+  
+** tools
+*** nmap   
+    //TODO usage, script engine
 
 * Book4_Chapter 01 An Introduction to TCP/IP
   
@@ -1280,11 +1303,19 @@ relay the datagram.
 
 
 ** network utilities (python)
+*** request
+#+begin_src python
+import requests
+r = requests.get(urls, ...params)
+r2 = requests.post(urls, <data>, <json>, [...args])
+ #+end_src
+S2 python#scripting
+
 *** socket
     + //socket(type, semantics)
 
 
-** misc utilities
+** general utilities
 *** timer
     + basic usage
       #+begin_src python
@@ -1296,6 +1327,20 @@ relay the datagram.
     + ~time.get_clock_info('monotonic' || 'perf_counter' || 'process_time' || 'thread_time' || 'time')~ //show info of each clock in detail
       - monotonic means a clock never go backwards, and is not affected by system clock updates.
 
+*** subprocess (shell intereaction)
+    + // input argv[], capure the result, redirect the output and input, ? text or bytes output.
+    #+begin_src python
+      import subprocess
+      p1 = subprocess.run(['ls', '-la'], capture_output=True)
+      print(p1.stdout)
+      print(p1.stdout.decode())
+      print(p1.stdout.decode('utf-8'))
+      
+      with open('f', 'w') as f:
+          p1 = subprocess.run([], stdout = f,  text=True, check=True)
+      
+      p2 = subprocess.run(['grep', '-n', 'str'], capture_output=True, text=True, input=p1.stdout)
+    #+end_src
 
 ** regex (the ~re~ module)
    + basic syntax
@@ -1354,6 +1399,7 @@ print text_to_search[1:4] # string slice
     + flags:
       - re.IGNORECASE
 
+        
 * S2 python#scripting
 ** basic
     + ~python -m module argv[]~
@@ -1456,24 +1502,6 @@ print text_to_search[1:4] # string slice
       nums_set = { n for n in nums }
       #+end_src
       
-
-** usuful modules
-*** subprocess (shell intereaction)
-    + // input argv[], capure the result, redirect the output and input, ? text or bytes output.
-    #+begin_src python
-      import subprocess
-      p1 = subprocess.run(['ls', '-la'], capture_output=True)
-      print(p1.stdout)
-      print(p1.stdout.decode())
-      print(p1.stdout.decode('utf-8'))
-      
-      with open('f', 'w') as f:
-          p1 = subprocess.run([], stdout = f,  text=True, check=True)
-      
-      p2 = subprocess.run(['grep', '-n', 'str'], capture_output=True, text=True, input=p1.stdout)
-    #+end_src
-
-
 * S3 binary walk
 ** radare2
 *** basic commands
