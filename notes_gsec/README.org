@@ -200,7 +200,7 @@
         
 **** bash regex group capturing (planB only. if group capturing is necessary, better use python)
      + [[https://stackoverflow.com/questions/1891797/capturing-groups-from-a-grep-regex][bash regex group capturing]]
-#+begin_src bash
+     #+begin_src bash
 files="*.jpg"
 regex="[0-9]+_([a-z]+)_[0-9a-z]*"
 for f in $files    # unquoted in order to allow the glob to expand
@@ -214,7 +214,7 @@ do
         echo "$f doesn't match" >&2 # this could get noisy if there are a lot of non-matching files
     fi
 done
-#+end_src
+     #+end_src
 
 *** <<< (here string)
     + [Here Strings](https://tldp.org/LDP/abs/html/x17837.html)
@@ -257,12 +257,12 @@ done
     + ~echo "one::two::three" | awk -F "::" '{print $1, $3}'~ //F to set the field separator
     + should multiple cut are involved, consider switching to awk
     + BEGIN and END block
-#+begin_src bash
+      #+begin_src bash
 awk '
 BEGIN { print "Analysis of \"li\"" }
 /<regex>/  { ++n }
 END   { print "\"<regex>\" appears in", n, "records." }' mail-list
-#+end_src
+      #+end_src
 
 *** head
     + ~head -vn linesNumber file~ //if no file presented, read stdin
@@ -826,9 +826,11 @@ END   { print "\"<regex>\" appears in", n, "records." }' mail-list
 *** Fuzzer
     + AFL, libFuzzer, honggfuzz, KAFL(kernel), syscall fuzzer, syzkaller
 
-
 ** TODO practical examples
-*** example1   
+*** example 1: grap all subdomain, get ip
+    1. wget pages html
+    2. regex, find all '[<=\/\/]
+
    //p123 pass
    //TODO host
    
@@ -1304,11 +1306,11 @@ relay the datagram.
 
 ** network utilities (python)
 *** request
-#+begin_src python
+    #+begin_src python
 import requests
 r = requests.get(urls, ...params)
 r2 = requests.post(urls, <data>, <json>, [...args])
- #+end_src
+    #+end_src
 S2 python#scripting
 
 *** socket
@@ -1344,13 +1346,13 @@ S2 python#scripting
 
 ** regex (the ~re~ module)
    + basic syntax
-#+begin_src python
+     #+begin_src python
 import re
-text_to_search = ```
+text_to_search = '''
 abcd-efg
 1234567
 ABCD_EFG
-```
+'''
 pattern = re.compile('(a|b)[cC](d)', re.IGNORECASE) # compile
 matches = pattern.finditer(text_to_search)
 for match in matches:
@@ -1360,7 +1362,7 @@ for match in matches:
 print(pattern.sub(r'\1 | \2', text_to_search)) # substitute the match in text_to_search with group 1, 2 r'\1 | \2'
 
 print text_to_search[1:4] # string slice
-#+end_src
+     #+end_src
 
    + pattern methods(pattern = re.compile(r'regex', flag))
      - ~pattern.finditer(str)~
@@ -1368,14 +1370,23 @@ print text_to_search[1:4] # string slice
      - ~print(pattern.sub(r'\1 | \2', text_to_search))~ //substitute the match in text_to_search with group 1, 2 r'\1 | \2'
 
    + special characters
-     | .  | any char except new line                                      |
-     | \d | digit (0-9)                                                   |
-     | \D | not a digit                                                   |
-     | \w | a word char(a-z, A-Z, 0-9, _), note that dash is not included |
-     | \s | whitespace(space, tab, newline)                               |
-     | \S | not whitespace                                                |
-     | \b | wordboundary                                                  |
-     | \B | wordboundary                                                  |
+     | .            | any char except new line                                      |
+     | \d           | digit (0-9)                                                   |
+     | \D           | not a digit                                                   |
+     | \w           | a word char(a-z, A-Z, 0-9, _), note that dash is not included |
+     | \s           | whitespace(space, tab, newline)                               |
+     | \S           | not whitespace                                                |
+     | \b           | wordboundary                                                  |
+     | \B           | wordboundary                                                  |
+     |--------------+---------------------------------------------------------------|
+     | a(?=c)       | positive lookahead, find "a" which has "c" after it           |
+     | a(?!c)       | negative lookahead, find "a" which does not have "c" after it |
+     | (?<=a)c      | positive lookbehind, find "c" where "a" precedes              |
+     | (?<!a)c      | negative lookbehind, find "c" where "ab" does not precede     |
+     |--------------+---------------------------------------------------------------|
+     | (?>a\vertb)c | not well supported, avoid using. atomic groups.               |
+
+     - since no syntax for negated group, use the negative lookbehind instead.
 
     + *quantifier*
      | *     | 0 or more                   |
@@ -1398,8 +1409,8 @@ print text_to_search[1:4] # string slice
 
     + flags:
       - re.IGNORECASE
-
         
+
 * S2 python#scripting
 ** basic
     + ~python -m module argv[]~
@@ -1502,6 +1513,17 @@ print text_to_search[1:4] # string slice
       nums_set = { n for n in nums }
       #+end_src
       
+*** print format
+    #+begin_src python
+r = set({'a', 'b', 'c'})
+
+print(*r, sep='\n')        # 1
+print('\n'.join(r))        # 2
+
+rn = [1,2,3,4]
+print(*rn, sep='\n', end='\nha\n', file=f)       # 1, default stdout
+    #+end_src
+
 * S3 binary walk
 ** radare2
 *** basic commands
