@@ -859,9 +859,8 @@ whoos <domain>
    + ~-filetype:html~ // non-html pages
    + ~intitle: "index of" "parent directory"~
 
-** netcraft
+** TODO p148 netcraft
    + [[https://www.netcraft.com/][Netcraft]]
-   + 
 
 
 * Book3_Chapter 07 Active Information Gathering
@@ -869,6 +868,48 @@ whoos <domain>
 ** tools
 *** nmap   
     //TODO usage, script engine
+
+* Book3_Chapter 10 Buffer Overflow
+** basic
+   + ? x64 memory range (low 0x00000000 -> high 0x7FFFFFFF)
+   + the stack, LIFO, the return address at bottom.
+     - an example *stack frame*:
+       | function A return address |   |
+       | input param 1             |   |
+       | input param 2             |   |
+       
+*** the x86 register and their nomenclature
+    + EAX = (. + AX); AX = (AH + AL)
+      - EAX: extra, 32-bit register
+      - AX(in EAX): lower 16-bit register
+      - AH(in AX): higher 8-bit register
+      - AL(in AX): lower 8-bit register
+    + the table of x86 register structure
+      | 32-bit | lower 16 | higher 8 | lower 8 |
+      |--------+----------+----------+---------|
+      | EAX    | AX       | AH       | AL      |
+      | EBX    | BX       | BH       | BL      |
+      | ECX    | CX       | CH       | CL      |
+      | EDX    | DX       | DH       | DL      |
+      | ESI    | SI       | -        | -       |
+      | EDI    | DI       | -        | -       |
+      | EBP    | BP       | -        | -       |
+      | ESP    | SP       | -        | -       |
+      | EIP    | IP       | -        | -       |
+
+      + E[ABCD]X, ESI, EDI: often used as general purpose registers to store temporary data, [[https://wiki.skullsecurity.org/Registers][more info on register (Skull Security, 2012)]] but the primary purpose are as below (quoted OSCP p348):
+        - EAX (accumulator): Arithmetical and logical instructions
+        - EBX (base): Base pointer for memory addresses
+        - ECX (counter): Loop, shift, and rotation counter
+        - EDX (data): I/O port addressing, multiplication, and division
+        - ESI (source index): Pointer addressing of data and source in string copy operations
+        - EDI (destination index): Pointer addressing of data and destination in string copy operations
+        - *ESP* (stack pointer): most recently referenced location on the stack(pointer to the top of the stack)
+        - *EBP* (base pointer): points to the top of the stack when a function is called, provide easy reference for the function to its own stack frame (via offsets). i.e. the (offset 0 pointer)
+        - *EIP* (instruction pointer): points to the *next* instruction to be executed.
+        
+
+
 
 * Book4_Chapter 01 An Introduction to TCP/IP
   
