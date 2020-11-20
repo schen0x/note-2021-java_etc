@@ -842,8 +842,27 @@ END   { print "\"<regex>\" appears in", n, "records." }' mail-list
     //namp
     *cutycapt*
     
-* Book3_Chapter 06 Pasive Information Gathering (OSINT) checklist?
+* Book3_Chapter 06 Passive Information Gathering (OSINT) checklist?
 ** email, social media account on website
+   
+** whois enumeration
+   #+begin_src bash
+whoos <domain>
+   #+end_src
+   + TODO wireshark whois traffic
+   + whois.arin.net
+   + grep name, etc.
+     
+** google search pattern(site:<site>, filetype:<php>)
+   + ref: [[https://www.exploit-db.com/google-hacking-database][Doodle Hacking Database]] 
+   + TODO list possible search pl
+   + ~-filetype:html~ // non-html pages
+   + ~intitle: "index of" "parent directory"~
+
+** netcraft
+   + [[https://www.netcraft.com/][Netcraft]]
+   + 
+
 
 * Book3_Chapter 07 Active Information Gathering
   
