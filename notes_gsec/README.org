@@ -907,6 +907,10 @@ whoos <domain>
         - *ESP* (stack pointer): most recently referenced location on the stack(pointer to the top of the stack)
         - *EBP* (base pointer): points to the top of the stack when a function is called, provide easy reference for the function to its own stack frame (via offsets). i.e. the (offset 0 pointer)
         - *EIP* (instruction pointer): points to the *next* instruction to be executed.
+          
+*** the example:
+    +
+    [[./staceOverflow/so_Basic.c][so_Basic.c]]
         
 
 
