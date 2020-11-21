@@ -911,3 +911,9 @@ is a variable, so pa=a and pa++ are legal. But an array name is not a variable; 
     // if ((flags & (EXTERNAL | STATIC)) // true if both bits are on.
     #+end_src
     
+
+    
+//The C++
+* S2 makefile
+
+

