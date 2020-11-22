@@ -901,7 +901,7 @@ whoos <domain>
       | EIP    | IP       | -        | -       |
 
       + E[ABCD]X, ESI, EDI: often used as general purpose registers to store temporary data, [[https://wiki.skullsecurity.org/Registers][more info on register (Skull Security, 2012)]] but the primary purpose are as below (quoted OSCP p348):
-        - EAX (accumulator): Arithmetical and logical instructions
+        - EAX (accumulator): *Arithmetical and logical* instructions
         - EBX (base): Base pointer for memory addresses
         - ECX (counter): Loop, shift, and rotation counter
         - EDX (data): I/O port addressing, multiplication, and division
@@ -913,9 +913,6 @@ whoos <domain>
           
 *** the example:
     + [[./staceOverflow/so_Basic.c][so_Basic.c]]
-      
-
-
 
 * Book4_Chapter 01 An Introduction to TCP/IP
   
@@ -1597,23 +1594,67 @@ print(*rn, sep='\n', end='\nha\n', file=f)       # 1, default stdout
 
 ** gdb
 *** basic commands
+    + // gdb is easy to use when src is accessible. (Assume function names, line numbers, etc. are known by its user.)
+
     + gdb
-    + q(uit)
-    + n(ext)                             # next line
-    + s(tep)                             # step into
-    + l(ist) [lineNumber]                # list src code
-    + b(reakpoint) <functionName>
-    + c(ontinue)
-    + p(rint) <varName> [=<nuwValue>]    # print/alter an var
-    + print *<pointerName>               # print len(*p)
-    + print *<pName>[@<arrLength>]       # print *p (e.g. array elements)
-    + r(un)                              # (re)run program
+      - q(uit)
+      - shell ps -C <program>
+      - attach <pid>
+      - file <path/to/pgn>
+
+    + r(un) [args]                         # (re)run program
+      - set args                           # set *argv[]
+      - show args
+      - n(ext)                             # next line
+      - s(tep)                             # step into
+      - si(stepi)                          # next instruction
+      - c(ontinue)
+      - f(inish of the current function)
+      - advance [lineNumber]               #
+        
+    + record                               # enable recording
+      - rs(reverse-step) [count]
+      - rsi(reverse-stepi) [count]
+      - rc(reverse-continue) [count]
+      - reverse-finish         # -> begin of the current function invocation
+
+    + b(reakpoint) [lineNum|funName|*Addr] # b *0x555555555171
+      - info b(reakpoint)
+      - d(elete) [\d*]                   # delete the/all breakpoint
+      - disable                          # disable all breakpoints
+      - enable [\d*]                     # enable the/all breakpoint
+
+    + layout <regs|src|asm|split>        # show the TUI register layout
+      - *C-x a                           # leave the TUI layout
+      - l(ist) [lineNumber|functionName] # print source code 
+      - layout <prev|next>
+      - * C-l(refresh)                   # refresh the GUI
+
+    + # registers
+      - info registers
+      - # 4 gdb pseudoregisters:
+        + $pc                            # an alias for $EIP or $RIP(x64)
+        + $sp                            # an alias for $ESP or $RSP
+        + $fp                            # an alias for $EBP or $RBP
+        + $ps                            # processor status
+        
+    + x                     # display the memory content of an address
+      - x/i $pc                          # instruction which $pc points to
+      - x/x $pc (hexadecimal)
+      - x/t $pc (binary)
+      - x/c $pc (char)
+      - x/a $pc (address)
+      - x/d $pc (decimal)
+      - x/u $pc (unsigned decimal)
+        
+    + disas main
+
     + info locals                        # list local vars
-    + make <fileName>                    # makefile
-    + disable                            # disable all breakpoints
+      - p(rint) <varName> [=<nuwValue>]  # print/alter an var
+      - p *<pointerName>                 # print len(*p)
+      - p *<pName>[@<arrLength>]         # print *p (e.g. array elements)
+
+    + make                               # makefile
       
-    + layout next                        # show src in GUI
-    + layout reg                         # show reg in GUI
-    + refresh                            # refresh the GUI
-    + backtrace full                     # backtrace, use after crach
+    + bt(backtrace) full                 # backtrace, use after crach
 
