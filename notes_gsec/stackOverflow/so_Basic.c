@@ -2,7 +2,7 @@
 #include <string.h>
 int main(int argc, char *argv[])
 {
-    char buffer[64];
+    char buffer[64] = {0};
     if (argc < 2)
     {
         printf("Error - You must supply at least one argument\n");

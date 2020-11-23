@@ -902,14 +902,18 @@ whoos <domain>
 
       + E[ABCD]X, ESI, EDI: often used as general purpose registers to store temporary data, [[https://wiki.skullsecurity.org/Registers][more info on register (Skull Security, 2012)]] but the primary purpose are as below (quoted OSCP p348):
         - EAX (accumulator): *Arithmetical and logical* instructions
-        - EBX (base): Base pointer for memory addresses
+        - EBX (base): Base pointer of the *data section*.
         - ECX (counter): Loop, shift, and rotation counter
         - EDX (data): I/O port addressing, multiplication, and division
         - ESI (source index): Pointer addressing of data and source in string copy operations
         - EDI (destination index): Pointer addressing of data and destination in string copy operations
-        - *ESP* (stack pointer): most recently referenced location on the stack(pointer to the top of the stack)
-        - *EBP* (base pointer): points to the top of the stack when a function is called, provide easy reference for the function to its own stack frame (via offsets). i.e. the (offset 0 pointer)
+        - *ESP* (stack pointer): most recently referenced location on the stack(pointer to the *top/lower address* of the stack)
+        - *EBP* (base pointer): points to the *base/bottom/higher address* of the stack when a function is called, provide easy reference for the function to its own stack frame (via offsets). i.e. the (offset 0 pointer)
         - *EIP* (instruction pointer): points to the *next* instruction to be executed.
+          
+*** the *function prologue*
+    + [[https://www.youtube.com/watch?v=75gBFiFtAb8][x86 Assembly Crash Course(by HackUCF)]]
+    + ? the $ESP, $EBP, $EIP change, during call -> leave -> ret.
           
 *** the example:
     + [[./staceOverflow/so_Basic.c][so_Basic.c]]
@@ -1623,12 +1627,17 @@ print(*rn, sep='\n', end='\nha\n', file=f)       # 1, default stdout
       - d(elete) [\d*]                   # delete the/all breakpoint
       - disable                          # disable all breakpoints
       - enable [\d*]                     # enable the/all breakpoint
+      - b *([&]<funName> + <offset>)     # set breakpoint by offset
 
     + layout <regs|src|asm|split>        # show the TUI register layout
+      - # layout asm && layout src
       - *C-x a                           # leave the TUI layout
       - l(ist) [lineNumber|functionName] # print source code 
       - layout <prev|next>
       - * C-l(refresh)                   # refresh the GUI
+      
+    + display/i $pc                      # display current line assembly
+      - x/i $pc                          # show current line assembly
 
     + # registers
       - info registers
@@ -1646,6 +1655,9 @@ print(*rn, sep='\n', end='\nha\n', file=f)       # 1, default stdout
       - x/a $pc (address)
       - x/d $pc (decimal)
       - x/u $pc (unsigned decimal)
+      - $_                               # the last addr evaled
+      - $__                              # the last value evaled
+      - x/8gx $RSI                       # 8 giant-word(64-bit value) in hex, started from address $RSI
         
     + disas main
 
@@ -1653,6 +1665,7 @@ print(*rn, sep='\n', end='\nha\n', file=f)       # 1, default stdout
       - p(rint) <varName> [=<nuwValue>]  # print/alter an var
       - p *<pointerName>                 # print len(*p)
       - p *<pName>[@<arrLength>]         # print *p (e.g. array elements)
+      - set $foo = $bar
 
     + make                               # makefile
       
