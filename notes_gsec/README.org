@@ -911,7 +911,7 @@ whoos <domain>
         - *EBP* (base pointer): points to the *base/bottom/higher address* of the stack when a function is called, provide easy reference for the function to its own stack frame (via offsets). i.e. the (offset 0 pointer)
         - *EIP* (instruction pointer): points to the *next* instruction to be executed.
           
-*** the *function prologue*
+*** TODO the *function prologue*
     + [[https://www.youtube.com/watch?v=75gBFiFtAb8][x86 Assembly Crash Course(by HackUCF)]]
     + ? the $ESP, $EBP, $EIP change, during call -> leave -> ret.
           
@@ -1671,3 +1671,53 @@ print(*rn, sep='\n', end='\nha\n', file=f)       # 1, default stdout
       
     + bt(backtrace) full                 # backtrace, use after crach
 
+
+* S0 misc
+** IEEE 754 floating number representation
+   | 0           |       10000011 | 01000000000000000000000 |
+   | 1-bit sign  | 8-bit exponent |         23-bit mantissa |
+   | 0: positive |                |                         |
+
+   + theRealFloatingPointValue = <sign>(1 + mantissa) * (2 ** (exponent - 127))
+   + decimal <-> binary conversion:
+     | decimal | 10^n, ... 10^1, 10^0, 10^-1, ... 10^-n |
+     | binary  | 2^n, ... 2^1, 2^0, 2^-1, ... 2^-n      |
+     
+   + an example: convert an decimal 76.3 to floating number format.
+     - the integer part: 7.
+       | 76 / 2 | 38 | 0 |
+       | 38 / 2 | 19 | 0 |
+       | 19 / 2 |  9 | 1 |
+       | 9 / 2  |  4 | 1 |
+       | 4 / 2  |  2 | 0 |
+       | 2 / 2  |  1 | 0 |
+       | 1 / 2  |  0 | 1 |
+       + the decimal 76 is equivalent to 0b1001100.
+
+     - the fractional-part: 0.3, similarly, consider doing the (*2) and take the 1. Since it might be more human readable, than dividing a digit by 2^-n. 
+       | 0.3 * 2 | 0.6 | 0 |
+       | 0.6 * 2 | 1.2 | 1 |
+       | 0.2 * 2 | 0.4 | 0 |
+       | 0.4 * 2 | 0.8 | 0 |
+       | 0.8 * 2 | 1.6 | 1 |
+       | 0.6 * 2 | 1.2 | 1 |
+       |         |     | . |
+       |         |     | . |
+       |         |     | . |
+       + the decimal 0.3 is equivalent to 0.0100110011001... in binary.
+         
+     - combining the two parts
+       + 1001100.0100110011001... is:
+         - in scientific notation, 1.001100 0100110011001... * (2 ** 6).
+       + the exponent bias is 127, or 0b01111111.
+         - in this case, 127 + 6 = 133 or 0b10000101
+       + the mantissa is the representation in scientific notation without the leading 1:
+         - in this case, 001100 0100110011001...
+       |              0 |      10000101 | 001100 0100110011001... |
+       | 0 for positive | 6 + bias(127) | 23-bit mantissa         |
+      
+     - the final representation is: 0100 0010 1001 1000 1001 1001 1001...
+  
+
+
+      
