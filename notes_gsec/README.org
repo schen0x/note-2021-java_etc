@@ -918,6 +918,14 @@ whoos <domain>
 *** the example:
     + [[./staceOverflow/so_Basic.c][so_Basic.c]]
 
+      
+** DEP, ASLR, and CFG
+   + Data Execution Prevention(DEP): raise an exception when code from data pages executed.
+   + Address Space Layout Randomization(ASLR): randomize the base address of loaded applications and DLLs on system reboot.
+   + Control Flow Guard(CFG): ?
+
+
+
 * Book4_Chapter 01 An Introduction to TCP/IP
   
 

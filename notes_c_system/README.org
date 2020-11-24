@@ -924,7 +924,93 @@ is a variable, so pa=a and pa++ are legal. But an array name is not a variable; 
 * FS5 Chapter 0 utilites
 ** gcc options
    + -g for debugging info. (do not use Og)
-   + 
    
 * FS5 Chapter 1 the basics
+  
+** two entities defined by the ISO C++ standard:
+   + core language features
+   + standard library components: implemented by C++
+     
+** function declaration: legal without an argv name
+   + ~double sqrt(double d);~ // d will be ignored in declaration
+   + ~double sqrt(double);~
+     
+** possible to overload
+   
+** bitwise
+   + TODO x^y
+     
+** variable initialization
+   + the curly bracket {} as assignment too
+     - double d1 = 2.3;
+     - double d1 {2.3};
+     - double d1 = {2.3};
+     - vector<int> v {1,2,3,4,5,6} // a vector of ints
+   
+   + the {} assignment is without auto-casting
+     + int i1 = 7.8;      // i1 = 7, narrowing conversion are allowed and implicitly applied with "="
+     + int i2 {7.8};      //! error: floating-point to integer conversion
+     + auto d = 1.2;      // though with auto, no potentially troublesome type conversions
+       
+** scope and lifetime
+   + local scope
+   + class scope
+   + namespace scope
+     - in a namespace outside any function, lambda, class or enum, end till the end of the namespace
+
+** for loop
+   #+begin_src cpp
+   for (auto x:v)
+       cout << x << '\n'
+       
+   for (auto x:{10,21,32,43,54,65})
+       cout << x << '\n'
+    
+   void increment()
+   {
+       int v[] = {0,1,2,3,4,5,6,7,8,9};
+
+       for (auto& x : v) // add 1 to each x in v
+           ++x;
+   }
+   #+end_src
+   
+** pass by reference
+   + by ~void sort(vector<double>& v);~ // the vector is not copied.
+   + same in: structObj.a = "b" vs. structPtr->a = "b"
+     
+** declaration notation
+   + T a[n]     // T[n]: a is an array of n Ts
+   + T* p       // T*: p is a pointer to T
+   + T& r       // T&: r is a reference to T
+     - ~foo(string const& myname)~
+   + T f(A)
+     
+** reference vs pointer
+   + int *ptr = &i;
+   + int &ref = i;
+     
+   + initialization:
+     #+begin_src cpp
+     int a = 10;
+
+     // pointer init in 1
+     int *p = &a;
+     // pointer init in 2
+     int *p; p = &a; // legal
+     
+     // with reference
+     int &p = a; // legal
+     int &p; p = a; //! illegal.
+     #+end_src
+
+   + reassignment:
+     - reassign of reference is not allowed
+
+   + 
+   
+       
+     
+
+
 
