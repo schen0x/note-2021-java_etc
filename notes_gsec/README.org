@@ -1599,6 +1599,17 @@ rn = [1,2,3,4]
 print(*rn, sep='\n', end='\nha\n', file=f)       # 1, default stdout
     #+end_src
 
+*** function string execution
+    #+begin_src python
+funObj = compile(funStr, "fileNameOrAnyString", "exec") 
+exec(funObj, {}, localmap)
+    #+end_src
+    
+*** collections type
+    + isinstance
+    + collections.abc        // Abstract Base Classes for Containers
+
+
 * S3 binary walk
 ** radare2
 *** basic commands
@@ -1725,7 +1736,7 @@ print(*rn, sep='\n', end='\nha\n', file=f)       # 1, default stdout
        | 0 for positive | 6 + bias(127) | 23-bit mantissa         |
       
      - the final representation is: 0100 0010 1001 1000 1001 1001 1001...
-  
 
-
-      
+       
+* keywords misc
+  + cfg bypass

@@ -12,13 +12,23 @@ http://www.test2.com
 http://www.test3.org
 '''
 
-# FIXME if(stdin)
-# sysStdIn: TextIOWrapper = sys.stdin
-dtIn = sys.stdin.read().encode('utf-8')
-if (len(dtIn) > 0):
-    tgt2 = dtIn
-    print(tgt2)
+# grep matches
+tgt="wikiMainPage.html"
+pt = re.compile(r'(?<=(\/\/))(\w+\.?\w*)+')
+with open("wikiMainPage.html", "rb") as f:
+    ct = f.read()
+    ct = ct.decode('utf-8')
+    # matches = pt.finditer(ct)
+    matches = pt.findall(ct)
+    matches = sorted(matches.unique, key=lambda x: x[1])
+    for m in matches:
+        print(m)
 
-rsraw = ptn.findall(tgt)
-rs = set([r[0] for r in rsraw ])
-print(*rs, sep='\n')
+# debugging method grep a line contains match.
+pt = re.compile(r'(?<=(\/\/))(\w*\.?\w*)+')
+with open(tgt, "rb") as fl:
+    lines = fl.readlines()
+    print(len(lines))
+    for line in lines:
+        if(pt.search(ct)):
+            print(line)

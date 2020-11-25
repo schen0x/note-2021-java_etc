@@ -1002,15 +1002,103 @@ is a variable, so pa=a and pa++ are legal. But an array name is not a variable; 
      // with reference
      int &p = a; // legal
      int &p; p = a; //! illegal.
+
+     int& r {a};        // bind r to a (r refers to a)
+     r = 7;             // assign to whatever r refers to
+
+     int& r2;           //! error: uninitialized reference
+     r2 = 99;           // assign to whatever r2 refers to
      #+end_src
 
    + reassignment:
      - reassign of reference is not allowed
 
-   + 
-   
        
+   + TODO
+
+   + example
+     #+begin_src cpp
+     // pointer
+     int x - 2;
+     int y = 3;
+     int* p = &x;
+     int* q = &y;
+     p = q;            // p and q both point to y.
+     #+end_src
+
+     #+begin_src cpp
+     // pointer
+     int x - 2;
+     int y = 3;
+     int& r = x;
+     int& q = y;
+     r = r2;           // x == 3, y == 3.
+     #+end_src
      
 
+   
+* FS5 Chapter 2 user-defined types
+** struct
+   #+begin_src cpp
+   struct Vector {
+       int sz;
+        // number of elements
+       double∗ elem; // pointer to elements
+   };
+
+   void vector_init(Vector& v, int s) // reference to a struct as input
+   {
+       v.elem = new double[s]; // allocate an array of s doubles 
+       v.sz = s;
+   }
+
+   void useVectorInit(int s)
+   {
+       Vector v;
+       vector_init(v,s);
+
+       return //FIXME ?
+   }
+   #+end_src
+   
+ ** access through ref vs access through pointer
+    #+begin_src cpp
+    void f(Vector v, Vector& rv, Vector∗ pv)
+    {
+        int i1 = v.sz; // access through name
+        int i2 = rv.sz; // access through reference
+        int i3 = pv−>sz; // access through pointer
+    }
+    #+end_src
+    
+** class
+   #+begin_src cpp
+   class Vector {
+   public:
+       Vector(int s) :elem{new double[s]}, sz{s} { } // FIXME a list of init
+       double& operator[](int i) { return elem[i]; }
+       int size() { return sz; }
+   private:
+       double∗ elem; // pointer to the elements
+       int sz;
+        // the number of elements
+   };
+
+   #+end_src
+   
+** enum
+   + enum // use context namespace
+   + enum class // className::enumElm
 
 
++ search
++ photo
++ translate
++ ...
+
++ search
+
++ maps ,chrome browser && android 
+  
+
+  
