@@ -1360,7 +1360,7 @@ relay the datagram.
       two_bytes_little = an_int.to_bytes(2,'little') # b'\x05\x00'
       #+end_src
 
-
+      
 ** data utilities
 *** sort
     #+begin_src
@@ -1383,8 +1383,9 @@ relay the datagram.
 *** request
     #+begin_src python
 import requests
-r = requests.get(urls, ...params)
-r2 = requests.post(urls, <data>, <json>, [...args])
+res = requests.get(urls, ...params)
+res2 = requests.post(urls, <data>, <json>, [...args])
+print(res.text)
     #+end_src
 S2 python#scripting
 
