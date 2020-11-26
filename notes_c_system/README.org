@@ -1102,3 +1102,12 @@ is a variable, so pa=a and pa++ are legal. But an array name is not a variable; 
   
 
   
+
+
+* FS4 C++ //TODO
+Q: return ref to local var
+Q: const ref 
+structured binding
+virtual 
+constructor in inheritance
+destructor && class
