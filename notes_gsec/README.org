@@ -834,7 +834,7 @@ END   { print "\"<regex>\" appears in", n, "records." }' mail-list
     1. wget pages html
     2. regex, find all '[<=\/\/]
 
-   //p123 pass
+   //p123 passts
    //TODO host
    
 *** example2
@@ -924,6 +924,22 @@ whoos <domain>
    + Address Space Layout Randomization(ASLR): randomize the base address of loaded applications and DLLs on system reboot.
    + Control Flow Guard(CFG): ?
 
+
+
+
+* Book3_Chapter 14 resources
+** TODO resources p440, 3 archives, check maillist
+   + p450 example
+
+* Book3_Chapter 15 fixing the exploit
+** TODO bo, manual to find the address quick
+** TODO use metasploit and read different ver. of code
+   
+** TODO the last bit of calloc (memset + paddin g)
+   
+** TODO lab c p467
+   
+* Book3_Chapter 16 file transfers
 
 
 * Book4_Chapter 01 An Introduction to TCP/IP
