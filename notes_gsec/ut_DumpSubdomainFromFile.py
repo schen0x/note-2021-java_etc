@@ -29,6 +29,9 @@ with open(outFileName, 'w') as f:
     for m in outList:
         f.write(m + '\n')
 
+# then loop through the file in the shell:
+# while read p; do host $p >> index_hosts_result; done < index_hosts
+
 print('---------------------------------\n')
 # print group[0]
 with open(tgt, "rb") as f:

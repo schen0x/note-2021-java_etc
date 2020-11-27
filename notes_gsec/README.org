@@ -832,9 +832,15 @@ END   { print "\"<regex>\" appears in", n, "records." }' mail-list
 ** TODO practical examples
 *** example 1: grap all subdomain, get ip
     1. wget pages html
-    2. regex, find all '[<=\/\/]
+    2. grab all urls use regex.
+       [[./ut_DumpSubdomainFromFile.py]]
+    3. loop through the file in the shell:
+       #+begin_src sh
+while read p; do host $p >> index_hosts_result; done < index_hosts
+       #+end_src
+     
 
-   //p123 passts
+   //p123 pass
    //TODO host
    
 *** example2
