@@ -1,0 +1,32 @@
+;; -*- mode: org; eval: (company-mode -1); -*-
++ Book1: 
+================================================================================
+
+* S0 Logical Operations
+  
+** Logical disjunction (or)
+   + notations
+   | notation-1 | x v y |
+   | notation-2 | x + y |
+
+   + normal forms
+   | disjunctive | x + y |
+   | conjunctive | x + y |
+   | truth table | 1110  |
+
+
+** Logical conjunction (and)
+   + notations
+   | notation-1 | x ^ y |
+   | notation-2 | x * y |
+
+   + normal forms
+   | disjunctive | xy   |
+   | conjunctive | xy   |
+   | truth table | 0001 |
+  
+** Exclusive or (xor)
+   + normal forms 
+   | disjunctive | ~x * y + x * ~y     |
+   | conjunctive | (~x + ~y) * (x + y) |
+   | truth table | 0110                |
