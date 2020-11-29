@@ -929,8 +929,29 @@ intitle: "index of" "parent directory"
     + "rockyou" wordlist. [[https://en.wikipedia.org/wiki/RockYou#Data_breach]]
       
 ** social media tools
-   + social searcher. [[https://www.social-searcher.com/]]
+*** social searcher
+    [[https://www.social-searcher.com/]]
+    
+** site specific tools
+*** twofi
+    https://digi.ninja/projects/twofi.php
+    + user's twitter feed -> wordlist
 
+*** linkedin2username
+    https://github.com/initstring/linkedin2username
+    + linkedin -> username list
+      
+** stackoverflow
+   + if an employee ask questions
+     
+** information gathering frameworks
+*** *OSINT Framework*
+    https://osintframework.com/
+    + *extremely useful*
+      
+*** TODO maltego
+    https://www.paterva.com/buy/maltego-clients.php
+    + indispensable tool for large information gathering operations (PWK, p170)
 
 * Book3_Chapter 07 Active Information Gathering
   
