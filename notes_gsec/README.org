@@ -576,7 +576,7 @@ END   { print "\"<regex>\" appears in", n, "records." }' mail-list
         echo "answer: $answer" 
         read -p 'id: ' id
         read -sp 'pw: ' pw;
-        printf "\n\nid: $id, pw: $pw
+        printf "\n\nid: $id, pw: $pw"
         #+end_src
 
 *** if //conditioning
@@ -811,9 +811,11 @@ END   { print "\"<regex>\" appears in", n, "records." }' mail-list
 ** utility tools
 *** wireshark //for more filter info check wiki || ref
     + *capture filter*: ~net 192.168.140.0/24~
-    + *display filter*: ~ip.dst==192.168.140.128 and tcp.port==1337~
-    + //follow the tcp stream.
-    + //TODO, practice.
+    + *display filter*: 
+      - ip.addr==192.168.140.128
+      - ip.src==192.168.140.128
+      - ip.dst==192.168.140.128 and tcp.port==1337
+      - tcp
 
 *** tcpdump //TODO advanced if necessary
     + ~sudo tcpdump -r dump.pcapng | awk -F " " '{print $3}' | sort | uniq -c | head~ //find the top most frequent active address.
@@ -852,24 +854,82 @@ while read p; do host $p >> index_hosts_result; done < index_hosts
     *cutycapt*
     
 * Book3_Chapter 06 Passive Information Gathering (OSINT) checklist?
-** email, social media account on website
    
-** whois enumeration
+** osint tools
+*** whois enumeration
    #+begin_src bash
-whoos <domain>
+whois <domain>
+whois <ip>     # more info
    #+end_src
-   + TODO wireshark whois traffic
    + whois.arin.net
    + grep name, etc.
      
-** google search pattern(site:<site>, filetype:<php>)
-   + ref: [[https://www.exploit-db.com/google-hacking-database][Doodle Hacking Database]] 
-   + TODO list possible search pl
-   + ~-filetype:html~ // non-html pages
-   + ~intitle: "index of" "parent directory"~
+*** google search pattern(site:<site>, filetype:<php>)
+   + ref: [[https://www.exploit-db.com/google-hacking-database][Google Hacking Database]] 
+     #+begin_src 
+ + ~-filetype:html~ // non-html pages
+intitle: "index of" "parent directory"
+     #+end_src
 
-** TODO p148 netcraft
-   + [[https://www.netcraft.com/][Netcraft]]
+*** netcraft
+   + [[https://www.netcraft.com/]]
+     - Resources, site report
+     - Resources, search dns
+       
+*** recon-ng (may trigger guard.)
+   + recon-ng
+     - marketplace search <module>
+       + [[https://github.com/lanmaster53/recon-ng-marketplace/wiki/API-Keys][open api keys]]
+     - marketplace info <module_path>
+     - marketplace install <module_path>
+
+     - modules load <module_path>
+       + <modulePrompt>> info
+     - options set SOURCE megacorpone.com
+     - run                                            // results stored as hosts
+
+     - back
+     - show
+     - show hosts
+     - marketplace info recon/hosts-hosts/resolve
+     - marketplace install recon/hosts-hosts/resolve
+     - modules load recon/hosts-hosts/resolve
+     - info
+     - run                                             // use stored hosts info
+     - show hosts                                      // ip fields are resolved
+
+*** open-source code
+   + github, gitlab, sourceforge
+     - github:
+       + user:<user> filename:users
+       + //tools, e.g. Gitrob, Gitleaks
+         
+*** shodan
+   + // interact with and gather info from internet-connected devices.
+     
+*** security headers
+   [[https://securityheaders.com/]]
+   + discover missing defensive headers
+     
+*** ssl server test
+   [[https://www.ssllabs.com/ssltest/]]
+     
+*** pastebin
+   [[https://pastebin.com/]]
+   + search in it.
+     
+** user infomation gathering, credential stuffing
+*** email, social media account on the official website
+    
+*** email harvesting
+    + theHarvester [[https://github.com/laramies/theHarvester]]
+    + theharvester -d megacorpone.com -b google // domain, datasource
+
+*** password dumps that already existed
+    + "rockyou" wordlist. [[https://en.wikipedia.org/wiki/RockYou#Data_breach]]
+      
+** social media tools
+   + social searcher. [[https://www.social-searcher.com/]]
 
 
 * Book3_Chapter 07 Active Information Gathering
