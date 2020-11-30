@@ -954,6 +954,68 @@ intitle: "index of" "parent directory"
     + indispensable tool for large information gathering operations (PWK, p170)
 
 * Book3_Chapter 07 Active Information Gathering
+  + port scanning, DNS, SMB, NFS, SMTP, SNMP enumeration.
+    
+** DNS enumeration TODO recursor
+   + dns client <-> DNS recursor <-> DNS infrastructure
+   + the DNS infrastructure:
+     + cliient:
+     #+begin_quote
+     The process starts when a hostname is entered into a browser or other application. The browser passes the hostname to the operating system’s DNS client and the operating system then forwards the request to the external DNS server it is configured to use. This first server in the chain is known as the DNS recursor and is responsible for interacting with the DNS infrastructure and returning the results to the DNS client. The DNS recursor contacts one of the servers in the DNS root zone.
+     #+end_quote
+     + step 1:
+     #+begin_quote
+     The DNS recursor contacts *one of the servers in the DNS root zone*. The root server then *responds with the address of the server responsible for the zone containing the Top Level Domain (TLD)*.
+     #+end_quote
+     + step 2:
+     #+begin_quote
+     Once the DNS recursor receives the address of the TLD DNS server, it *queries it for the address of the authoritative nameserver* for the megacorpone.com domain.
+     #+end_quote
+     + step 3:
+     #+begin_quote
+     The authoritative nameserver is the final step in the DNS lookup process and contains the DNS records in a local database known as *the zone file*. It *typically hosts two zones for each domain, the forward lookup zone that is used to find the IP address of a specific hostname and the reverse lookup zone (if configured by the
+administrator), which is used to find the hostname of a specific IP address*.
+     #+end_quote
+     + client:
+     #+begin_quote
+     Once the DNS recursor provides the DNS client with the IP address for www.megacorpone.com, the browser can contact the correct web server at its IP address and load the webpage.
+     #+end_quote
+     
+*** dns caching
+    #+begin_quote
+    To improve the performance and reliability of DNS, DNS caching is used to store local copies of DNS records at various stages of the lookup process. It is for this reason that some modern applications, such as web browsers, keep a separate DNS cache. In addition, the local DNS client of the operating system also maintains its own DNS cache along with each of the DNS servers in the lookup process. Domain owners can also control how long a server or client caches a DNS record via the Time To Live (TTL) field of a DNS record.
+    #+end_quote
+    
+*** dns records common types
+    + NS - Nameserver records contain the name of the authoritative servers hosting the DNS records for a domain.
+    + A - Also known as a host record, the “a record” contains the IP address of a hostname (such as www.megacorpone.com).
+    + MX - Mail Exchange records contain the names of the servers responsible for handling email for the domain. A domain can contain multiple MX records.
+    + PTR - Pointer Records are used in reverse lookup zones and are used to find the records associated with an IP address.
+    + CNAME - Canonical Name Records are used to create aliases for other host records.
+    + TXT - Text records can contain any arbitrary data and can be used for various purposes, such as domain ownership verification.
+      
+*** ~host~
+    #+begin_src sh
+    host www.megacorpone.com
+    host -t mx megacorpone.com
+    host -t txt megacorpone.com
+    #+end_src
+    
+**** forward lookup brute force
+     + simplified wordlist /usr/share/seclists
+       - Much more comprehensive wordlists are available as part of the SecLists project.
+       - [[https://github.com/danielmiessler/SecLists]]
+       - sudo apt install seclists
+     + usage: 
+     #+begin_src sh
+     cat list.txt    # www ftp mail own paoxy router
+     for ip in $(cat list.txt); do host $ip.megacorpone.com; done
+     #+end_src
+     
+**** reverse lookup brute force
+     #+begin_quote
+     If the DNS administrator of megacorpone.com configured PTR 191 records for the domain, we could scan the approximate range with reverse lookups to request the hostname for each IP.
+     #+end_quote
   
 ** tools
 *** nmap   
