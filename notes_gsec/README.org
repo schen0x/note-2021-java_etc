@@ -994,7 +994,7 @@ administrator), which is used to find the hostname of a specific IP address*.
     + CNAME - Canonical Name Records are used to create aliases for other host records.
     + TXT - Text records can contain any arbitrary data and can be used for various purposes, such as domain ownership verification.
       
-*** ~host~
+*** ~host~, dns forward/reverse lookup
     #+begin_src sh
     host www.megacorpone.com
     host -t mx megacorpone.com
@@ -1016,10 +1016,71 @@ administrator), which is used to find the hostname of a specific IP address*.
      #+begin_quote
      If the DNS administrator of megacorpone.com configured PTR 191 records for the domain, we could scan the approximate range with reverse lookups to request the hostname for each IP.
      #+end_quote
+     + usage:
+     #+begin_src sh
+     for ip in $(seq 50 100); do host 38.100.193.$ip; done | grep -v "not found"
+     #+end_src
+     
+*** dns zone transfers
+    #+begin_quote
+    A zone transfer is basically a database replication between related DNS servers in which the zone file is copied from a master DNS server to a slave server. The zone file contains a list of all the DNS names configured for that zone. Zone transfers should only be allowed to authorized slave DNS servers but many administrators misconfigure their DNS servers, and in these cases, anyone asking for a copy of the DNS server zone will usually receive one.
+    #+end_quote
+    + host -l         # list zone, to attemp the zone transfers
+    + useage:         # nameserver is already knowned in the ~host~ result
+      #+begin_src sh
+      # host -l megacorpone.com <nameserver>
+      host -l megacorpone.com ns2.megacorpone.com     # success if the nameserver allows the transfer
+      #+end_src
+    + //TODO test script
   
-** tools
-*** nmap   
-    //TODO usage, script engine
+*** *dns enumeration tools*
+   
+**** DNSRecon (.py script) //TODO try zone transfer
+    + usage:
+      #+begin_src sh
+      dnsrecon -d megacorpone.com -t axfr                 # -d <domainname> -t <typeOfEnumeration>
+      dnsrecon -d megacorpone.com -D ~/list.txt -t brt    # forward lookup brute force equivalence
+      #+end_src
+      
+**** DNSenum
+    + usage:
+      #+begin_src sh
+      dnsenum zonetransfer.me
+      #+end_src
+
+** port scanning
+   + steps:
+     1. find possible web servers by scanning 80 443 on the network.
+     2. run full port scan on them in the background.
+        
+*** basic, netcat
+    
+**** netcat, tcp
+    #+begin_src sh
+    nc -nvv -w 1 -z 10.11.1.220 3388-3390
+    #+end_src
+    + process: (handshake if success)
+      - open: [SYN] -> [SYN, ACK] -> [FIN, ACK]
+      - close: [SYN] -> [RST, ACK]
+
+**** netcat, udp
+     #+begin_src sh
+     nc -nv -u -z -w 1 10.11.1.115 160-162
+     #+end_src
+     + process: (server response with ICMP destination unreachable if closed, unreliable)
+       - filtered by a firewall or device use none standard implementation
+         
+*** nmap 
+    + sudo if need raw sockets
+      #+begin_quote
+Raw sockets allow for surgical manipulation of TCP and UDP packets.
+      #+end_quote
+      
+**** iptables, monitoring traffic
+     + usage:
+     #+begin_src sh
+     sudo iptables -I INPUT 1 -s 10.11.1.220 -j ACCEPT
+     #+end_src
 
 * Book3_Chapter 10 Buffer Overflow
 ** basic
