@@ -1080,7 +1080,60 @@ Raw sockets allow for surgical manipulation of TCP and UDP packets.
      + usage:
      #+begin_src sh
      sudo iptables -I INPUT 1 -s 10.11.1.220 -j ACCEPT
+     sudo iptables -I INPUT 1 -s 10.11.1.220 -j ACCEPT
+       # --insert <chain>, <rulenum> 1 for topmost, [!] --source <ip>, --jump <rule>(ACCEPT DROP RETURN)
+     sudo iptables -I OUTPUT 1 -d 10.11.1.220 -j ACCEPT
+     sudo iptables -Z [chain[rulenum]]
+       # zero the counters 7 
+     sudo iptables -vn -L
+       # --numeric, --list [chain], list all rules [of a chain]
      #+end_src
+     
+**** nmap tcp scan
+     + nmap <ip>            # default 1000-port scan, 78KB
+     + nmap -p 1-65535 <ip> # all *tcp* ports, 4MB 
+     + sudo nmap -sS <ip>   # (not so) stealth/syn scan, 
+     + nmap -sT <ip>        # TCP connect scan, default
+       - # the connect scan perform TCP handshakes.
+       - # hence much slower than -sS since per result only available after the handshake is complete.
+
+**** nmap udp scan
+    + sudo nmap -sU 10.11.1.115
+      - # for normal ports: use the "ICMP port unreachable" method
+      - # for common ports:
+        #+begin_quote
+        such as port 161, which is used by SNMP, it will send a protocol-specific SNMP packet in an attempt to get a response from an application bound to that port.
+        #+end_quote
+
+    + sudo nmap -sS -sU 10.11.1.115  # tcp && udp scan
+
+**** network sweeping
+     + usage:
+     #+begin_src sh
+nmap -sn 10.11.1.1-254                        # (no port scan)
+nmap -v -sn 10.11.1.1-254 -oG ping-sweep.txt  # greppable output
+grep Up ping-sweep.txt | cut -d " " -f 2
+
+nmap -p 80 10.11.1.1-254 -oG web-sweep.txt
+nmap -sT -A --top-ports=20 10.11.1.1-254 -oG top-port-sweep.txt 
+  # A for enabling OS detection, version detection, script scanning and traceroute
+  # the top ports are defined in: /usr/share/nmap/nmap-services
+     #+end_src
+
+**** TODO more host discovery technique
+     https://nmap.org/book/man-host-discovery.html
+
+**** os fingerprinting
+     #+begin_quote
+     Nmap has a built-in feature called OS fingerprinting, which can be enabled with the *-O* option. This feature attempts to guess the target’s operating system by inspecting returned packets. This is possible because operating systems often have slightly different implementations of the TCP/IP stack (such as varying default TTL values and TCP window sizes) and these slight variances create a fingerprint that Nmap can often identify.
+     #+end_quote
+
+     + usage:
+     #+begin_src sh
+sudo nmap -O 10.11.1.220
+     #+end_src
+
+//TODO
 
 * Book3_Chapter 10 Buffer Overflow
 ** basic
