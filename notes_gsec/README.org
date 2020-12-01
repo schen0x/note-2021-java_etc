@@ -1132,7 +1132,21 @@ nmap -sT -A --top-ports=20 10.11.1.1-254 -oG top-port-sweep.txt
      #+begin_src sh
 sudo nmap -O 10.11.1.220
      #+end_src
+     
+**** banner grabbing/service enumeration
+     + usage
+     #+begin_src sh
+nmap -sV -sS -A 10.11.1.220    # -sV version detection, or banners
+     #+end_src
+     + TODO track size
 
+**** nmap scripting engine (NSE)
+     + /usr/share/nmap/scripts
+     + usage:
+     #+begin_src sh
+nmap 10.11.1.220 --script=smb-os-discovery
+     #+end_src
+     
 //TODO
 
 * Book3_Chapter 10 Buffer Overflow
