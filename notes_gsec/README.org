@@ -1144,8 +1144,37 @@ nmap -sV -sS -A 10.11.1.220    # -sV version detection, or banners
      + /usr/share/nmap/scripts
      + usage:
      #+begin_src sh
-nmap 10.11.1.220 --script=smb-os-discovery
+nmap 10.11.1.220 --script=smb-os-discovery                   # base usage
+nmap --script=dns-zone-transfer -p 53 ns2.megacorpone.com    # zone transfer
+nmap --script-help dns-zone-transfer                         # script help
      #+end_src
+     
+***** TODO execise
+      + list neighbours
+      + -sn and find server
+      + nse, smb-os...
+
+      + zone transfer on -sn result | host
+      + nse ip
+
+      + wireshark, udp scan packet
+      + wireshark, SYN vs connect scan packet
+        
+*** masscan
+    #+begin_quote
+Masscan is arguably the fastest port scanner; it can scan the entire Internet in about 6 minutes, transmitting an astounding 10 million packets per second! While it was originally designed to scan the entire Internet, it can easily handle a class A or B subnet, which is a more suitable target range during a penetration test.
+    #+end_quote
+    + usage:
+    #+begin_src sh
+sudo masscan -p80 10.0.0.0/8                                 # base usage
+sudo masscan -p80 10.11.1.0/24 --rate=1000 -e tap0 --router-ip 10.11.0.1
+  # rate of package transmission, -e <interface>, --router-ip <gateway>
+    #+end_src
+    
+** server message block (SMB) enumeration
+   + bad bug records due to "complex implementation and open nature"
+     [[http://markgamache.blogspot.ca/2013/01/ntlm-challenge-response-is-100-broken.html]]
+
      
 //TODO
 
