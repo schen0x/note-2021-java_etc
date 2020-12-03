@@ -1242,8 +1242,47 @@ sudo mount -o nolock 10.11.1.72:/home /mnt     # -o <mountOptions>, nolock(man 5
 cd /mnt && ls
       #+end_src
       
-** SMTP enumeration
-     
+** SMTP enumeration : Simple Mail Transport Protocol
+   + TODO VRFY && EXPN
+   + about SMTP
+   #+begin_quote
+We can also gather information about a host or network from vulnerable mail servers. The Simple Mail Transport Protocol (SMTP) supports several interesting commands, such as VRFY and EXPN. A VRFY request asks the server to verify an email address, while EXPN asks the server for the membership of a mailing list. These can often be abused to verify existing users on a mail server, which is useful information during a penetration test. 
+   #+end_quote
+   + src:
+     #+begin_src sh
+nc -nv 10.11.1.217 25
+# (UNKNOWN) [10.11.1.217] 25 (smtp) open
+# 220 hotline.localdomain ESMTP Postfix
+VRFY root
+# 252 2.0.0 root
+VRFY idontexist
+# 550 5.1.1 <idontexist>: Recipient address rejected: User unknown in local recipient table
+     #+end_src
+   + TODO [[./ut_SMTPEnumerationAuto.py]]
+    
+** SNMP enumeration : Simple Network Management Protocol
+   + about SNMP
+   #+begin_quote
+   Over the years, we have often found that the Simple Network Management Protocol (SNMP) is not well-understood by many network administrators. This often results in SNMP misconfigurations, which can result in significant information leakage.
+
+   SNMP is based on UDP, a simple, stateless protocol, and is therefore susceptible to IP spoofing and replay attacks. In addition, the commonly used SNMP protocols 1, 2, and 2c offer no traffic encryption, meaning that SNMP information and credentials can be easily intercepted over a local network. Traditional SNMP protocols also have weak authentication schemes and are commonly left configured with default public and private community strings.
+   #+end_quote
+
+*** the SNMP MIB tree : Management Information Base 
+    + about MIB
+    #+begin_quote
+The SNMP Management Information Base (MIB) is a database containing information usually related to network management. The database is organized like a tree, where branches represent different organizations or network functions. The leaves of the tree (final endpoints) correspond to specific variable values that can then be accessed, and probed, by an external user.
+    #+end_quote
+    + more info:
+    [[https://www.ibm.com/support/knowledgecenter/ssw_aix_71/commprogramming/mib.html]]
+    + src:
+    #+begin_src sh
+sudo nmap -sU --open -p 161 10.11.1.1-254 -oG open-snmp.txt
+    #+end_src
+    + alternative tools, onesixtyone
+      #+begin_quote
+which will attempt a brute force attack against a list of IP addresses. First we must build text files containing community strings and the IP addresses we wish to scan:
+      #+end_quote
      
 //TODO
 + how to know what --script-args
