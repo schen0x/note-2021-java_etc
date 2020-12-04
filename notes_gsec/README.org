@@ -8,6 +8,7 @@
 + Book7: Windows Internals 6ed, Part 2, Developer Reference, (Win 7 and Win Server 2008 R2) by David Solomon, etc. (594 pages)
 ================================================================================
 + CEH v9 gitbook?
+  XSS Exploits cgisecurity.com
 
 * Book3_Chapter 02-05 the basics
 *** the linux filesystem hierachy standard(FHS)
@@ -1318,6 +1319,24 @@ snmpwalk -c public -v1 10.11.1.50 1.3.6.1.2.1.25.6.3.1.2
 + how to know what --script-args
   
 * Book3_Chapter 8 Vulnerability Scanning
+  + // overview of automated scanning, major tools : Nessus && Nmap
+    
+** Vulnerability Scanning Overview and Considerations
+   
+*** How Vulnerability Scanners Work
+    1. Detect if a target is up and running.
+    2. Conduct a full or partial port scan, depending on the configuration.
+    3. Identify the operating system using common fingerprinting techniques.
+    4. Attempt to identify running services with common techniques such as banner grabbing, service behavior identification, or file discovery.
+    5. Execute a *signature-matching process* to discover vulnerabilities.
+    #+begin_quote
+    As a part of this signature-matching process, many scanners use banner grabbing, a simple technique where text strings generated during an initial interaction with an application are obtained and analyzed. Some applications generate very specific banners, such as OpenSSH, which may return “SSH-2.0-OpenSSH_7.9p1 Debian-10”, allowing us to precisely pinpoint the application version, while others, such as Apache Tomcat versions 4.1.x to 8.0.x, return a generic HTTP header of “Apache-Coyote/1.1”. 
+
+    Most automated scanners inspect a wide variety of other target information during the signature-matching process. Nevertheless, even a strong signature match does not guarantee the presence of a vulnerability. This means automated scanners can generate quite a few false positives and by contrast, false negatives, in which a vulnerability is overlooked because of a signature mismatch. False positives and negatives can also occur because of backporting, in which package maintainers "roll back" software security patches to older versions. Backporting may result in the scanner flagging software as a vulnerable version when the vulnerability has actually been repaired.
+    #+end_quote
+    
+
+  
 
 * Book3_Chapter 10 Buffer Overflow
 ** basic
@@ -2204,3 +2223,4 @@ exec(funObj, {}, localmap)
        
 * keywords misc
   + cfg bypass
+  + [[https://danielmiessler.com/study/red-blue-purple-teams/]]
