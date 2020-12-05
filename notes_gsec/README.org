@@ -1335,8 +1335,16 @@ snmpwalk -c public -v1 10.11.1.50 1.3.6.1.2.1.25.6.3.1.2
     Most automated scanners inspect a wide variety of other target information during the signature-matching process. Nevertheless, even a strong signature match does not guarantee the presence of a vulnerability. This means automated scanners can generate quite a few false positives and by contrast, false negatives, in which a vulnerability is overlooked because of a signature mismatch. False positives and negatives can also occur because of backporting, in which package maintainers "roll back" software security patches to older versions. Backporting may result in the scanner flagging software as a vulnerable version when the vulnerability has actually been repaired.
     #+end_quote
     
-
-  
+*** know the target
+    + the traffic volume. Throttle scan speed && use timeout at first, increace speed till reaching quality-speed balance.
+    + network position.
+      #+begin_quote
+      Finally, our network positioning can affect target visibility. For example, a typical vulnerability scanner will attempt to discover targets with a ping sweep or ARP scan.224 However, Internet connected targets would not be able to receive ARP traffic from external subnets and may block ICMP (ping) requests,225 meaning the scanner could miss the targets entirely if it has been configured to rely solely on these discovery options.
+      #+end_quote
+    
+*** authenticated vs unauthenticated scanning
+    //TODO p208
+    
 
 * Book3_Chapter 10 Buffer Overflow
 ** basic
