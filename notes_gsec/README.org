@@ -1366,9 +1366,21 @@ account-control-works]]
    However, Nessus is a quite capable industry standard, and the free “Essentials” version allows us to scan up to 16 IPs. It gives us insight into how to use the full commercial version without time limits or other constraints. The overall concepts discussed in this section will generally apply to just about any other commercial scanner as well.
    #+end_quote
    + pass? p210~
+   + TODO wireshark the Nessus traffic, unathenticated && authenticated.
+   + ~p236
      
-
-
+** Vulnerability Scanning with Nmap : NSE
+   #+begin_quote
+   As an alternative to Nessus, we can also use the Nmap Scripting Engine (NSE) to perform automated vulnerability scans. While NSE is not a full-fledged vulnerability scanner, it does have a respectable library of scripts that can be used to detect and validate vulnerabilities. NSE scripts are written in Lua and range in functionality from brute force and authentication to detecting and exploiting vulnerabilities. For these purposes we will focus on the scripts in the “vuln” and “exploit” categories, as the former detects a vulnerability and the latter attempts to exploit it.
+   However, there is overlap between these categories and some “vuln” scripts may essentially run stripped-down exploits. For this reason, scripts are also further categorized as “safe” or “intrusive” and we should take great care when executing the latter because they may crash a remote service or take down the target.
+   #+end_quote
+   + src:
+     #+begin_src sh
+cd /usr/share/nmap/scripts/
+head -n 5 script.db                           # index to all the scripts
+cat script.db | grep '"vuln"\|"exploit"'
+sudo nmap --script vuln 10.11.1.10
+     #+end_src
 
     //TODO
 
