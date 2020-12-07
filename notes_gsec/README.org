@@ -1377,12 +1377,11 @@ account-control-works]]
    + src:
      #+begin_src sh
 cd /usr/share/nmap/scripts/
-head -n 5 script.db                           # index to all the scripts
+head -n 5 script.db                           # the index to all the scripts
 cat script.db | grep '"vuln"\|"exploit"'
 sudo nmap --script vuln 10.11.1.10
+  # run all scripts in the “vuln” category
      #+end_src
-
-    //TODO
 
 * Book3_Chapter 10 Buffer Overflow
 ** basic
@@ -1439,7 +1438,23 @@ sudo nmap --script vuln 10.11.1.10
 
 
 
-* Book3_Chapter 14 resources
+* Book3_Chapter 14 Locating Public Exploits
+  
+** Online Exploit Resources
+*** The Exploit Database
+    [[https://www.exploit-db.com/]]
+    
+*** SecurityFocus Exploit Archives
+    [[https://www.securityfocus.com/]]
+    
+*** Packet Storm
+    [[https://packetstormsecurity.com/]]
+
+** Offline Exploit Resources
+    //TODO
+
+
+
 ** TODO resources p440, 3 archives, check maillist
    + p450 example
 
