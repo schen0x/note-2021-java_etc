@@ -1452,11 +1452,42 @@ sudo nmap --script vuln 10.11.1.10
 
 ** Offline Exploit Resources
     //TODO
+    
+*** SearchSploit
+    + src
+    #+begin_src sh
+sudo apt update && sudo apt install exploitdb
+ls /usr/share/exploitdb/
+searchsploit [-o]                             # overflow the window
+searchsploit remote smb microsoft windows
+searchsploit [-x | -m]                        # examine | mirror to $cwd
+    #+end_src
+    
+*** Nmap NSE scripts
+    + src
+    #+begin_src sh
+cd /usr/share/nmap/scripts
+grep Exploits *.nse
+nmap --script-help=clamav-exec.nse
+    #+end_src
+    
+*** The Browser Exploitation Framework (BeEF)
+    + src
+    #+begin_src sh
+sudo beef-xss                                 # start service
+    #+end_src
+    + TODO usage
 
-
-
-** TODO resources p440, 3 archives, check maillist
-   + p450 example
+*** the Metasploit Framework
+    + src
+    #+begin_src sh
+sudo msfconsole -q                            # quiet
+search ms08_067
+search -h                                     # help
+    #+end_src
+    + TODO usage
+      
+*** //TODO p451
 
 * Book3_Chapter 15 fixing the exploit
 ** TODO bo, manual to find the address quick
