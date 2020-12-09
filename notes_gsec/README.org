@@ -1498,6 +1498,48 @@ search -h                                     # help
 ** TODO lab c p467
    
 * Book3_Chapter 16 file transfers
+  
+** Considerations and Preparations
+*** Dangers of Transferring Attack Tools
+    + backdoor exploited by 3rd party
+    + antivirus scan
+
+*** install Pure-FTPd
+   + src:
+   #+begin_src sh
+sudo apt update && sudo apt install pure-ftpd
+
+##setup
+groupadd ftpgroup
+useradd -g ftpgroup -d /dev/null ftpuser
+pure-pw useradd offsec -u ftpuser -d /ftphome     | # lab
+pure-pw mkdb
+cd /etc/pure-ftpd/auth/
+ln -s ../conf/PureDB 60pdb
+mkdir -p /ftphome
+chown -R ftpuser:ftpgroup /ftphome/
+systemctl restart pure-ftpd
+   #+end_src
+   
+*** TODO the Non-Interactive shell
+    + src:
+    #+begin_src sh
+ftp <ip>
+    #+end_src
+    
+    + problem:
+      - the interactive shell feedback is not visiable to bind/reverse shell user.
+        
+*** upgrading a Non-Interactive shell # python spawn shell
+    + src:
+    #+begin_src sh
+# in a bind shell
+python -c 'import pty; pty.spawn("/bin/bash")'
+    #+end_src
+    
+** Transferring Files with Windows Hosts
+   
+//TODO
 
 
 * Book4_Chapter 01 An Introduction to TCP/IP
