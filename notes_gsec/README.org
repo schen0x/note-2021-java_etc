@@ -1504,7 +1504,7 @@ search -h                                     # help
     + backdoor exploited by 3rd party
     + antivirus scan
 
-*** install Pure-FTPd
+*** TODO install Pure-FTPd
    + src:
    #+begin_src sh
 sudo apt update && sudo apt install pure-ftpd
@@ -1542,6 +1542,37 @@ python -c 'import pty; pty.spawn("/bin/bash")'
 //TODO
 
 
+* Book3_Chapter 18 Privilege Escalation
+** entry
+   + services - misconfigured 
+   + services or binaries - insufficient permission restriction
+   + kernel - vulnerabilities
+   + software running with high privileges - vulnerabilities
+   + sensitive information stored on local files
+   + ? registry settings that always elevate privilege before executing a binary
+   + installation scripts - may contain hard coded credentials
+   + etc.
+     
+** information gathering
+   | Enumeratiing        | Linux                     | Windows         |
+   |---------------------+---------------------------+-----------------|
+   | user                | whoami                    | whoami          |
+   |                     | id                        | net user [user] |
+   |                     | /etc/passwd               | net user        |
+   |                     | /etc/hostname             | hostname        |
+   | OS Ver. & Architect | /etc/issue /etc/*-release | systeminfo      |
+   |                     | uname -a                  |                 |
+   + src
+   #+begin_src powershell
+systeminfo | findstr /B /C:"OS Name" /C:"OS Version" /C:"System Type"
+  #TODO
+   #+end_src
+   #+begin_src sh
+cat /etc/issue
+cat /etc/*-release
+   #+end_src
+   
+//TODO 516
 * Book4_Chapter 01 An Introduction to TCP/IP
   
 
