@@ -1572,8 +1572,16 @@ cat /etc/issue
 cat /etc/*-release
    #+end_src
    
-//TODO 516
+//TODO 516 ~ 560 lab
+
+* Book3_Chapter 19 Password Attacks
+
 * Book4_Chapter 01 An Introduction to TCP/IP
+  
+** Leveraging Password Hashes
+   
+*** Retrieving Password Hashes
+
   
 
 ** a brief history
