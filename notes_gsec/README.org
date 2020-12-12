@@ -1575,15 +1575,22 @@ cat /etc/*-release
 //TODO 516 ~ 560 lab
 
 * Book3_Chapter 19 Password Attacks
+  
+** TODO 560~585 wordlist, etc
+
+** Leveraging Password Hashes
+*** Retrieving Password Hashes
+    + src:
+    #+begin_src sh
+hashid '<hash>'                # hashtype analyse
+    #+end_src
+    
+**** Windows::Security Accounts Manager(SAM)
+     [[https://en.wikipedia.org/wiki/Security_Accounts_Manager]]
+
+
 
 * Book4_Chapter 01 An Introduction to TCP/IP
-  
-** Leveraging Password Hashes
-   
-*** Retrieving Password Hashes
-
-  
-
 ** a brief history
    + initially devices exchange info through a common communication controller 
      - ~network node -> communication controller -> network node~
