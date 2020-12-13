@@ -1587,6 +1587,12 @@ hashid '<hash>'                # hashtype analyse
     
 **** Windows::Security Accounts Manager(SAM)
      [[https://en.wikipedia.org/wiki/Security_Accounts_Manager]]
+     + %SystemRoot%/system32/config/SAM
+       - the file cannot be accessed because the file is open in system
+       - 
+     + user passwords hash type:
+       - LAN Manager (LM) hash, based on DES
+       - NT LAN Manager (NTLM) hash, MD4
 
 
 
