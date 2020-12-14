@@ -1594,6 +1594,17 @@ hashid '<hash>'                # hashtype analyse
        - LAN Manager (LM) hash, based on DES
        - NT LAN Manager (NTLM) hash, MD4
          
+* Book3_Chapter 20 Port Redirection and Tunneling
+  + ssh bind forward
+  + https encapsulated forward
+    
+* Book3_Chagter 21 Active Directory Attacks
+** Active Directory Theory
+   [[https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/get-started/virtual-dc/active-directory-domain- services-overview][active-directory-domain-services-overview]]
+   + Domain Controller (DC)
+     [[https://technet.microsoft.com/library/cc786438(v=ws.10).aspx]]
+   + Organizational Units (OU)
+     [[https://technet.microsoft.com/en-us/library/cc978003.aspx]]
 
 * Book4_Chapter 01 An Introduction to TCP/IP
 ** a brief history
@@ -2409,3 +2420,10 @@ exec(funObj, {}, localmap)
 * keywords misc
   + cfg bypass
   + [[https://danielmiessler.com/study/red-blue-purple-teams/]]
+
+    
+* checklist
+  + scan
+  + service/kernel exploit -> user
+  + id/sudo/service/kernel/config enum -> root
+    - enum services with root access?
