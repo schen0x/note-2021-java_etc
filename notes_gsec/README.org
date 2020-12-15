@@ -19,7 +19,6 @@
    + /usr/bin - applications (apt, ncat, nmap, etc.)
    + /usr/share - application support and data files 
 
-
 ** linux shell utilities
 *** the man page sections
    + the sections:
@@ -2427,3 +2426,8 @@ exec(funObj, {}, localmap)
   + service/kernel exploit -> user
   + id/sudo/service/kernel/config enum -> root
     - enum services with root access?
+
+//TODO 
+burpsuite
+ssh tunneling
+ipython
