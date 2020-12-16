@@ -1417,14 +1417,20 @@ sudo nmap --script vuln 10.11.1.10
         - EDX (data): I/O port addressing, multiplication, and division
         - ESI (source index): Pointer addressing of data and source in string copy operations
         - EDI (destination index): Pointer addressing of data and destination in string copy operations
-        - *ESP* (stack pointer): most recently referenced location on the stack(pointer to the *top/lower address* of the stack)
-        - *EBP* (base pointer): points to the *base/bottom/higher address* of the stack when a function is called, provide easy reference for the function to its own stack frame (via offsets). i.e. the (offset 0 pointer)
+        - *ESP* (stack pointer): most recently referenced location on the stack(pointer to the *(downmost if stack grow downwards)/lower address* of the stack)
+        - *EBP* (base pointer): points to the *base/topmost if stack grows downwards/higher address* of the stack when a function is called, provide easy reference for the function to its own stack frame (via offsets). i.e. the (offset 0 pointer)
         - *EIP* (instruction pointer): points to the *next* instruction to be executed.
           
 *** TODO the *function prologue*
     + [[https://www.youtube.com/watch?v=75gBFiFtAb8][x86 Assembly Crash Course(by HackUCF)]]
     + ? the $ESP, $EBP, $EIP change, during call -> leave -> ret.
-          
+      #+begin_quote
+      [ebp+0xc]  ; contains parameter 1, etc
+      [ebp+0x8]  ; contains parameter 0
+      [ebp+0x4]  ; contains return address
+      [ebp]      ; contains prev-EBP      
+      #+end_quote
+      
 *** the example:
     + [[./staceOverflow/so_Basic.c][so_Basic.c]]
 
