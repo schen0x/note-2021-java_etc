@@ -1619,12 +1619,24 @@ ssh -R [bind_address:]<remotePort>[[:host]:hostport] <id>@<remoteHost>
 ssh -D [bind_address:]<localPort> <id>@<remoteHost>
   # SOCK4/5 supported(man 1 ssh, 2020). application level dynamical forwarding. Listen to local port <localPort>, forward any incoming traffic to <id>@<remoteHost>, outbound port on the remote machine is then determined by application level protocol.
   # *-D cannot specify the remote destination port*: use the ssh-server as a proxy.
-
    #+end_src
+   
+*** ssh tricks
+    + src: 
+    #+begin_quote
+~?' Display a list of escape characters.
+~.' Disconnect.
+~^Z' Background ssh.
+~#' List forwarded connections.
+~&' Background ssh at logout when waiting for forwarded connection / X11 sessions to terminate.
+~B' Send a BREAK to the remote system (only useful for SSH protocol version 2 and if the peer supports it).
+~C' Open command line. Currently this allows the addition of port forwardings using the -L, -R and -D options (see above)....
+~R' Request rekeying of the connection (only useful for SSH protocol version 2 and if the peer supports it).
+    #+end_quote
     
 * Book3_Chagter 21 Active Directory Attacks
 ** Active Directory Theory
-   [[https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/get-started/virtual-dc/active-directory-domain- services-overview][active-directory-domain-services-overview]]
+   + [[https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/get-started/virtual-dc/active-directory-domain-services-overview]]
    + Domain Controller (DC)
      [[https://technet.microsoft.com/library/cc786438(v=ws.10).aspx]]
    + Organizational Units (OU)
@@ -2454,5 +2466,4 @@ exec(funObj, {}, localmap)
 
 //TODO 
 burpsuite
-ssh tunneling
 ipython
