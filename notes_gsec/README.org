@@ -1603,6 +1603,25 @@ hashid '<hash>'                # hashtype analyse
   + ssh bind forward
   + https encapsulated forward
     
+** ssh port forwarding
+   + src:
+   #+begin_src sh
+ssh -L [bind_address:]<localPort>[[:remoteHost]:remotePort] <id>@<remoteHost>
+  # the <localHost> will listen to <localPort> during the ssh session, and forward all inbound traffic to remotePort.
+  # *-L must specify the remote destination port*: to communicate with the sshServer:dstPort
+
+ssh –L 5901:10.10.0.5:3306 user@example.com
+  # local port 5901 will be forward to user@example.com at ip 10.10.0.5 through ssh, to remote port 4492. Useful for accessing remote services (database server, etc.)
+
+ssh -R [bind_address:]<remotePort>[[:host]:hostport] <id>@<remoteHost> 
+  # the <remoteHost> will listen to <remotePort> during the ssh session, and forward all inbound traffic to host:hostport or the ssh client(localhost) by default.
+
+ssh -D [bind_address:]<localPort> <id>@<remoteHost>
+  # SOCK4/5 supported(man 1 ssh, 2020). application level dynamical forwarding. Listen to local port <localPort>, forward any incoming traffic to <id>@<remoteHost>, outbound port on the remote machine is then determined by application level protocol.
+  # *-D cannot specify the remote destination port*: use the ssh-server as a proxy.
+
+   #+end_src
+    
 * Book3_Chagter 21 Active Directory Attacks
 ** Active Directory Theory
    [[https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/get-started/virtual-dc/active-directory-domain- services-overview][active-directory-domain-services-overview]]
