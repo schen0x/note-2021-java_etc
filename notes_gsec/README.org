@@ -1635,12 +1635,31 @@ ssh -D [bind_address:]<localPort> <id>@<remoteHost>
     #+end_quote
     
 * Book3_Chagter 21 Active Directory Attacks
+  
+** misc
+  + versions of windows server
+    - the "desktop"
+    - Server Core (since Windows Server 2008 R2, minimal server without GUI)
+    - Server Nano (since Windows Server 2016, more minimal than Server Core, not eligible as Domain Controller)
+ 
 ** Active Directory Theory
-   + [[https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/get-started/virtual-dc/active-directory-domain-services-overview]]
-   + Domain Controller (DC)
-     [[https://technet.microsoft.com/library/cc786438(v=ws.10).aspx]]
+   
+*** components::Domain Controller (DC)
+    + about:
+    #+begin_quote
+    Active Directory consists of several components. The most important component is the domain controller (DC), which is *a Windows 2000-2019 server with the Active Directory Domain Services role installed*. The domain controller is the hub and core of Active Directory because it stores all information about how the specific instance of Active Directory is configured. It also enforces a vast variety of rules that govern how objects within a given Windows domain interact with each other, and what services and tools are available to end users.
+    #+end_quote
+    + Readings
+      - [[https://technet.microsoft.com/library/cc786438(v=ws.10).aspx][MS doc-Domain Controller Roles]]
+
+    + about:
+    #+begin_quote
+    When an instance of Active Directory is configured, a domain is created with a name such as corp.com where corp is the name of the organization. Within this domain, we can add various types of objects, including computer and user objects.
+    #+end_quote
    + Organizational Units (OU)
      [[https://technet.microsoft.com/en-us/library/cc978003.aspx]]
+     
+
 
 * Book4_Chapter 01 An Introduction to TCP/IP
 ** a brief history
