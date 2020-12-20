@@ -1663,7 +1663,23 @@ ssh -D [bind_address:]<localPort> <id>@<remoteHost>
     #+end_quote
      [[https://technet.microsoft.com/en-us/library/cc978003.aspx]]
      
-
+** Active Directory Enumeration
+   + typically begins with a breach on a domain workstation or server, providing initial access, followed by enumeration of the AD environment.
+   + goal: privilege escalation until gain control of domains. methods:
+     - compromise a user of high-privilege group(e.g. Domain Admins group)
+     - compromise a domain controller
+       #+begin_quote
+       ...since it may be used to modify all domain-joined computers or execute applications on them. Additionally, as we will see later, the domain controller contains all the password hashes of every single domain user account.
+       #+end_quote
+*** first goal: enumerate the domain users and learn as much as we can about their group memberships in search of high-value targets.
+    
+**** Traditional Approach : net.exe
+     + src:
+     #+begin_src powershell
+net user                           # enumerates all local accounts
+net user /domain                   # enumerates all users in the domain
+     #+end_src
+     
 
 * Book4_Chapter 01 An Introduction to TCP/IP
 ** a brief history
