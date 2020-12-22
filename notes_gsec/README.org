@@ -1512,7 +1512,9 @@ search -h                                     # help
 ** summary
    + src:
    #+begin_src sh
-python -m SimpleHTTPServer 80
+python -m SimpleHTTPServer 80 # python 2
+python -m http.server [-h] [--bind IP] [--directory DIR] [PORT]
+  # python 3
   # curl -o o.sh 10.10.0.1/o.sh
   # axel -a -n 10 -o o.pdf 10.10.0.1/o.pdf
    #+end_src
