@@ -1681,9 +1681,24 @@ ssh -D [bind_address:]<localPort> <id>@<remoteHost>
 *** FSMO roles
     + info:
  [[https://support.microsoft.com/en-gb/help/197132/active-directory-fsmo-roles-in-windows]]
+    #+begin_quote
+    Active Directory is the central repository in which all objects in an enterprise and their respective attributes are stored. It is a hierarchical, multi-master enabled database, capable of storing millions of objects. Because it is multi-master, changes to the database can be processed at any given domain controller (DC) in the enterprise regardless of whether the DC is connected or disconnected from the network.
+    #+end_quote
+    + AD is *multi-master enabled* database. This model allows the flexibility that change could occur at any Domain Controller(DC) in the enterprise. However, this model could also possibility leads to conflicts(under race condition). To resolve this problem, AD use algorithm e.g. last writer wins. Or, to prevent the conflict use *Single-master model* in some cases.
+    #+begin_quote
+    To prevent conflicting updates in Windows, the Active Directory performs updates to certain objects in a single-master fashion. In a single-master model, only one DC in the entire directory is allowed to process updates. This is similar to the role given to a primary domain controller (PDC) in earlier versions of Windows (such as Microsoft Windows NT 3.51 and 4.0), in which the PDC is responsible for processing all updates in a given domain.
 
+    Active Directory extends the single-master model found in earlier versions of Windows to include multiple roles, and the ability to transfer roles to any DC in the enterprise. Because an Active Directory role is not bound to a single DC, it is referred to as an FSMO role. Currently in Windows there are five FSMO roles:
+
+    Schema Master – one per forest.
+    Domain Naming Master – one per forest.
+    Relative ID (RID) Master – one per domain.
+    Primary Domain Controller (PDC) Emulator – one per domain.
+    Infrastructure Master – one per domain.
+    #+end_quote
     + //TODO
-    
+
+         
 
 ** Active Directory Enumeration
    + typically begins with a breach on a domain workstation or server, providing initial access, followed by enumeration of the AD environment.
