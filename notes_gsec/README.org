@@ -1702,13 +1702,12 @@ ssh -D [bind_address:]<localPort> <id>@<remoteHost>
        + Each Windows DC in a domain is allocated a pool of RIDs that it is allowed to assign to the security principals it creates. When a DC's allocated RID pool falls below a threshold, that DC issues a request for additional RIDs to the domain's RID master. The domain RID master responds to the request by retrieving RIDs from the domain's unallocated RID pool and assigns them to the pool of the requesting DC. There is one RID master per domain in a directory.
 
     4. Primary Domain Controller (PDC) Emulator – one per domain.
-       + 
+       + The PDC emulator is necessary to synchronize time in an enterprise. Windows includes the W32Time (Windows Time) time service that is required by the Kerberos authentication protocol. All Windows-based computers within an enterprise use a common time. The purpose of the time service is to ensure that the Windows Time service uses a hierarchical relationship that controls authority and does not permit loops to ensure appropriate common time usage.
+       + //TODO
+
     5. Infrastructure Master – one per domain.
     #+end_quote
-    + //TODO
 
-         
-    
 *** Lightweight Directory Access Protocol(LDAP)
     + LDAP URI scheme:
       [[https://en.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol]]
