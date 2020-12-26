@@ -1708,12 +1708,48 @@ ssh -D [bind_address:]<localPort> <id>@<remoteHost>
     5. Infrastructure Master – one per domain.
     #+end_quote
 
+    + the script:
+      - use a DirectorySearcher object, to query the AD using LDAP.
+      - The LDAP needs:
+        + target hostname
+        + DistinguishedName (DN) of the domain
+    #+begin_src powershell
+## Domain::GetcurrentDomain() returns a domain object
+[System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain()
+  ## Forest : corp.com
+  ## DomainControllers : {DC01.corp.com}
+  ## Children : {}
+  ## DomainMode : Unknown
+  ## DomainModeLevel : 7
+  ## Parent :
+  ## PdcRoleOwner : DC01.corp.com
+  ## RidRoleOwner : DC01.corp.com
+  ## InfrastructureRoleOwner : DC01.corp.com
+  ## Name : corp.com
+    #+end_src
+    #+begin_src powershell
+## build the LDAP search string with the domain object
+$domainObj = [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain()
+$PDC = ($domainObj.PdcRoleOwner).Name
+$SearchString = "LDAP://"
+$SearchString += $PDC + "/"
+$DistinguishedName = "DC=$($domainObj.Name.Replace('.', ',DC='))"
+$SearchString += $DistinguishedName
+$SearchString
+
+## LDAP://DC01.corp.com/DC=corp,DC=com
+    #+end_src
+
+
 *** Lightweight Directory Access Protocol(LDAP)
+    // TODO p627 terms
     + LDAP URI scheme:
       [[https://en.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol]]
     + CN : Common Name
     + OU : Organizational Unit
     + DC : Domain Component
+    
+
 
 
 ** Active Directory Enumeration
