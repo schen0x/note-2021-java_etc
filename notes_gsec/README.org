@@ -1703,7 +1703,13 @@ ssh -D [bind_address:]<localPort> <id>@<remoteHost>
 
     4. Primary Domain Controller (PDC) Emulator – one per domain.
        + The PDC emulator is necessary to synchronize time in an enterprise. Windows includes the W32Time (Windows Time) time service that is required by the Kerberos authentication protocol. All Windows-based computers within an enterprise use a common time. The purpose of the time service is to ensure that the Windows Time service uses a hierarchical relationship that controls authority and does not permit loops to ensure appropriate common time usage.
-       + //TODO
+       + The PDC emulator of a domain is authoritative for the domain. The PDC emulator at the root of the forest becomes authoritative for the enterprise, and should be configured to gather the time from an external source. All PDC FSMO role holders follow the hierarchy of domains in the selection of their in-bound time partner.
+       + In a Windows domain, the PDC emulator role holder retains the following functions:
+         - Password changes performed by other DCs in the domain are replicated preferentially to the PDC emulator.
+         - Authentication failures that occur at a given DC in a domain because of an incorrect password are forwarded to the PDC emulator before a bad password failure message is reported to the user.
+         - Account lockout is processed on the PDC emulator.
+         - The PDC emulator performs all of the functionality that a Microsoft Windows NT 4.0 Server-based PDC or earlier PDC performs for Windows NT 4.0-based or earlier clients.
+       + ... (changelogs for pre-Windows 2000 system)
 
     5. Infrastructure Master – one per domain.
     #+end_quote
