@@ -1712,6 +1712,12 @@ ssh -D [bind_address:]<localPort> <id>@<remoteHost>
        + ... (changelogs for pre-Windows 2000 system)
 
     5. Infrastructure Master – one per domain.
+       + When an object in one domain is referenced by another object in another domain, it represents the reference by:
+         - The GUID
+         - The SID (for references to security principals)
+         - The DN of the object being referenced
+
+       + The infrastructure FSMO role holder is the DC responsible for updating an object's SID and distinguished name in a cross-domain object reference.
     #+end_quote
 
     + the script:
