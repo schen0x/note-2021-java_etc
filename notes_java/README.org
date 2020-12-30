@@ -1,6 +1,7 @@
 ;; -*- mode: org; eval: (company-mode -1); -*-
-//Thinking in Java, by Bruce Eckel, 1033 pages
-//OCP Oracje Certified Professional Java SE 8 Programmer II: Study Guide, 671 pages
++ Eckel, B. (2006). Thinking in Java (4th ed.). US: Prentice Hall. (1033 pages)
++ Boyarsky, J. & Selikoff, S. (2016) OCP Oracle Certified Professional Java SE 8 Programmer II: Study Guide. Canada: Sybex. (671 pages)
+
 ==============================================
 * FAQ
 ** Eclipse hotkeys

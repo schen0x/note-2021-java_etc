@@ -1,8 +1,12 @@
 ;; -*- mode: org; eval: (company-mode -1); -*-
-//The C Porgramming Language, Brian W. Kernighan, Dennis M.Ritchie, etc. (1988), 289 pages
-//The Linux programming interface, a Linux and UNIX system programming handbook by Michael Kerrisk, No Starch Press (2010), 1506 pages
-//FS5 A Tour of C++, Stroustrup, Bjarne (2018), 222 pages 
-//FS6_Effective modern C++_[42 specific ways to improve your use of C++11 and C++14]-O'Reilly, Meyers, Scott (2017), 301 pages
++ Kernighan, B. & Ritchie, D. (1988) The ANSI C Programming Language (2nd ed.). US: Prentice Hall. (289 pages)
+
++ The Linux programming interface, a Linux and UNIX system programming handbook by Michael Kerrisk, No Starch Press (2010), 1506 pages
+  
++ FS4 C++ Primer
++ FS5 A Tour of C++, Stroustrup, Bjarne (2018), 222 pages 
++ FS6 Effective modern C++_[42 specific ways to improve your use of C++11 and C++14]-O'Reilly, Meyers, Scott (2017), 301 pages
+
 --------------------------------------------------------------------------------
 
 //The C

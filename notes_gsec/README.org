@@ -1691,7 +1691,6 @@ LDAP://HostName[:PortNumber][/DistinguishedName]
     System administrators can (and almost always do) organize these objects with the help of Organizational Units (OU). OUs are comparable to file system folders in that they are containers used to store and group other objects. Computer objects represent actual servers and workstations that are domain-joined (part of the domain), and user objects represent employees in the organization. All AD objects contain attributes, which vary according to the type of object. For example, a user object may include attributes such as first name, last name, username, and password.
     #+end_quote
      [[https://technet.microsoft.com/en-us/library/cc978003.aspx]]
-
      
 *** FSMO roles
     + info:
@@ -1735,12 +1734,55 @@ LDAP://HostName[:PortNumber][/DistinguishedName]
        + The infrastructure FSMO role holder is the DC responsible for updating an object's SID and distinguished name in a cross-domain object reference.
     #+end_quote
 
-    + the script:
-      - use a DirectorySearcher object, to query the AD using LDAP.
-      - The LDAP needs:
-        + target hostname
-        + DistinguishedName (DN) of the domain
+** Active Directory Enumeration
+   + typically begins with a breach on a domain workstation or server, providing initial access, followed by enumeration of the AD environment.
+   + goal: privilege escalation until gain control of domains. methods:
+     - compromise a user of high-privilege group(e.g. Domain Admins group)
+     - compromise a domain controller
+       #+begin_quote
+       ...since it may be used to modify all domain-joined computers or execute applications on them. Additionally, as we will see later, the domain controller contains all the password hashes of every single domain user account.
+       #+end_quote
+*** first goal::enumerate the domain users and learn as much as we can about their group memberships in search of high-value targets.
+    
+**** Traditional Approach : net.exe
+     + src:
+     #+begin_src powershell
+net user                           # enum all local accounts
+net user /domain                   # enum all users in the domain
+  #### adam Guest iis_service sql_service jeff_admin
+net user jeff_admin /domain
+net group /domain                  # enum all groups in the domain
+  #### *Secret_Group *Nested_Group
+  
+net group <global_security_group> /domain        # enum all group users
+net localgroup <domain_local_security_group> /domain
+     #+end_src
+     + info:
+       - Nested Group
+       #+begin_quote
+In Active Directory, a group (and subsequently all the included members) can be added as member to another group. This is known as a nested group.
+       #+end_quote
+       - TODO ?
+       #+begin_quote
+Unfortunately, the net.exe command line tool cannot list nested groups and only shows the direct user members. Given this and other limitations, we will explore a more flexible alternative in the next section that is more effective in larger real-world environments.
+       #+end_quote
+       
+**** A Mordern Approach : 
+     + other approaches:
+       - Get-ADUser: powershell Remote Server Administration Tools (RSAT). need admin privilege to run.
+         [[https://technet.microsoft.com/en-us/library/gg413289.aspx]]
+     
+     + a script:
+       - overview:
+       #+begin_quote
+As an overview, this script will *query the network for the name of the Primary domain controller emulator and the domain*, *search Active Directory and filter the output to display user accounts*, and then clean up the output for readability.
+       #+end_quote
+       + use a DirectorySearcher object, to query the AD using LDAP.
+       + The LDAP needs:
+         - target hostname
+         - DistinguishedName (DN) of the domain
 
+       - src:
     #+begin_src powershell
 ## [System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain()
 ## get a domain object
@@ -1800,54 +1842,8 @@ Foreach($obj in $Result)
 }
     #+end_src
     - TODO p632 script modifications, other filters, lab
-      
+***** Resolving Nested Groups
 //TODO
-
-
-** Active Directory Enumeration
-   + typically begins with a breach on a domain workstation or server, providing initial access, followed by enumeration of the AD environment.
-   + goal: privilege escalation until gain control of domains. methods:
-     - compromise a user of high-privilege group(e.g. Domain Admins group)
-     - compromise a domain controller
-       #+begin_quote
-       ...since it may be used to modify all domain-joined computers or execute applications on them. Additionally, as we will see later, the domain controller contains all the password hashes of every single domain user account.
-       #+end_quote
-*** first goal::enumerate the domain users and learn as much as we can about their group memberships in search of high-value targets.
-    
-**** Traditional Approach : net.exe
-     + src:
-     #+begin_src powershell
-net user                           # enum all local accounts
-net user /domain                   # enum all users in the domain
-  #### adam Guest iis_service sql_service jeff_admin
-net user jeff_admin /domain
-net group /domain                  # enum all groups in the domain
-  #### *Secret_Group *Nested_Group
-  
-net group <global_security_group> /domain        # enum all group users
-net localgroup <domain_local_security_group> /domain
-     #+end_src
-     + info:
-       - Nested Group
-       #+begin_quote
-In Active Directory, a group (and subsequently all the included members) can be added as member to another group. This is known as a nested group.
-       #+end_quote
-       - TODO ?
-       #+begin_quote
-Unfortunately, the net.exe command line tool cannot list nested groups and only shows the direct user members. Given this and other limitations, we will explore a more flexible alternative in the next section that is more effective in larger real-world environments.
-       #+end_quote
-       
-**** A Mordern Approach : 
-     + other approaches:
-       - Get-ADUser: powershell Remote Server Administration Tools (RSAT). need admin privilege to run.
-         [[https://technet.microsoft.com/en-us/library/gg413289.aspx]]
-     
-     + a script:
-       - overview:
-       #+begin_quote
-As an overview, this script will query the network for the name of the Primary domain controller emulator and the domain, search Active Directory and filter the output to display user accounts, and then clean up the output for readability.
-       #+end_quote
-       - knowledge:
 
 * Book4_Chapter 01 An Introduction to TCP/IP
 ** a brief history

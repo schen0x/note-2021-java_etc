@@ -1,7 +1,9 @@
 ;; -*- mode: org; eval: (company-mode -1); mode:emmet; -*-
 //HTML, CSS, JavaScript Basic
-//Learning Web Design, A Beginner's Guide to HTML, CSS, Graphics, and Beyond, by Jennifer Niederst Robbins (2007), 468 pages. [Finished]
-//JavaScript, The Definitive Guide by David Flanagan (2011), 1019 pages.
++ Robbins, J. (2007). Learning Web Design, A Beginner's Guide to (X)HTML, Style Sheets, and Web Graphics (3rd ed.). US: O'Reilly. (468 pages)
+
++ Flanagan, D. (2011). JavaScript, The Definitive Guide (6th ed.). US: O'Reilly. (1019 pages)
+
 //C-j to trigger emmet.
 ================================================================================
 * TODO 
