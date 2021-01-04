@@ -1,0 +1,11 @@
+
+* 2019h31h_am
+# 1hr:
+  + 1-5 c a d c d? (binary-tree)
+  + 6-10 a c a c? d
+  + 11-15  d c c d d
+  + 16-20 b? a d a b??
+  
+  + 21-25 d? b? b? c c
+  + 26-30 d?? b c c d
+
