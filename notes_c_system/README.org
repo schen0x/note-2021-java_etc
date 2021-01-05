@@ -33,6 +33,13 @@
    + %lo long, unsigned long
    + %lx long, unsigned long
    + %lf double
+   [[./Cp01_Printf.c]]
+
+   + src:
+   #+begin_src c
+printf("%%4lf>%4.4lf", 12345.54321);  // 12345.5432
+  // minLen.maxLenMantissa
+   #+end_src
      
 ** array
    [[./Cp01_Array.c]]
