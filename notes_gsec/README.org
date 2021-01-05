@@ -1649,7 +1649,7 @@ ssh -D [bind_address:]<localPort> <id>@<remoteHost>
 ~R' Request rekeying of the connection (only useful for SSH protocol version 2 and if the peer supports it).
     #+end_quote
     
-* Book3_Chagter 21 Active Directory Attacks
+* Book3_Chapter 21 Active Directory Attacks
   
 ** misc
   + versions of windows server
@@ -1672,6 +1672,8 @@ LDAP://HostName[:PortNumber][/DistinguishedName]
     + CN : Common Name
     + OU : Organizational Unit
     + DC : Domain Component
+    #+CAPTION: OU is like folder, and CN anything else
+    [[./img/b3cp21_cn_ou.png]]
    
 *** components::Domain Controller (DC)
     + about:
@@ -2659,8 +2661,9 @@ exec(funObj, {}, localmap)
 * keywords misc
   + cfg bypass
   + [[https://danielmiessler.com/study/red-blue-purple-teams/]]
+  + CVE-2017-0199 analysis
 
-    
+
 * checklist
   + scan
   + service/kernel exploit -> user
