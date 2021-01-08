@@ -91,3 +91,44 @@
     + 80: RFC: IETF
 
 * 2019h31h_pm
+Q1:
+  | 1-1 a-c | ki, i, u |
+  |         | ka,      |
+  |         |          |
+  | 1-2 d-e | e, i     |
+  |         |          |
+  |         |          |
+
+# 1hr
+Q2:
+  | 2-1 a   | u      |
+  |         |        |
+  |         |        |
+  | 2-2 b-c | e, a   |
+  |         |        |
+  |         |        |
+  | 2-3 d-e | ku, ka |
+  |         | a, e   |
+  |         |        |
+  + page fault: a read on virtual-memory, during which data must be copied from virtual-memory to physical-memory first.
+  _4 + 4215, 4215, 4215, 3:_2153, _1534, _5342, _3421, _4215, _2153, 2153
+  _4 + 4215, 4215, _5423, 5234, 5342, _3421, _4215, _2153, 2153
+    
+Q3:
+  + 3-1 a-c: a??, a, a
+  + 3-2 d-e: e, u
+  + 3-3 a
+
+Q4:
+  + 4-1 a-c: i, a, u
+  + 4-2: a
+  + 4-3: b
+    
+Q5: 
+  + 5-1 a-c: o, e, a
+  + 5-2 d: a
+  + 5-3: u
+......?!
+
+
+  
