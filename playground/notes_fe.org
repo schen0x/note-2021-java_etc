@@ -1,4 +1,6 @@
 
+#+ATTR_ORG: width 50
+[[./img/fe_newPoints.png]]
 * 2019h31h_am
 # 1hr:
     |   1-5 | c   | a              | d  | c  | d? (binary-tree) |
@@ -91,7 +93,7 @@
     + 80: RFC: IETF
 
 * 2019h31h_pm
-Q1:
+Q1: -5
   | 1-1 a-c | ki, i, u |
   |         | ka,      |
   |         |          |
@@ -131,4 +133,18 @@ Q5:
 ......?!
 
 
-  
+Q8: 
+   A: 1, B:7, C:3, D:2
+
+   + root: 13
+   + 0: 6, 1: 7 "B"
+   + 0: 3 "C"?, 1: 3
+   + 0: 0 "A", 1: 2"D"
+
+   A: 010, B: 1, C: 00, D: 011
+   3*1 + 1*7 + 2*3 + 3*2 = 22, 2*13 = 26
+
+   
+
+---
+   + heap: parent-node.val [> | <] child-node.val
