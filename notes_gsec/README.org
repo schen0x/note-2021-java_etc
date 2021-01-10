@@ -1845,7 +1845,14 @@ Foreach($obj in $Result)
     #+end_src
     - TODO p632 script modifications, other filters, lab
 ***** Resolving Nested Groups
-//TODO
+      
+//TODO p632
+//TODO the reason
+
+***** Current Logged on Users
+     + [[https://medium.com/@sixdub]]
+     + [[https://medium.com/@sixdub/derivative-local-admin-cdd09445aac8]]
+
 
 * Book4_Chapter 01 An Introduction to TCP/IP
 ** a brief history
@@ -2673,7 +2680,6 @@ exec(funObj, {}, localmap)
 //TODO 
 burpsuite
 ipython
-
 
 * linux misc
   
