@@ -1853,10 +1853,24 @@ Foreach($obj in $Result)
      + [[https://medium.com/@sixdub]]
      + [[https://medium.com/@sixdub/derivative-local-admin-cdd09445aac8]]
 
-      + NetWkstaUserEnum
+     + NetWkstaUserEnum (need admin privilege)
 [[https://msdn.microsoft.com/en-us/library/windows/desktop/aa370669(v=vs.85).aspx]]
-      + NetSessionEnum
+     + NetSessionEnum
 [[https://docs.microsoft.com/en-us/windows/win32/api/lmshare/nf-lmshare-netsessionenum]]
+
+     + info:
+     #+begin_quote
+     During an assessment, after compromising a domain machine, we should enumerate every computer in the domain and then use *NetWkstaUserEnum* against the obtained list of targets. Keep in mind that this API *will only list users logged on to a target if we have local administrator privileges* on that target.
+     Alternatively we could focus our efforts on discovering the domain controllers and any potential file servers (based on servers hostnames or open ports) in the network and use *NetSessionEnum* against these servers in order to enumerate all active users’ sessions.
+     #+end_quote
+
+     + the *PowerView*, one common solution to avoid endpoint dectection.
+       [[https://github.com/PowerShellEmpire/PowerTools/blob/master/PowerView/powerview.ps1]]
+     + src:
+     #+begin_src powershell
+     //TODO p636, init && src
+     #+end_src
+
 
 * Book4_Chapter 01 An Introduction to TCP/IP
 ** a brief history
