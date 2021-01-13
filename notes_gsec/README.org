@@ -1846,8 +1846,8 @@ Foreach($obj in $Result)
     - TODO p632 script modifications, other filters, lab
 ***** Resolving Nested Groups
       
-//TODO p632
-//TODO the reason
+TODO p632
+TODO the reason
 
 ***** Current Logged on Users
      + [[https://medium.com/@sixdub]]
@@ -1868,9 +1868,32 @@ Foreach($obj in $Result)
        [[https://github.com/PowerShellEmpire/PowerTools/blob/master/PowerView/powerview.ps1]]
      + src:
      #+begin_src powershell
-     //TODO p636, init && src
+     TODO p636, init && src
      #+end_src
-
+     
+*** Enumeration Through Service Principal Names (the service accounts)
+    + info:
+    #+begin_quote
+    [...]
+    An alternative to attacking a domain user account is to target so-called service accounts, which may also be members of high value groups.
+    When an application is executed, it must always do so in the context of an operating system user.
+    If a user launches an application, that user account defines the context. However, services launched by the system itself use the context based on a Service Account.
+    In other words, isolated applications can use a set of predefined service accounts: *LocalSystem*, *LocalService*, and *NetworkService*.
+    For more complex applications, a domain user account may be used to provide the needed context while still having access to resources inside the domain.
+    When applications like Exchange, SQL, or Internet Information Services (IIS) are integrated into Active Directory, a unique service instance identifier known as a *Service Principal Name (SPN)*  is used to associate a service on a specific server to a service account in Active Directory.
+    [...]
+    #+end_quote
+    #+begin_quote
+*Managed Service Accounts*, introduced with Windows Server 2008 R2, were designed for complex applications which require tighter integration with Active Directory. Larger applications like SQL and Microsoft Exchange often require server redundancy when running to guarantee availability, but Managed Service Accounts cannot support this. To remedy this, *Group Managed Service Accounts* were introduced with Windows Server 2012, but this requires that domain controllers run Windows Server 2012 or higher. Because of this, many organizations still rely on basic Service Accounts.
+    #+end_quote
+    + Aim: 
+    #+begin_quote
+    By enumerating all registered SPNs in the domain, we can obtain the IP address and port number of applications running on servers integrated with the target Active Directory, limiting the need for a broad port scan.
+    #+end_quote
+    + Method:
+      - query the DC, search for specific service principal names.
+        
+//TODO
 
 * Book4_Chapter 01 An Introduction to TCP/IP
 ** a brief history
