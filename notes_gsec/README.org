@@ -1891,9 +1891,12 @@ TODO the reason
     By enumerating all registered SPNs in the domain, we can obtain the IP address and port number of applications running on servers integrated with the target Active Directory, limiting the need for a broad port scan.
     #+end_quote
     + Method:
-      - query the DC, search for specific service principal names.
+      - query the DC, search for specific *serviceprincipalname*.
+    [[./AD_Enum.ps1]]
+      - serviceprinciplename {HTTP/CorpWebServer.corp.com}
+      - which reveals the url. use e.g. nslookup, for further info
         
-//TODO
+**  Active Directory Authentication
 
 * Book4_Chapter 01 An Introduction to TCP/IP
 ** a brief history
