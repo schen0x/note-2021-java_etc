@@ -144,7 +144,6 @@ Q8:
    A: 010, B: 1, C: 00, D: 011
    3*1 + 1*7 + 2*3 + 3*2 = 22, 2*13 = 26
 
-   
 
 ---
    + heap: parent-node.val [> | <] child-node.val
