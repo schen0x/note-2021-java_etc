@@ -1897,6 +1897,27 @@ TODO the reason
       - which reveals the url. use e.g. nslookup, for further info
         
 **  Active Directory Authentication
+    #+begin_quote
+    Active Directory uses either Kerberos or NTLM authentication protocols for most authentication attempts. We will discuss the simpler NTLM protocol first.
+    #+end_quote
+
+*** NTLM Authentication
+    #+begin_quote
+    NTLM authentication is used when a client authenticates to a server by IP address (instead of by hostname), or if the user attempts to authenticate to a hostname that is not registered on the Active Directory integrated DNS server. Likewise, third-party applications may choose to use NTLM authentication instead of Kerberos authentication. 
+    #+end_quote
+    + steps(a client login to an application server):
+      - 1. client *calculate NTLM hash, from the user's password*;
+      - 2. client computer *send the username to the server*;
+      - 3. application server returns a random value called the *nonce* or *challenge*;
+      - 4. client *encrypts the nonce using the NTLM hash*, generate the *response* and send it back to the server.
+      - 5. server forwards the *response*, the *username*, and the *nonce* to the DC;
+      - 6. DC encrypt the nonce again, with the user's NTLM hash and compare the result with the *response*, approve the authentication request if the comparison returns equal. DC knows all users' NTLM hash.
+
+*** Kerboros Authentication
+    + info:
+      - the default authentication protocol since Windows Server 2003.
+      - "While NTLM authentication works through a principle of challenge and response, Windows-based Kerberos authentication uses a ticket system."
+    
 
 * Book4_Chapter 01 An Introduction to TCP/IP
 ** a brief history
