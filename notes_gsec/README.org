@@ -1659,6 +1659,8 @@ ssh -D [bind_address:]<localPort> <id>@<remoteHost>
  
 ** Active Directory Theory
 *** Lightweight Directory Access Protocol(LDAP)
+    + docs:
+      - [[https://ldapwiki.com/wiki/][LDAPwiki]]
     // TODO p627 links
     + LDAP URI scheme:
       [[https://en.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol]]
@@ -1930,6 +1932,7 @@ TODO the reason
 *** Kerboros Authentication
     + docs:
       - [[https://www.blackhat.com/docs/us-14/materials/us-14-Duckwall-Abusing-Microsoft-Kerberos-Sorry-You-Guys-Don't-Get-It.pdf]]
+      - [[https://www.ietf.org/rfc/rfc4120.txt][RFC4120::The Kerberos Network Authentication Service (V5)]]
       - [[https://tools.ietf.org/html/rfc4757][RFC4757::The RC4-HMAC Kerberos Encryption Types Used by Microsoft Windows]] has further reference to the key encryption scheme or negotiation scheme used by Kerboros.
       - [[https://tools.ietf.org/html/rfc8009][RFC8009::AES Encryption with HMAC-SHA2 for Kerberos 5]]
       
@@ -1937,14 +1940,21 @@ TODO the reason
       - the default authentication protocol since Windows Server 2003.
       - "While NTLM authentication works through a principle of challenge and response, Windows-based Kerberos authentication uses a ticket system."
       - "At a high level, Kerberos client authentication to a service in Active Directory involves the use of a domain controller in the role of a *Key Distribution Center*, or *KDC*" 
+      [[./img/b3cp21_KerberosFlow.png]]
 
     + steps::client_auth
-      - 1. user login to workstation: user send *AS_REQ*((Kerberos) Authentication Service Request) which contains username and a encrypted timestamp. The timestamp is encrypted using a *hmac* (Hash-based Message Authentication Code) derived from the user's password, to the *KDC*. For the hmac, see the docs section above, some older version use *rc4_hmac_nt* which is NTLM/md4 hash.
+      - 1. user login to workstation: user send *AS_REQ* ((Kerberos) Authentication Service Request) which contains username and a encrypted timestamp. The timestamp is encrypted using a *hmac* (Hash-based Message Authentication Code) derived from the user's password, to the *KDC* . For the hmac, see the docs section above, some older version use *rc4_hmac_nt* which is NTLM/md4 hash.
+      [[./img/b3cp21_KerberosPreAuth.png]]
       - 2. the *KDC*, also knows the *hmac*, will validate the authentication if it can decrypt the timestamp with the *hmac*. If auth success, a *TGT* (Ticket Granting Ticket) representing the user in the domain for a specified period, will be issued and send back in the *AS_REP* to the client. The KDC considers the client auth complete once the client has received the session key and the *TGT*.
         + "This *TGT* is encrypted with a key(the *hmac* of the *krbtgt* account) shared between all KDC", "The *TGT* contains information regarding the user, including group memberships, the domain, a time stamp, the IP address of the client, and the session key."
       [[./img/b3cp21_KerberosTGT.png]]
         + the *AS_REP* also contains a session key since Kerberos is stateless. the session key is encrypted using the *hmac*, which maybe decrypted and reused by the client.
         + The *TGT* will be valid for 10 hours by default, after that a renewal occurs. "This renewal does not require the user to re-enter the password."
+      
+      - the *krbtgt* account *hmac* only changes in rare cases (in some enterprises "the pw hasn't changed in years")
+        + upgrade of domain functional level
+        + direct recovery
+        + manually changed (compromise recovery)
       
       + steps:service_auth
         - 1. user wishes to access resources of the domain (e.g. something with a registered *SPN*): client constructs a *TGS_REQ* (Ticket Granting Service Request) packet "that  consists of the current user and a timestamp (encrypted using the session key), the SPN of the resource, and the encrypted TGT." (and the session key)
