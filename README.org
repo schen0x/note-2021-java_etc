@@ -1,0 +1,3 @@
++ repo of notes
+
++ Written in *org mode*.

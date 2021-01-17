@@ -1,3 +1,0 @@
-+ Each folder contains the notes and corresponding source code on a specific subject. Currently only the notes_java is not too shabby. And the notes_web Cp35 javascript trivia section may contains some useful content as well.
-
-+ Notes are written in *org mode*. Thus open with a markdown tool(Emacs + org-mode, or VSCode + org-mode plugin) is recommended, or direct access through the github page (works for all newer notes (all notes except the java))
