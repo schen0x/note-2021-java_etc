@@ -1955,9 +1955,10 @@ TODO the reason
         + upgrade of domain functional level
         + direct recovery
         + manually changed (compromise recovery)
+      - the ticket is ASN.1 encoded? tool::OpenSSL
       
-      + steps:service_auth
-        - 1. user wishes to access resources of the domain (e.g. something with a registered *SPN*): client constructs a *TGS_REQ* (Ticket Granting Service Request) packet "that  consists of the current user and a timestamp (encrypted using the session key), the SPN of the resource, and the encrypted TGT." (and the session key)
+    + steps:service_auth
+      - 1. user wishes to access resources of the domain (e.g. something with a registered *SPN*): client constructs a *TGS_REQ* (Ticket Granting Service Request) packet "that consists of the current user and a timestamp (encrypted using the session key), the SPN of the resource, and the encrypted TGT." (and the session key)
 
 
 * Book4_Chapter 01 An Introduction to TCP/IP
