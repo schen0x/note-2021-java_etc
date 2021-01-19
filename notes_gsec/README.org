@@ -1930,39 +1930,82 @@ TODO the reason
 | DC         | auth-result                 | app-server | 
 
 *** Kerboros Authentication
-    + docs:
-      - [[https://www.blackhat.com/docs/us-14/materials/us-14-Duckwall-Abusing-Microsoft-Kerberos-Sorry-You-Guys-Don't-Get-It.pdf]]
-      - [[https://www.ietf.org/rfc/rfc4120.txt][RFC4120::The Kerberos Network Authentication Service (V5)]]
-      - [[https://tools.ietf.org/html/rfc4757][RFC4757::The RC4-HMAC Kerberos Encryption Types Used by Microsoft Windows]] has further reference to the key encryption scheme or negotiation scheme used by Kerboros.
-      - [[https://tools.ietf.org/html/rfc8009][RFC8009::AES Encryption with HMAC-SHA2 for Kerberos 5]]
+  + docs:
+    - [[https://www.blackhat.com/docs/us-14/materials/us-14-Duckwall-Abusing-Microsoft-Kerberos-Sorry-You-Guys-Don't-Get-It.pdf]]
+    - [[https://www.ietf.org/rfc/rfc4120.txt][RFC4120::The Kerberos Network Authentication Service (V5)]]
+    - [[https://tools.ietf.org/html/rfc4757][RFC4757::The RC4-HMAC Kerberos Encryption Types Used by Microsoft Windows]] has further reference to the key encryption scheme or negotiation scheme used by Kerboros.
+    - [[https://tools.ietf.org/html/rfc8009][RFC8009::AES Encryption with HMAC-SHA2 for Kerberos 5]]
       
-    + info:
-      - the default authentication protocol since Windows Server 2003.
-      - "While NTLM authentication works through a principle of challenge and response, Windows-based Kerberos authentication uses a ticket system."
-      - "At a high level, Kerberos client authentication to a service in Active Directory involves the use of a domain controller in the role of a *Key Distribution Center*, or *KDC*" 
+  + info:
+    - the default authentication protocol since Windows Server 2003.
+    - "While NTLM authentication works through a principle of challenge and response, Windows-based Kerberos authentication uses a ticket system."
+    - "At a high level, Kerberos client authentication to a service in Active Directory involves the use of a domain controller in the role of a *Key Distribution Center*, or *KDC*" 
 [[./img/b3cp21_KerberosFlow.png]]
+ 
+  + the basic: 
+  #+begin_quote
+  The basic Kerberos authentication process proceeds as follows: A client sends a request to the authentication server (AS) for "credentials" for a given server. *The AS responds with these credentials, encrypted in the client's key. The credentials consist of a "ticket" for the server and a temporary encryption key (often called a "session key").* The client *transmits the ticket (which contains the client's identity and a copy of the session key, all encrypted in the server's key) to the server.* The session key (now shared by the client and server) is used to authenticate the client and may optionally be used to authenticate the server. It may also be used to encrypt further communication between the two parties or to exchange a separate sub-session key to be used to encrypt further communication.
+  #+end_quote
 
-    + steps: The Authentication Service Exchange (RFC 4120)
-      - 1. user login to workstation: user send *[KRB_]AS_REQ* ((Kerberos) Authentication Service Request) which contains username and a encrypted timestamp. The timestamp is encrypted using a *hmac* (Hash-based Message Authentication Code) derived from the user's password, to the *KDC* . For the hmac, see the docs section above, some older version use *rc4_hmac_nt* which is NTLM/md4 hash.
+**** steps: The Authentication Service (AS) Exchange (RFC 4120::3.1)
+
+  | Message direction  | Message type            |
+  |--------------------+-------------------------|
+  | client to Kerberos | KRB_AS_REQ              |
+  | Kerberos to client | KRB_AS_REP or KRB_ERROR |
+
+  #+begin_quote
+  The Authentication Service (AS) Exchange between the client and the Kerberos Authentication Server is initiated by a client when it wishes to obtain authentication credentials for a given server but currently holds no credentials.
+  #+end_quote 
+    - 1. user login to workstation: user send *[KRB_]AS_REQ* ((Kerberos) Authentication Service Request) which contains username and a encrypted timestamp. The timestamp is encrypted using a *hmac* (Hash-based Message Authentication Code) derived from the user's password, to the *KDC* . For the hmac, see the docs section above, some older version use *rc4_hmac_nt* which is NTLM/md4 hash.
 [[./img/b3cp21_KerberosPreAuth.png]]
-      - 2. the *KDC*, also knows the *hmac*, will validate the authentication if it can decrypt the timestamp with the *hmac*. If auth success, a *TGT* (Ticket Granting Ticket) representing the user in the domain for a specified period, will be issued and send back in the *[KRB_]AS_REP* to the client. The KDC considers the client auth complete once the client has received the session key and the *TGT*.
-        + "This *TGT* is encrypted with a key(the *hmac* of the *krbtgt* account) shared between all KDC", "The *TGT* contains information regarding the user, including group memberships, the domain, a time stamp, the IP address of the client, and the session key."
+    - 2. the *KDC*, also knows the *hmac*, will validate the authentication if it can decrypt the timestamp with the *hmac*. If auth success, a *TGT* (Ticket Granting Ticket) representing the user in the domain for a specified period, will be issued and send back in the *[KRB_]AS_REP* to the client. The KDC considers the client auth complete once the client has received the session key and the *TGT*.
+      + "This *TGT* is encrypted with a key(the *hmac* of the *krbtgt* account) shared between all KDC", "The *TGT* contains information regarding the user, including group memberships, the domain, a time stamp, the IP address of the client, and the session key."
 [[./img/b3cp21_KerberosTGT.png]]
-        + the *[KRB_]AS_REP* also contains a session key since Kerberos is stateless. the session key is encrypted using the *hmac*, which maybe decrypted and reused by the client.
-        + The *TGT* will be valid for 10 hours by default, after that a renewal occurs. "This renewal does not require the user to re-enter the password."
-      
-      - the *krbtgt* account *hmac* only changes in rare cases (in some enterprises "the pw hasn't changed in years")
-        + upgrade of domain functional level
-        + direct recovery
-        + manually changed (compromise recovery)
-      - the ticket is ASN.1 encoded? tool::OpenSSL
-      
-    + steps: The Ticket-Granting Service (TGS) Exchange
-    | Message direction  | Message type             |
-    |--------------------+--------------------------|
-    | client to Kerberos | KRB_TGS_REQ              |
-    | Kerberos to client | KRB_TGS_REP or KRB_ERROR |
-      - 1. user wishes to access resources of the domain (e.g. something with a registered *SPN*): client constructs a *TGS_REQ* (Ticket Granting Service Request) packet "that consists of the current user and a timestamp (encrypted using the session key), the SPN of the resource, and the encrypted TGT." (and the session key)
+      + the *[KRB_]AS_REP* also contains a session key since Kerberos is stateless. the session key is encrypted using the *hmac*, which maybe decrypted and reused by the client.
+      + The *TGT* will be valid for 10 hours by default, after that a renewal occurs. "This renewal does not require the user to re-enter the password."
+    #+begin_quote
+    The response, *KRB_AS_REP* , contains a ticket for the client to present to the server, and a session key that will be shared by the client and the server. The session key and additional information are encrypted in the client's secret key.
+    #+end_quote
+    
+    - the *krbtgt* account *hmac* only changes in rare cases (in some enterprises "the pw hasn't changed in years")
+      + upgrade of domain functional level
+      + direct recovery
+      + manually changed (compromise recovery)
+    - the ticket is ASN.1 encoded? tool::OpenSSL
+    
+**** steps: The Ticket-Granting Service (TGS) Exchange (RFC 4120::3.3)
+
+  | Message direction  | Message type             |
+  |--------------------+--------------------------|
+  | client to Kerberos | KRB_TGS_REQ              |
+  | Kerberos to client | KRB_TGS_REP or KRB_ERROR |
+
+  #+begin_quote
+  The TGS exchange between a client and the Kerberos TGS is initiated by a client when it seeks to obtain authentication credentials for a given server (which might be registered in a remote realm), when it seeks to renew or validate an existing ticket, or when it seeks to obtain a proxy ticket. In the first case, the client must already have acquired a ticket for the Ticket-Granting Service using the AS exchange (the TGT is usually obtained when a client initially authenticates to the system, such as when a user logs in).
+  
+  The message format for the TGS exchange is almost identical to that for the AS exchange.  The primary difference is that encryption and decryption in the TGS exchange does not take place under the client's
+  key. Instead, the session key from the TGT or renewable ticket, or sub-session key from an Authenticator is used.  As is the case for all application servers, expired tickets are not accepted by the TGS, so once a renewable or TGT expires, the client must use a separate exchange to obtain valid tickets.
+  #+end_quote
+    - 1. client obtain a *TGT* . Client build  the *KRB_TGS_REQ* , which includes 
+  #+begin_quote
+  The *KRB_TGS_REQ* message includes information authenticating the client plus a request for credentials. The authentication information consists of the authentication header (KRB_AP_REQ), which includes the client's previously obtained ticket-granting, renewable, or invalid ticket.
+  (...)
+  The TGS reply ( *KRB_TGS_REP* ) contains the requested credentials, encrypted in the session key from the TGT or renewable ticket, or, if present, in the sub-session key from the Authenticator (part of the authentication header).
+  #+end_quote
+    - 1. user wishes to access resources of the domain (e.g. something with a registered *SPN*): client constructs a *TGS_REQ* (Ticket Granting Service Request) packet "that consists of the current user and a timestamp (encrypted using the session key), the SPN of the resource, and the encrypted TGT." (and the session key)
+
+**** steps: The Client/Server (CS) Authentication Exchange (RFC4120::3.2)
+
+| Message direction              | Message type            |
+| ------------------------------ | ----------------------- |
+| Client to Application server   | KRB_AP_REQ              |
+| [optional] Ap server to Client | KRB_AP_REP or KRB_ERROR |
+
+  #+begin_quote
+  The client/server authentication (CS) exchange is used by network applications to authenticate the client to the server and vice versa. The client MUST have already acquired credentials for the server using the AS or TGS exchange. 
+  #+end_quote
+    - 1.
 
 
 * Book4_Chapter 01 An Introduction to TCP/IP
