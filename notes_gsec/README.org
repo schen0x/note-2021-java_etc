@@ -1940,15 +1940,15 @@ TODO the reason
       - the default authentication protocol since Windows Server 2003.
       - "While NTLM authentication works through a principle of challenge and response, Windows-based Kerberos authentication uses a ticket system."
       - "At a high level, Kerberos client authentication to a service in Active Directory involves the use of a domain controller in the role of a *Key Distribution Center*, or *KDC*" 
-      [[./img/b3cp21_KerberosFlow.png]]
+[[./img/b3cp21_KerberosFlow.png]]
 
-    + steps::client_auth
-      - 1. user login to workstation: user send *AS_REQ* ((Kerberos) Authentication Service Request) which contains username and a encrypted timestamp. The timestamp is encrypted using a *hmac* (Hash-based Message Authentication Code) derived from the user's password, to the *KDC* . For the hmac, see the docs section above, some older version use *rc4_hmac_nt* which is NTLM/md4 hash.
-      [[./img/b3cp21_KerberosPreAuth.png]]
-      - 2. the *KDC*, also knows the *hmac*, will validate the authentication if it can decrypt the timestamp with the *hmac*. If auth success, a *TGT* (Ticket Granting Ticket) representing the user in the domain for a specified period, will be issued and send back in the *AS_REP* to the client. The KDC considers the client auth complete once the client has received the session key and the *TGT*.
+    + steps: The Authentication Service Exchange (RFC 4120)
+      - 1. user login to workstation: user send *[KRB_]AS_REQ* ((Kerberos) Authentication Service Request) which contains username and a encrypted timestamp. The timestamp is encrypted using a *hmac* (Hash-based Message Authentication Code) derived from the user's password, to the *KDC* . For the hmac, see the docs section above, some older version use *rc4_hmac_nt* which is NTLM/md4 hash.
+[[./img/b3cp21_KerberosPreAuth.png]]
+      - 2. the *KDC*, also knows the *hmac*, will validate the authentication if it can decrypt the timestamp with the *hmac*. If auth success, a *TGT* (Ticket Granting Ticket) representing the user in the domain for a specified period, will be issued and send back in the *[KRB_]AS_REP* to the client. The KDC considers the client auth complete once the client has received the session key and the *TGT*.
         + "This *TGT* is encrypted with a key(the *hmac* of the *krbtgt* account) shared between all KDC", "The *TGT* contains information regarding the user, including group memberships, the domain, a time stamp, the IP address of the client, and the session key."
-      [[./img/b3cp21_KerberosTGT.png]]
-        + the *AS_REP* also contains a session key since Kerberos is stateless. the session key is encrypted using the *hmac*, which maybe decrypted and reused by the client.
+[[./img/b3cp21_KerberosTGT.png]]
+        + the *[KRB_]AS_REP* also contains a session key since Kerberos is stateless. the session key is encrypted using the *hmac*, which maybe decrypted and reused by the client.
         + The *TGT* will be valid for 10 hours by default, after that a renewal occurs. "This renewal does not require the user to re-enter the password."
       
       - the *krbtgt* account *hmac* only changes in rare cases (in some enterprises "the pw hasn't changed in years")
@@ -1957,7 +1957,11 @@ TODO the reason
         + manually changed (compromise recovery)
       - the ticket is ASN.1 encoded? tool::OpenSSL
       
-    + steps:service_auth
+    + steps: The Ticket-Granting Service (TGS) Exchange
+    | Message direction  | Message type             |
+    |--------------------+--------------------------|
+    | client to Kerberos | KRB_TGS_REQ              |
+    | Kerberos to client | KRB_TGS_REP or KRB_ERROR |
       - 1. user wishes to access resources of the domain (e.g. something with a registered *SPN*): client constructs a *TGS_REQ* (Ticket Granting Service Request) packet "that consists of the current user and a timestamp (encrypted using the session key), the SPN of the resource, and the encrypted TGT." (and the session key)
 
 
