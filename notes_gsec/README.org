@@ -1995,7 +1995,7 @@ TODO the reason
   #+end_quote
     - 1. user wishes to access resources of the domain (e.g. something with a registered *SPN*): client constructs a *KRB_TGS_REQ* (Ticket Granting Service Request) packet "that consists of the current user and a timestamp (encrypted using the session key), the SPN of the resource, and the encrypted TGT." (and the session key)
     - 2. "Next, the ticket granting service on the KDC receives the TGS_REQ, and if the SPN exists in the domain, the TGT is decrypted using the secret key known only to the KDC. The session key is then extracted from the TGT and used to decrypt the username and timestamp of the request. As this point the KDC performs several checks:"
-      + //TODO
+      + //TODO (read 4120::1.1)
 
 
 **** steps: The Client/Server (CS) Authentication Exchange (RFC4120::3.2)
