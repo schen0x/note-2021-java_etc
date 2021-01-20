@@ -2012,13 +2012,22 @@ TODO the reason
   key. Instead, the session key from the TGT or renewable ticket, or sub-session key from an Authenticator is used.  As is the case for all application servers, expired tickets are not accepted by the TGS, so once a renewable or TGT expires, the client must use a separate exchange to obtain valid tickets.
   #+end_quote
     - the *KRB_TGS_REQ* 
-  #+begin_quote
+  #+begin_quote  PWK
   The *KRB_TGS_REQ* message includes information authenticating the client plus a request for credentials. The authentication information consists of the authentication header (KRB_AP_REQ), which includes the client's previously obtained ticket-granting, renewable, or invalid ticket.
   (...)
   The TGS reply ( *KRB_TGS_REP* ) contains the requested credentials, encrypted in the session key from the TGT or renewable ticket, or, if present, in the sub-session key from the Authenticator (part of the authentication header).
   #+end_quote
     - 1. user wishes to access resources of the domain (e.g. something with a registered *SPN*): client constructs a *KRB_TGS_REQ* (Ticket Granting Service Request) packet "that consists of the current user and a timestamp (encrypted using the session key), the SPN of the resource, and the encrypted TGT." (and the session key)
+    #+begin_quote RFC4120
+    The client prepares the KRB_TGS_REQ message, providing an
+   authentication header as an element of the padata field, and including the same fields as used in the KRB_AS_REQ message along with several optional fields: the enc-authorizatfion-data field for application server use and additional tickets required by some options.
+    #+end_quote
+
     - 2. "Next, the ticket granting service on the KDC receives the TGS_REQ, and if the SPN exists in the domain, the TGT is decrypted using the secret key known only to the KDC. The session key is then extracted from the TGT and used to decrypt the username and timestamp of the request. As this point the KDC performs several checks:"
+    #+begin_quote RFC4120
+    If (a) the accompanying ticket is not a TGT for the current realm, but is for an application server in the current realm, (b) the RENEW, VALIDATE, or PROXY options are specified in the request, and (c) the server for which a ticket is requested is the server named in the accompanying ticket, then the KDC will decrypt the ticket in the authentication header using the key of the server for which it was issued.
+    #+end_quote
+
       + //TODO (read 4120::1.1)
 
 
