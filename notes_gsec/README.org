@@ -2036,7 +2036,7 @@ TODO the reason
 
     - If valid, server send the *TGS_REP*
     #+begin_quote
-    (...) (the *TGS_REP*) packet contains three parts:
+    (...) ( the *TGS_REP* ) packet contains three parts:
     1. The SPN to which access has been granted.
     2. A session key to be used between the client and the SPN.
     3. A service ticket containing the username and group memberships along with the newly-created session key. 
@@ -2054,21 +2054,26 @@ TODO the reason
 | [optional] Ap server to Client | KRB_AP_REP or KRB_ERROR |
 
     - CS Exchange Overview:
-    #+begin_quote RFC4120::3.2 
-    The client/server authentication (CS) exchange is used by network applications to authenticate the client to the server and vice versa. The client MUST have already acquired credentials for the server using the AS or TGS exchange. 
-    #+end_quote
-
-    - Before the CS Exchange, clien obtain the service ticket from some source.
-    #+begin_quote 
-    the client "obtains (either through a credentials cache, the AS exchange, or the TGS exchange) a ticket and session key for the desired service." (RFC4120::3.2.2.)
-    #+end_quote
-
-    #+begin_quote PWK
-    First, the client sends to the application server an application request or *AP_REQ* , which includes *the username and a timestamp encrypted with the session key associated with the service ticket along with the service ticket itself.*
-
-    The application server *decrypts the service ticket using the service account password hash* and extracts the username and the session key. It then *uses the latter to decrypt the username from the AP_REQ.* If the AP_REQ username matches the one decrypted from the service ticket, the request is accepted. Before access is granted, the service inspects the supplied group memberships in the service ticket and assigns appropriate permissions to the user, after which the user may access the requested service. 
-    #+end_quote
-
+      #+begin_quote RFC4120::3.2 
+      The client/server authentication (CS) exchange is used by network applications to authenticate the client to the server and vice versa. The client MUST have already acquired credentials for the server using the AS or TGS exchange. 
+      #+end_quote
+  
+    - Client need to obtain the service ticket from some source, before initiating a CS Exchange:
+      #+begin_quote 
+      the client "obtains (either through a credentials cache, the AS exchange, or the TGS exchange) a ticket and session key for the desired service." (RFC4120::3.2.2.)
+      #+end_quote
+  
+    - General Flow:
+      #+begin_quote RFC4120::3.2.3.
+      Passing these checks provides only authentication of the named principal; it does not imply authorization to use the named service. Applications MUST make a separate authorization decision based upon the authenticated name of the user, the requested operation, local access control information such as that contained in a .k5login or .k5users file, and possibly a separate distributed authorization service.
+      #+end_quote
+  
+      #+begin_quote PWK
+      First, the client sends to the application server an application request or *AP_REQ* , which includes *the username and a timestamp encrypted with the session key associated with the service ticket along with the service ticket itself.* (note: the session key in the TGS_REP)
+  
+      The application server *decrypts the service ticket using the(note: its) service account password hash* and extracts the username and the session key. It then *uses the latter to decrypt the username from the AP_REQ.* If the AP_REQ username matches the one decrypted from the service ticket, the request is accepted. Before access is granted, the service inspects the supplied group memberships in the service ticket and assigns appropriate permissions to the user, after which the user may access the requested service. 
+      #+end_quote
+  
 
 * Book4_Chapter 01 An Introduction to TCP/IP
 ** a brief history
