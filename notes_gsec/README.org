@@ -2075,12 +2075,24 @@ TODO the reason
       #+end_quote
 
 *** Cached Credential Storage and Retrieval
-    - the Cached Credentials:
+    - docs:
+      + [[https://technet.microsoft.com/en-us/library/cc961760.aspx][Security Subsystem Architecture]]
+      + TODO LSASS
+    - Target::the Cached Credentials
       #+begin_quote
       Since Microsoft’s implementation of Kerberos makes use of single sign-on, password hashes must be stored somewhere in order to renew a TGT request. In current versions of Windows, these hashes are stored in the Local Security Authority Subsystem Service (LSASS) memory space. 
 
       If we gain access to these hashes, we could crack them to obtain the cleartext password or reuse them to perform various actions. (PWK)
       #+end_quote 
+    
+    - Problems:
+      + need SYSTEM(local administrator) privilege, since LSASS runs as SYSTEM.
+      + the LSASS data is encrypted with an LSASS-store key.
+      + the in-memory data structures used by LSASS is not publicly documented.
+
+    - Hence, tools created to tackle the problem and extract the hashes.
+      + Mimikatz
+
 
 * Book4_Chapter 01 An Introduction to TCP/IP
 ** a brief history
