@@ -2093,6 +2093,12 @@ TODO the reason
     - Hence, tools created to tackle the problem and extract the hashes.
       + Mimikatz
 
+**** Mimikatz
+     + to avoid dection:
+       - run directly from memory use injector like Powershell.
+       [[https://github.com/PowerShellMafia/PowerSploit/blob/master/CodeExecution/Invoke-ReflectivePEInjection.ps1]] 
+
+       - dump the entire LSASS process memory use bbuilt-in tool like Task Manager, then analysis the dump in a helper machine.
 
 * Book4_Chapter 01 An Introduction to TCP/IP
 ** a brief history
