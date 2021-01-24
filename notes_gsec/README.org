@@ -2117,9 +2117,28 @@ TODO the reason
        (PWK p648) 
        #+end_quote
      
-     + TODO: lab p650, && obfuscate mimikatz
+     + TODO: lab p650, && obfuscate mimikatz && memory dump
 
 *** Service Account Attacks 
+    + docs:
+      - [[https://adsecurity.org/?p=2293][Cracking Kerberos TGS Tickets Using Kerberoast – Exploiting Kerberos to Compromise the Active Directory Domain]]
+
+    + info:
+      - Since Kerberos TGS exchange only check a user's "authenticity" but not "authority", knowing the SPN, any user could request could request a service ticket from the DC, extract it from the local memory and save it to the disk. Then service account password could be cracked.
+      #+begin_quote
+      The reason why this attack is successful is that most service account passwords are the same length as the domain password minimum (often 10 or 12 characters long) meaning that even brute force cracking doesn’t likely take longer than the password maximum password age (expiration). Most service accounts don’t have passwords set to expire, so it’s likely the same password will be in effect for months if not years.
+      ([[https://adsecurity.org/?p=2293]])
+      #+end_quote 
+
+    + src:
+    #+begin_src ps
+$SPN = 'HTTP/CorpWebServer.corp.com'
+Add-Type -AssemblyName System.IdentityModel
+New-Object System.IdentityModel.Tokens.KerberosRequestorSecurityToken -ArgumentList $SPN 
+klist
+  ## built-in command, display all cached Kerberos tickets for the current user.
+  ## TODO: find SPNs using LDAP filtering
+    #+end_src
        
 
 * Book4_Chapter 01 An Introduction to TCP/IP
