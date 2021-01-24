@@ -2077,7 +2077,7 @@ TODO the reason
 *** Cached Credential Storage and Retrieval
     - docs:
       + [[https://technet.microsoft.com/en-us/library/cc961760.aspx][Security Subsystem Architecture]]
-      + TODO LSASS
+
     - Target::the Cached Credentials
       #+begin_quote
       Since Microsoft’s implementation of Kerberos makes use of single sign-on, password hashes must be stored somewhere in order to renew a TGT request. In current versions of Windows, these hashes are stored in the Local Security Authority Subsystem Service (LSASS) memory space. 
@@ -2094,11 +2094,33 @@ TODO the reason
       + Mimikatz
 
 **** Mimikatz
-     + to avoid dection:
-       - run directly from memory use injector like Powershell.
-       [[https://github.com/PowerShellMafia/PowerSploit/blob/master/CodeExecution/Invoke-ReflectivePEInjection.ps1]] 
+     + AV Evasion
+       - Either: run directly from memory use injector like Powershell.
+       [[https://github.com/PowerShellMafia/PowerSploit/blob/master/CodeExecution/Invoke-ReflectivePEInjection.ps1]]
+         + acquire SeDubugPrivlege(require local admin), with allows a process to "debug and adjust the memory of a process owned by another account.(MS doc: [[https://docs.microsoft.com/ja-jp/windows/win32/secauthz/privilege-constants][privilege-constants]])"
+         + or if with SYSTEM account, scheduled tasks, psexec -s ..., (the module sekurlsa) work without the debug privilege ([[https://github.com/gentilkiwi/mimikatz/wiki/module-~-sekurlsa]]).
 
-       - dump the entire LSASS process memory use bbuilt-in tool like Task Manager, then analysis the dump in a helper machine.
+       - Or: dump the entire LSASS process memory use built-in tool like Task Manager, then analysis the dump in a helper machine.
+
+     + src:
+       #+begin_quote
+       C:\Tools\active_directory> mimikatz.exe
+
+       mimikatz # privilege::debug
+       Privilege '20' OK
+
+       mimikatz # sekurlsa::logonpasswords 
+       [hash dumps]
+
+       mimikatz # sekurlsa::tickets
+       [tickets dump]
+       (PWK p648) 
+       #+end_quote
+     
+     + TODO: lab p650, && obfuscate mimikatz
+
+*** Service Account Attacks 
+       
 
 * Book4_Chapter 01 An Introduction to TCP/IP
 ** a brief history
