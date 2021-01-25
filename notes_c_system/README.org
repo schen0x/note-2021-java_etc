@@ -1122,3 +1122,7 @@ structured binding
 virtual 
 constructor in inheritance
 destructor && class
+
+* Windows ABI
+  + src:
+    - [[https://youtu.be/JPQWQfDhICA][CppCon 2017: James McNellis “Everything You Ever Wanted to Know about DLLs”]]
