@@ -2166,7 +2166,16 @@ python /usr/share/kerberoast/tgsrepcrack.py wordlist.txt <TGS ticketFile>
 **** ? Low and Slow Password Guessing
 
 ** Active Directory Lateral Movement
-*** Pass the Hash
+*** Pass the Hash (PtH)
+    + docs:
+    [[https://msdn.microsoft.com/en-us/library/windows/desktop/ms685150(v=vs.85).aspx][Service Control Manager]] 
+
+    + pass the NTLM hash via Server Message Block (SMB) protocol.
+    + more:
+    #+begin_quote
+    Most tools built to exploit PtH create and start a Windows service (for example cmd.exe or an instance of PowerShell) and communicate with it using Named Pipes. This is done using the *Service Control Manager* API. 
+    (PWK p657)
+    #+end_quote 
 
 * Book4_Chapter 01 An Introduction to TCP/IP
 ** a brief history
