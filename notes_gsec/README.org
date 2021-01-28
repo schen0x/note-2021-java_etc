@@ -2185,6 +2185,11 @@ python /usr/share/kerberoast/tgsrepcrack.py wordlist.txt <TGS ticketFile>
     This method works for Active Directory domain accounts and the built-in local administrator account. Since the 2014 security update, this technique can not be used to authenticate as any other local admin account. 
     #+end_quote
 
+*** Overpass the Hash
+    + docs 
+      - [[https://www.blackhat.com/docs/us-14/materials/us-14-Duckwall-Abusing-Microsoft-Kerberos-Sorry-You-Guys-Don't-Get-It.pdf]] 
+      
+
 
 * Book4_Chapter 01 An Introduction to TCP/IP
 ** a brief history
