@@ -2190,6 +2190,15 @@ python /usr/share/kerberoast/tgsrepcrack.py wordlist.txt <TGS ticketFile>
       - [[https://www.blackhat.com/docs/us-14/materials/us-14-Duckwall-Abusing-Microsoft-Kerberos-Sorry-You-Guys-Don't-Get-It.pdf]] 
       
 
+* TODO list
+  + nmap: quick, full
+  + dirb
+  + lfi
+  + overflow
+  + log inject
+  + sqlmap&msf op -> .
+  + pw basic
+
 
 * Book4_Chapter 01 An Introduction to TCP/IP
 ** a brief history
