@@ -2230,8 +2230,24 @@ python /usr/share/kerberoast/tgsrepcrack.py wordlist.txt <TGS ticketFile>
     (PWK p659)
     #+end_src 
 
-*** Pass the Ticket
-      
+*** Pass the Ticket (export a TGS, re-injected to another machine and use)
+    + merits:
+      - a TGS may be used on a different machine.
+      - does not require administrative privileges, if the TGS belongs to the current user.
+      - (but why bother?)
+    + under the hood:
+      #+begin_quote
+      Before access is granted, the service inspects the supplied group memberships in the service ticket and assigns appropriate permissions to the user, after which the user may access the requested service. 
+      (PWK)
+      #+end_quote 
+
+      - in other words, the application server trust the TGS blindly. Which means, knowing the service NTLM hash, a TGS with any level of access (any group membership) could be forged. This custom-created ticket is known as a *silver ticket* . "If the specific SPN is used on multiple servers, the silver can be leveraged against them all." (PWK, p663)
+
+    + src:
+    #+begin_src
+      ## forge a ticket with Mimikatz kerberos::golden command.
+    #+end_src 
+    
 
 * TODO list
   + nmap: quick, full
