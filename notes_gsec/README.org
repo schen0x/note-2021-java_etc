@@ -3100,3 +3100,85 @@ ipython
    echo 'a' > my_pipe
    #+end_src
    
+
+* e0cp00 Electronics, the basic
+
+** SRAM/DRAM
+   + docs:
+     [[https://youtu.be/I-9XWtdW_Co][Dynamic Random Access Memory (DRAM). Part 1: Memory Cell Arrays]]
+   + pics:
+     [[./img/e0cp00_DRAM.PNG]]
+*** transister
+   + keywords(usage): SRAM block
+   + info:
+     - Source (to power supply)
+     - Gate
+       + apply voltage on the Gate allows current flow from Soruce to Drain
+     - Drain (to ground)
+   + N-type doping vs. P-type doping
+     - In pure silicon, atoms shares the outter 4 electrons and form covalent bond.
+     - N-type doping: replace an atom with e.g. Phosphorus
+       - valence: (2,8,5), 1 free electron to donate
+       - hence slightly *positive* after "donation"
+     - P-type doping: replace an atom with e.g. Boron
+       - valence: (2,3), 1 hole
+       - hence slightly *negative* upon "acceptence"
+
+   + Hence, N( *Emitter* of the electrons )P( *Base* )N( *Collector* of the electrons )
+     
+   
+*** Ground
+   + provide a reference to voltage
+
+*** word line, bit line
+    + keywords:
+      - open bit line layout
+     
+*** Read a bit from DRAM
+    + precharge the (capacitor of the?) bitline with until bitline at half of the full operating voltage.
+    + turn on the word line.
+    + the *differencial sence amplifier* detect the votage change hence knows the value of a word. The result is saved in a flip-flop circuit of the sence amplifer. The result then could be output through databuses.
+    + hence a read operation of DRAM is destructive. It must be followed by an immediate write operation.
+    + the voltage of bit lines are raised either to full operating voltage or dropped to the ground, depending to the read result, thus restores the data. 
+
+    + an underlying problem:
+      - a memory cell will leak charge to the bit line, even when the gate is closed. 
+        - hence on regular basis, *refresh* operations is necessary. For every cells, approximately every 64 nano seconds
+
+*** DRAM read/write
+    + docs:
+      - [[https://youtu.be/x3jGqOrXXc8][Dynamic Random Access Memory (DRAM). Part 2: Read and Write Cycles]]
+    + keywords:
+      - memory module multiplexing
+      - active low: bar(RAS)
+      - row/column address strobe
+      - scaling
+    + pics:
+    [[./img/e0cp00_DRAMRW.PNG]]
+
+    + info:
+      - read && decode the Row Address (address of a word line).
+      - values in the memory cell -> sense amplifier
+      - sense amplifier -> output pin.
+      - sense amplifier -> values in the memory cell
+
+    + the timing for a basic *1 bit read cycle*
+    [[./img/e0cp00_DRAMOneBitReadTiming.PNG]]
+
+    + the timing for a basic *1 bit write cycle*
+    [[./img/e0cp00_DRAMOneBitWriteTiming.PNG]]
+
+*** misc
+
+**** decoder 
+    + a 3 to 8 decoder
+    [[./img/e0cp00_DRAMBinaryDecoder.PNG]]
+
+    + two 3 to 8 decoder combined
+    [[./img/e0cp00_DRAMBinaryDecoderCombined.PNG]]
+
+**** Multiplexer && Demultiplexer
+    + an 8 to 1 multiplexer
+    [[./img/e0cp00_DRAMMultiplexer.PNG]]
+
+    + the control line of the multiplexer and the demultiplexer need to be synchronized.
