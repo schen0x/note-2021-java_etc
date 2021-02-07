@@ -2362,7 +2362,7 @@ $com.Run("openNotePad")
   + log inject
   + sqlmap&msf op -> .
   + pw basic
-
+  + msf tools fast access
 
 * Book4_Chapter 01 An Introduction to TCP/IP
 ** a brief history
