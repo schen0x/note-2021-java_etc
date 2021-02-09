@@ -2385,7 +2385,7 @@ End Sub
     + then listen for the callback `nc.exe -lvnp 4444` 
 
 ** Active Directory Persistence
-
+  TODO //p671 - AD finish. 
 
 * TODO list
   + nmap: quick, full
