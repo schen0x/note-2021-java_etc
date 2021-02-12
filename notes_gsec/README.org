@@ -3219,6 +3219,12 @@ exec(funObj, {}, localmap)
   + service/kernel exploit -> user
   + id/sudo/service/kernel/config enum -> root
     - enum services with root access?
+  
+* vectors:
+** API unsanitized input
+   + anything involves serialization and deserialization
+   + the param of get is received as string.
+   + use a fuzzer which generate and inject code string, to an "any" typed input.
 
 //TODO 
 burpsuite
