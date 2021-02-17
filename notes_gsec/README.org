@@ -2234,7 +2234,7 @@ python /usr/share/kerberoast/tgsrepcrack.py wordlist.txt <TGS ticketFile>
     + merits:
       - a TGS may be used on a different machine.
       - does not require administrative privileges, if the TGS belongs to the current user.
-      - (but why bother?)
+      - Lateral movement
     + under the hood:
       #+begin_quote
       Before access is granted, the service inspects the supplied group memberships in the service ticket and assigns appropriate permissions to the user, after which the user may access the requested service. 
@@ -2385,7 +2385,26 @@ End Sub
     + then listen for the callback `nc.exe -lvnp 4444` 
 
 ** Active Directory Persistence
-  TODO //p671 - AD finish. 
+*** Golden Tickets
+    + info:
+      - utilize the krbtgt password hash. Since it is rarely changed.
+    + aim:
+      - AD persistence
+    + routine:
+      1. Compromise an account belongs to the Domain Admins group.
+      2. Lateral movement from Win 10 workstation to the Domain Controller. (see *Overpass the Hash* section)
+    + tools:
+      - psexec
+      - Mimikatz
+    
+    + src:
+    #+begin_src powershell
+      ## do Overpass the Hash, convert NTLM hash to (TGT + TGS)
+      ## reuse the TGT to login to the DC.
+    psexec.exe \\dc01 cmd.exe
+      ## Assume the login complete.
+    #+end_src
+
 
 * TODO list
   + nmap: quick, full
