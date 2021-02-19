@@ -2404,6 +2404,7 @@ End Sub
     psexec.exe \\dc01 cmd.exe
       ## Assume the login complete.
     #+end_src
+    // p672
 
 
 * TODO list
@@ -3345,3 +3346,39 @@ ipython
     [[./img/e0cp00_DRAMMultiplexer.PNG]]
 
     + the control line of the multiplexer and the demultiplexer need to be synchronized.
+
+
+* boolean algebra
+
+** Karnaugh Maps (K-map)
+   + the truth table:
+| A | B | C | F |
+|---+---+---+---|
+| 0 | 0 | 0 | 0 |
+| 0 | 0 | 1 | 1 |
+| 0 | 1 | 0 | 0 |
+| 0 | 1 | 1 | 1 |
+| 1 | 0 | 0 | 1 |
+| 1 | 0 | 1 | 1 |
+| 1 | 1 | 0 | 1 |
+| 1 | 1 | 1 | 0 |
+
+   + the Karnaugh Map (K-map) 
+    | BC\A | 0 | 1 |
+    |------+---+---|
+    |   00 | 0 | 1 |
+    |   01 | 1 | 1 |
+    |   11 | 1 | 0 |
+    |   10 | 0 | 1 |
+
+      - F = AB' + ABC' + A'C 
+      - the map could be C\AB, gives equivalent result.
+    | C\AB | 00 | 01 | 10 | 11 |
+    |------+----+----+----+----|
+    |    0 |  0 |  0 |  1 |  1 |
+    |    1 |  1 |  1 |  1 |  0 |
+      - F = AB'C + AC' + A'C 
+      - validation -- 0111: 0&&1' || 1&&1 || 0&&0&1 = 1
+
+
+   
