@@ -2441,7 +2441,39 @@ End Sub
       ## Access is denied. 
     #+end_src
 
+*** other methods to achieve AD persistence
+    + lateral movement into the DC
+      - option1: dump the pw hash of every user.
+      - option2: get a copy of the NTDS.dit database file. 
+        + NTDS.dit: "is a copy of all AD accounts stored on the hard drive, similar to the SAM database used for local accounts." (PWK p675)
+        + location: %SystemRoot%\NTDS\Ntds.dit, %SystemRoot%\System32\Ntds.dit
+        + ref: [[https://technet.microsoft.com/en-us/library/cc961761.aspx]]
+      - cons: leave access trail, and may require tools be uploaded.
+
+*** Domain Controller Synchronization (use AD functionality itself to capture hashes remotely)
+    + ref:
+      - [[https://msdn.microsoft.com/en-us/library/cc228086.aspx][[MS-DRSR]: Directory Replication Service (DRS) Remote Protocol]]
+      - [[https://technet.microsoft.com/en-us/library/cc772726(v=ws.10).aspx][How the Active Directory Replication Model Works]]
+      - [[https://msdn.microsoft.com/en-us/library/dd207691.aspx][IDL_DRSGetNCChanges (Opnum 3)]]
+    + about:
+    #+begin_quote
+In production environments, domains typically have more than one domain controller *to provide redundancy* . The *Directory Replication Service(DRS) Remote Protocol* uses replication to synchronize these redundant domain controllers. A domain controller may request an update for a specific object, like an account, with the *IDL_DRSGetNCChanges* API. 
+    #+end_quote 
+    + src:
+    #+begin_src powershell
+    ## login as Domain Admin user then perform the replication as follows:
+    mimikatz # lsadump::dcsync /user:Administrator 
+      ## the /user indicate the target user to sync. in this case the built-in domain admininistrator account Administrator.
+      ## The dump contains multiple hashes associated with the last twenty-nine used user passwords as well as the hashes used with AES encryption. 
+    (PWK p676)
+    #+end_src 
+      - merit: gain pw hashes *without logging in to the DC* .
+
+
+
 * TODO list
+  + AD, LDAP enum users
+  + AD, enum flow
   + nmap: quick, full
   + dirb
   + lfi
@@ -2450,6 +2482,9 @@ End Sub
   + sqlmap&msf op -> .
   + pw basic
   + msf tools fast access
+  + AV bypassing
+    - with Admin, util scripts to turn off Windows Defender && firewall
+    - without Admin, obfuscation, string substitution.
 
 * Book4_Chapter 01 An Introduction to TCP/IP
 ** a brief history
