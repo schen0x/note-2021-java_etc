@@ -2469,6 +2469,42 @@ In production environments, domains typically have more than one domain controll
     #+end_src 
       - merit: gain pw hashes *without logging in to the DC* .
 
+* The Metasploit Framework
+** Metasploit User Interfaces and Setup
+   + src:
+    #+begin_src bash
+    sudo systemctl start postgresql 
+    msfdb init
+    sudo msfconsole -q
+      ## no banner
+    #+end_src
+
+** Basic MSF Syntax
+   #+begin_src msf
+   msf5 > show -h
+   msf5 > use auxiliary/scanner/portscan/tcp
+     ## msf5 > use <moduleName>
+   msf auxiliary(scanner/portscan/tcp) > back
+   msf5 > use auxiliary/scanner/portscan/tcp
+   msf5 auxiliary(scanner/portscan/tcp) > use auxiliary/scanner/portscan/syn
+   msf5 auxiliary(scanner/portscan/syn) > previous
+   msf5 auxiliary(scanner/portscan/tcp) > show options
+   msf5 auxiliary(scanner/portscan/tcp) > set RHOSTS 10.11.0.22
+   msf5 auxiliary(scanner/portscan/tcp) > run
+   #+end_src
+
+** Metasploit Database Access
+   + info:
+   #+begin_quote
+   If the postgresql service is running, Metasploit will log findings and information about discovered hosts, services, or credentials in a convenient, accessible database. In the following listing, the database has been populated with the results of the TCP scan we ran in the previous section. We can display these results with the services command: 
+   #+end_quote
+   + src:
+   #+begin_src
+   msf5 auxiliary(scanner/portscan/tcp) > services
+   #+end_src
+
+
+
 
 
 * TODO list
