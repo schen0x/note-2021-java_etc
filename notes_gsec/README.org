@@ -2471,6 +2471,8 @@ In production environments, domains typically have more than one domain controll
 
 * The Metasploit Framework
 ** Metasploit User Interfaces and Setup
+   + ref:
+     - [[https://docs.rapid7.com/metasploit/no-database-connection/][dbConnectionSetup]]
    + src:
     #+begin_src bash
     sudo systemctl start postgresql 
@@ -2478,6 +2480,7 @@ In production environments, domains typically have more than one domain controll
     sudo msfconsole -q
       ## no banner
     #+end_src
+   
 
 ** Basic MSF Syntax
    #+begin_src msf
@@ -2503,6 +2506,7 @@ In production environments, domains typically have more than one domain controll
    msf5 auxiliary(scanner/portscan/tcp) > services
    #+end_src
 
+   // TODO p681
 
 
 

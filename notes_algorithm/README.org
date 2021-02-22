@@ -1,0 +1,11 @@
+;; -*- mode: org; eval: (company-mode -1); -*-
+//
+========================================
+
+* Chapter 01, 
+
+
+// TODO normal alg, time & space complexity
+
+
+
