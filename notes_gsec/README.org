@@ -1495,7 +1495,6 @@ sudo msfconsole -q                            # quiet
 search ms08_067
 search -h                                     # help
     #+end_src
-    + TODO usage
       
 *** //TODO p451
 
@@ -2478,7 +2477,7 @@ In production environments, domains typically have more than one domain controll
     sudo systemctl start postgresql 
     msfdb init
     sudo msfconsole -q
-      ## no banner
+      # no banner start
     #+end_src
    
 
@@ -2486,7 +2485,7 @@ In production environments, domains typically have more than one domain controll
    #+begin_src msf
    msf5 > show -h
    msf5 > use auxiliary/scanner/portscan/tcp
-     ## msf5 > use <moduleName>
+     # msf5 > use <moduleName>
    msf auxiliary(scanner/portscan/tcp) > back
    msf5 > use auxiliary/scanner/portscan/tcp
    msf5 auxiliary(scanner/portscan/tcp) > use auxiliary/scanner/portscan/syn
@@ -2500,15 +2499,61 @@ In production environments, domains typically have more than one domain controll
    + info:
    #+begin_quote
    If the postgresql service is running, Metasploit will log findings and information about discovered hosts, services, or credentials in a convenient, accessible database. In the following listing, the database has been populated with the results of the TCP scan we ran in the previous section. We can display these results with the services command: 
+   (pwk p681)
    #+end_quote
    + src:
-   #+begin_src
+     - services
+   #+begin_src msf
    msf5 auxiliary(scanner/portscan/tcp) > services
+     # display all results
+   msf5 > services -h
    #+end_src
+     - db_nmap
+    #+begin_src msf
+    msf5 > db_nmap
+    msf5 > db_nmap 10.11.0.22 -A -Pn
+    msf5 > hosts
+      # display discovered hosts
+    msf5 > services -p 445
 
-   // TODO p681
+    msf5 > creds
+      # display cred result if available (module execute result)
+    #+end_src
+     - workspace [workspaceName]
+     - // switch workspaces
 
+*** Auxiliary Modules
+    + info:
+    #+begin_quote
+     The modules all follow a common slash-delimited hierarchical syntax (module type/os, vendor, app, or protocol/module name), which makes it easy to explore and use the modules.
+     (pwk p683)
+    #+end_quote
+    + src:
+      - find auxiliary modules
+      #+begin_src msf
+      msf5 > show auxiliary
+      msf5 > search -h
+      msf5 > search type:auxiliary name:smb
+      #+end_src
+      - use
+      #+begin_src
+      msf5 > use scanner/smb/smb2
+      msf5 auxiliary(scanner/smb/smb2) > info
+      msf5 auxiliary(scanner/smb/smb2) > [show] options
+      msf5 auxiliary(scanner/smb/smb2) > service -p 445 --rhosts
+      # use db
+      msf5 auxiliary(scanner/smb/smb2) > set [option] [value]
+        # case insensitive
+      msf5 auxiliary(scanner/smb/smb2) > setg [option] [value]
+      msf5 auxiliary(scanner/smb/smb2) > setg THREADS 10
+      msf5 auxiliary(scanner/smb/smb2) > setg 
+      msf5 auxiliary(scanner/smb/smb2) > run
+      msf5 auxiliary(scanner/smb/smb2) > irb
+      # interactive ruby interpreter
+      #+end_src 
+      //TODO db setup 
 
+** Exploit Modules
 
 
 * TODO list
