@@ -2469,6 +2469,10 @@ In production environments, domains typically have more than one domain controll
       - merit: gain pw hashes *without logging in to the DC* .
 
 * The Metasploit Framework
+** Exam Restrictions
+   + ref:
+     - [[https://help.offensive-security.com/hc/en-us/articles/360040165632-OSCP-Exam-Guide][Metasploit Restrictions]]
+
 ** Metasploit User Interfaces and Setup
    + ref:
      - [[https://docs.rapid7.com/metasploit/no-database-connection/][dbConnectionSetup]]
@@ -2572,6 +2576,46 @@ In production environments, domains typically have more than one domain controll
     msf5 exploit(windows/http/syncbreeze_bof) > run
       ## if success, return reverse shell
     #+end_src 
+
+** Metasploit Payloads
+
+*** Staged vs Non-Staged Payloads
+  + info:
+  #+begin_quote
+  ## windows/shell_reverse_tcp - Connect back to attacker and spawn a command shell
+  ## windows/shell/reverse_tcp - Connect back to attacker, Spawn cmd shell (staged)
+  [the "/" means staged]
+
+  + a non-staged payload is sent in its entirety along with the exploit.
+  + a staged payload is usually sent in two parts. The first
+part contains a small primary payload that causes the victim machine to connect back to the attacker, transfer a larger secondary payload containing the rest of the shellcode, and then execute it. 
+(PWK p692)
+  #+end_quote
+  + use staged when:
+    - when payload size is limited.
+    - to avoid detection (embedded shell code might be sensitive).
+
+*** Meterpreter Payloads
+  + ref:
+    - [[https://github.com/rapid7/metasploit-framework/wiki/Meterpreter][Meterpreter]]
+    - [[http://www.hick.org/code/skape/papers/meterpreter.pdf][the original Meterpreter specification(internal)]]
+  + info (the limitation of the "common command interpreter", e.g. /bin/sh): 
+    - executing /bin/sh on the target machine superseding the existing task is "already an red flag action for most applications", and might trigger Host-based Intrusion Prevention Systems (HIPS) on both Windows and Linux(Meterpreter specification p6).
+    - /bin/sh maybe not be accessible, if a daemon was running in "chrooted environment". File system above the pseudo-rood directory is usually not accessible without special techniques.
+    - the commands accessible on the particular machine is also limited (permitted or not, installed or not).
+  + Meterpreter's solution to those problems:
+    - it can avoid the creation of a new process "because it executes in the context of the process that is exploited."
+    - "executed entirely from memory" using Remote Library Injection
+    - "Server extension can be written in any language that can have code distributed as a shared object(DLL) form."
+    - it also provides a default set of command with various of utilities.
+      + Fs     ## uploading/downloading
+      + Net    ## similar to SSH, allows dynamic port forwarding
+    - meterpreter's packets allow custom cipher.
+
+**** Meterpreter packet protocol (Meterpreter specification)
+    + TLV: Length(32 bits network byte order), Type(32 bits network byte order), Value(0...n bits)
+    + ...//TODO
+
 
 
 * TODO list
