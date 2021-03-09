@@ -2468,7 +2468,7 @@ In production environments, domains typically have more than one domain controll
     #+end_src 
       - merit: gain pw hashes *without logging in to the DC* .
 
-* The Metasploit Framework
+* Book3_Chapter 22 The Metasploit Framework
 ** Exam Restrictions
    + ref:
      - [[https://help.offensive-security.com/hc/en-us/articles/360040165632-OSCP-Exam-Guide][Metasploit Restrictions]]
@@ -2579,23 +2579,22 @@ In production environments, domains typically have more than one domain controll
 
 ** Metasploit Payloads
 
-*** Staged vs Non-Staged Payloads
+*** Staged vs Non-Staged Payloads (PWK p692)
   + info:
   #+begin_quote
   ## windows/shell_reverse_tcp - Connect back to attacker and spawn a command shell
   ## windows/shell/reverse_tcp - Connect back to attacker, Spawn cmd shell (staged)
-  [the "/" means staged]
+  [ the "/" means *staged* ]
 
-  + a non-staged payload is sent in its entirety along with the exploit.
-  + a staged payload is usually sent in two parts. The first
-part contains a small primary payload that causes the victim machine to connect back to the attacker, transfer a larger secondary payload containing the rest of the shellcode, and then execute it. 
+  + a *non-staged* payload is sent in its entirety along with the exploit.
+  + a *staged* payload is usually sent in two parts. The first part contains a small primary payload that causes the victim machine to connect back to the attacker, transfer a larger secondary payload containing the rest of the shellcode, and then execute it. 
 (PWK p692)
   #+end_quote
   + use staged when:
     - when payload size is limited.
     - to avoid detection (embedded shell code might be sensitive).
 
-*** Meterpreter Payloads
+*** Meterpreter Payloads (the MSF spec. the under-the-hood mechanism of the MSF)
   + ref:
     - [[https://github.com/rapid7/metasploit-framework/wiki/Meterpreter][Meterpreter]]
     - [[http://www.hick.org/code/skape/papers/meterpreter.pdf][the original Meterpreter specification(internal)]]
@@ -2615,7 +2614,40 @@ part contains a small primary payload that causes the victim machine to connect 
 **** Meterpreter packet protocol (Meterpreter specification)
     + TLV: Length(32 bits network byte order), Type(32 bits network byte order), Value(0...n bits)
     + ...//TODO
+      
+*** Experimenting with Meterpreter (PWK p694) (meterpreter commands)
+    + src:
+    #+begin_src meterpreter
+    meterpreter > help                         # list Core Commands
+    meterpreter > sysinfo
+    meterpreter > getuid
+    meterpreter > upload /usr/share/windows-resources/binaries/nc.exe c:\\Users\\Offsec
+    meterpreter > download c:\\Windows\\system32\\calc.exe /tmp/calc.exe
+    meterpreter > pwd
+    meterpreter > ls
+    meterpreter > cd
+    # execute, ps, kill
+    #+end_src
+      - to spawn a shell. the meterpreter session would still be alive should the shell die.
+        #+begin_src meterpreter
+        meterpreter > shell
+        # Process 3488 created.
+        # Channel 3 created.
+        C:\Windows\system32> ftp 127.0.0.1
+        # ^C
+        # Terminate channel 3? [y/N] y
 
+        meterpreter > shell
+        # Process 3504 created.
+        # Channel 4 created.
+        C:\Windows\system32> exit
+        # exit
+        meterpreter >
+        #+end_src
+       
+    + There are also non-meterpreter payloads available in the MSF.
+      
+*** Executable Payloads
 
 
 * TODO list
