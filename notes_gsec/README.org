@@ -2764,7 +2764,18 @@ msf5 exploit(multi/handler) > sessions -i 6
      + TODO injected a payload to *plink.exe* and test.
        
 ** Building Our Own MSF Module
-
+   + info:
+     - 2 locations:
+     - primary modules: =/usr/share/metasploit-framework/modules/=
+     - custom modules: =~/.msf4/modules=
+   + src:
+   #+begin_src sh
+sudo mkdir -p ~/.msf4/modules/exploits/windows/http
+sudo cp /usr/share/metasploit-framework/modules/exploits/windows/http/disk_pulse_enterprise_get.rb ~/.msf4/modules/exploits/windows/http/syncbreeze.rb
+   #+end_src
+   
+** Post-Exploitation with Metasploit (PWK 711)
+   
 
 * TODO list
   + AD, LDAP enum users
@@ -2773,6 +2784,8 @@ msf5 exploit(multi/handler) > sessions -i 6
   + dirb
   + lfi
   + overflow
+    - offset - length
+    - half offset
   + log inject
   + sqlmap&msf op -> .
   + pw basic
