@@ -2914,11 +2914,34 @@ sudo msfconsole -r setup.rc
   # run script
    #+end_src
    
-   
+
 * Book3_Chapter 23 PowerShell Empire
 ** project repo && latest forks:
    + [[https://github.com/EmpireProject/Empire]]
    + [[https://github.com/Jrhenderson11/Empire]]
+     - an updated fork created by BC-SECURITY
+     
+** about:
+   + PowerShell(version 2)on Windows, Python (2.6~2.7) on Linux and macOS. Depends majorly on pre-installed libs.
+   + post-exploitation tool. Focus on e.g. Active Directory.
+     
+
+** Installation, Setup, and Usage
+*** install:
+   + clone the repo.
+   + src:
+   #+begin_src bash
+sudo ./setup/install.sh
+  # the install script. Arch dependent.
+sudo ./empire
+  # the launch script
+   #+end_src
+   
+*** PowerShell Empire Syntax
+    + src:
+    #+begin_src empire
+(Empire) > help
+    #+end_src
 
 
 * TODO list
