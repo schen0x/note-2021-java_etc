@@ -2942,6 +2942,16 @@ sudo ./empire
     #+begin_src empire
 (Empire) > help
     #+end_src
+    #+begin_src empire
+(Empire) > listeners
+  # enter the listeners context
+(Empire: listeners) > uselistener + _space + _tab
+  # autocompelete suggests a list of listeners
+  # http, redirector
+(Empire: listeners) > uselistener http
+(Empire: listeners/http) > info
+(PWK p726)
+    #+end_src
 
 
 * TODO list
