@@ -2950,6 +2950,12 @@ sudo ./empire
   # http, redirector
 (Empire: listeners) > uselistener http
 (Empire: listeners/http) > info
+(Empire: listeners/http) > set Host <lHost>
+(Empire: listeners/http) > set Port <lPort>
+(Empire: listeners/http) > execute
+(Empire: listeners/http) > back
+(Empire: listeners) > usestager
+  # tab auto complete suggestions
 (PWK p726)
     #+end_src
 
