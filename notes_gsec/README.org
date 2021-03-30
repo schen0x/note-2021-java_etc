@@ -3090,7 +3090,35 @@ C:\Users\offsec.corp\Downloads>dir
 C:\Users\offsec.corp\Downloads>launcher.bat
    #+end_src
    
-* Assembling the Pieces: Penetration Test Breakdown
+* TODO Book3_Chapter 24 Assembling the Pieces: Penetration Test Breakdown
+  
+** Public Network Enumeration (nmap)
+   - src:
+   #+begin_src bash
+sudo echo '10.11.1.250 sandbox.local' >> /etc/hosts
+sudo nmap -sC -sS -p- -oA outFile sandbox.local
+  # -sC use default script
+  # -sS SYN scan for faster run time
+  # -p0-65535 or -p- scan all ports
+  # -oA <fileName> save the result in all(txt, XML, greppable) formats
+   #+end_src
+*** TODO when to use -A -sV
+    
+** Targeting the Web Application
+   1. visit the homepage
+   2. dirb http://sandbox.local
+      
+*** TODO dirb frequently used params
+     
+** Targeting the Web Application
+   3. (try find the default entries of the application)
+   4. check possible plugins entries, maybe try an application specific  scanner
+     - src (wordpress example):
+     #+begin_src sh
+wpscan --url sandbox.local --enumerate ap,at,cb,dbe
+  # enumerate: ap All Plugins, at All Themes, cb Config Backups, dbe DB Exports
+     #+end_src
+   5. 
 
 
 * TODO list
