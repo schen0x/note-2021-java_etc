@@ -3117,8 +3117,16 @@ sudo nmap -sC -sS -p- -oA outFile sandbox.local
      #+begin_src sh
 wpscan --url sandbox.local --enumerate ap,at,cb,dbe
   # enumerate: ap All Plugins, at All Themes, cb Config Backups, dbe DB Exports
+  # wp-survey-and-pool
      #+end_src
-   5. 
+   5. searchsploit the scan result, i.e. the plugins. Use generic keywords (searchsploit wordpress survey poll). Check the detail if Hit.
+   6. find the possible vulnerable component. Setup Burp and intereact.
+      
+*** TODO burp
+
+** Targeting the Web Application
+   
+*** SQL Injection Exploitation
 
 
 * TODO list
