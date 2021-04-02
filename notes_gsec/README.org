@@ -3123,10 +3123,20 @@ wpscan --url sandbox.local --enumerate ap,at,cb,dbe
    6. find the possible vulnerable component. Setup Burp and intereact.
       
 *** TODO burp
+    + repeater
 
 ** Targeting the Web Application
    
-*** SQL Injection Exploitation
+*** TODO SQL Injection Exploitation (PWK p760)
+    + meta keywords: @@version 
+    + meta tables: 
+      - information_schema.tables
+        + =SELECT table_name from information_schema.tables=
+      - information_schema.columns
+        + =SELECT column_name from information_schema.columns WHERE table_name='...'=
+    + SELECT 1,2,3,column_name,4 FROM information_schema.columns WHERE ...
+      - the =SELECT 1,2,3 FROM <table>= returns 1,2,3. Use this to reveal the channel that will be displayed on the screen. For example, if only 3 is shown, then inject SELECT 1,2,column_name FROM information_schema.table
+
 
 
 * TODO list
