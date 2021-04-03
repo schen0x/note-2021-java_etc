@@ -1,0 +1,23 @@
+* L0 Autumn
+** p2
+*** Q7 組み込み
+**** 1
+    1. 60000/350 -> 171.4, even is off, the 171 is on.
+    2. バンドフィルタ
+       
+**** 2
+    1. 5
+    2. a: ON, b: OFF
+       
+**** 3
+    1. c: ONイベント d: 今回値
+    2. *カウント値が0に戻ったとき*
+       - どんなとき? -> ...とき
+    3. *T[N]に65535を加算する*
+       - に...を加算する
+         
+* Notes - p2:
+  + The answer of MCQ questions might not present in the text. i.e. Treated as 'common sense'
+  
+
+
