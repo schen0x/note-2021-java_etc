@@ -37,3 +37,51 @@
   
 
 
+
+   
+* Misc (L03 応用情報技術者合格教本 2021)
+** Logical Operator (p21)
+   - not(A * B) = not(A) + not(B)
+   - not(A + B) = not(A) * not(B)
+     
+** Information Content (情報量) (p23)
+   - ~I = -log_2 P(J)~ bits, where ~P(J)~ is the possibility that the event happens.
+   - less I more accurate. Compare with "Maximum average Information Content"
+
+*** Huffman Tree
+    
+*** Run Length Encoding(ランレングス符号化)
+    - 4A0B5C
+    - 12, 10, 2... (12 * 1, 10 * 0, 2 * 1...)
+      
+*** PCM(Pulse Code Modulation)(パルス符号変調), DPCM, ADPCM (p28)
+    + 手順:
+      1. 標本化, サンプリング周波数(per seconds)(lossless: use > x2 freq of the original analog signal when sampling)
+      2. 量子化, 量子化ビット数(info bits to be outputted per sampling)
+      3. 符号化, translate info into bits
+         
+
+*** Chomsky Hierarchy:
+**** Type-3 Finite state automaton (p29) (Regular Language) (正規文法)
+    + accepting state (受理状態)
+      
+**** Type-2 Non-deterministic Pushdown automaton (Context-free Language)(文脈自由文法)
+     + Most programming languages are context-free language.
+     + *Backus–Naur Form (BNF記法)*
+       - ~<> ::= <> | <>~        # ~::=~ "is", ~|~ "or", ~<>~ "Non-terminals"
+       - ~<> ::= 0 | 1 | a | b~  #  the '0', '1', 'a', 'b' are "Terminals"
+       - examples:
+         + ~<postal-address> ::= <name-part> <street-address> <zip-part>~
+         + ~<opt-suffix-part> ::= "Sr." | "Jr." | <roman-numeral> | ""~
+           
+
+     
+**** Type-1 Linear-bounded non-deterministic Turing machine (Context-sensitive Language) (文脈依存文法)
+     
+**** Type-0 Turing machine (Recursively enumerable Language)
+
+*** Reverse Polish notation (逆ポーランド記法)
+    - traverse the tree bottom-up
+    - ~X 2 3 * 4 7 * + 5 - =~
+    - X=2*3 + 4*7 -5 -> [X, [[[2,3]*, [4,7]*]+, 5-] ]=
+    
