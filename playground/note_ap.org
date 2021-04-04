@@ -130,5 +130,28 @@
        1. find the nearest vertex, let it be (*)
        2. (re)calculate the distance to all adjacent vertices of (*), discard the inferior path.
        3. loop till the (*) is the goal
+          
+*** Statistic
 
+**** Bayes' theorem(ベイズの定理)
+     + P(B|A) = ( P(A|B) * P(B) ) / ( P(A) )
+       
+**** Markov process(マルコフ過程)
+     + P ^ 2
+       
+**** Normal distribution
+     + CL [+|-] 3 * sigma = [UCL | LCL] Upper/Lower Control Limit
+       
+**** Correlation Coefficient
+     + r = 1, X and Y are strong positive related
+     + r = 0, not related
+     + r = -1, strong negative related
+
+**** Partial Coefficient(偏相関係数)
+     + r_(yx1 . x2 ), the partial coefficient between Y and X1, without the effect of X2
+     
+**** Spurious correlation(疑似相関)
+     + Wiki: In statistics, a spurious relationship or spurious correlation is a mathematical relationship in which two or more events or variables are associated but not causally related, due to either coincidence or the presence of a certain third, unseen factor.
+       
+**** logistic regression(ロジスティクス回帰分析)
      
