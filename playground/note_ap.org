@@ -85,3 +85,50 @@
     - ~X 2 3 * 4 7 * + 5 - =~
     - X=2*3 + 4*7 -5 -> [X, [[[2,3]*, [4,7]*]+, 5-] ]=
     
+      
+*** Graph Theory
+    
+**** Hamiltonian graph
+     + a graph that has hamilton circuit. i.e. a path that go through all vertex exactly once.
+     
+**** bipartite graph (二部グラフ)
+     + a bipartite graph (or bigraph) is a graph whose vertices can be divided into two disjoint and independent sets and such that every edge connects a vertex in to one in. (wiki)
+       
+**** adjacency list(隣接リスト)
+     
+**** adjacency matrix(隣接行列)
+     #+begin_quote
+     let M = 
+     | 0 | 1 | 1 | 0 |
+     | 1 | 0 | 1 | 1 |
+     | 1 | 1 | 0 | 1 |
+     | 0 | 1 | 1 | 0 |
+     => M ^ 2 is:
+     | 2 | 1 | 1 | 2 |
+     | 1 | 3 | 2 | 1 |
+     | 1 | 2 | 3 | 1 |
+     | 2 | 1 | 1 | 2 |
+     (the number of all existing paths, that go through exactly 1 other vertex, between v_i and v_j)
+     (p44)
+     #+end_quote
+     
+**** ダイクストラ法(Dijkstra's algorithm) (p45)
+     + let the graph: 
+       - A -(5)-> C -(2)-> D
+       - A -(3)-> B -(1)-> C
+       - A -(3)-> B -(5)-> D
+         
+     + the algorithm:
+       1. 3 < 5 -> the '*' vertex is B
+       2. recalculate distance connected to the '*' vertex:
+          - 3 + 1 < 5 -> del A-(5)-> C
+          - 3 + 5 = 8 -> A -(8)-> D, A -(4)-> C -(2)-> D
+       3. 4 < 8 -> the '*' vertex is tC
+       4. 6 < 8 -> the shortest path is A -(3)-> B -(1)-> C -(2)-> D
+          
+     + the algorithm in general:
+       1. find the nearest vertex, let it be (*)
+       2. (re)calculate the distance to all adjacent vertices of (*), discard the inferior path.
+       3. loop till the (*) is the goal
+
+     
