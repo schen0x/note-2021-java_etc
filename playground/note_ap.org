@@ -155,3 +155,22 @@
        
 **** logistic regression(ロジスティクス回帰分析)
      
+*** Derivative
+**** Bisection method(二分法)
+**** Newton's method(ニュートン法)
+     + special considerations
+     + time complexity:
+       - ~O(log(N)F(N))~ , for N-digit precision, F(N) as the cost of eval(f(x)/f'(x))
+       - For N-digit precision, faster than Bisection method, since in Bisection, the cost of N-digit is ~N * eval(f(x))~, while if *automatic(algorithmic) differentiation* is used, Newton's method gives ~(n+1) * eval(f(x))~ where n is the power of x in f(x).
+       - [[http://www.cas.mcmaster.ca/~cs777/presentations/AD.pdf][Computational Complexity of Automatic Differentiation]]
+         
+**** Numerical Integration(数値積分)
+     + Simpson's rule
+       
+*** Matrix
+**** Invertible/Nonsingular matrix(正則行列)
+     + a matrix of which the *inverse matix(逆行列)* exists.
+       
+**** Augmented Matrix (拡大行列)
+       
+
