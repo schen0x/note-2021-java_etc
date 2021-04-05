@@ -169,8 +169,15 @@
        
 *** Matrix
 **** Invertible/Nonsingular matrix(正則行列)
-     + a matrix of which the *inverse matix(逆行列)* exists.
+     + a matrix of which the *inverse matrix(逆行列)* exists.
+     + ~A(A^-1) = (A^-1)A = E~, where E is the corresponding *identity matrix(単位行列)*. Otherwise the matrix provide less information, hence is called 'degenerated'.
        
 **** Augmented Matrix (拡大行列)
+     + Gaussian elimination(掃き出し法)
        
+*** Machine Learning
+    + Supervised learning(教師あり学習)
+    + Unsupervised learning(教師なし学習)
+    + Reinforcement learning(強化学習)
+
 
