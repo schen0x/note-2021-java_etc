@@ -179,5 +179,33 @@
     + Supervised learning(教師あり学習)
     + Unsupervised learning(教師なし学習)
     + Reinforcement learning(強化学習)
+    + Deep learning
+      - Deep Neural Network
+      - Convolutinoal neural network
 
+** Algorithm && Programming
+*** Tree
+    + root : height 0
+    + complete binary tree (完全2分木)
 
+**** Self-balancing Binary Search Tree
+     + AVL tree. Height difference less than 1 on any node.
+     + B tree. Multiple children per node. Less rebalancing, good for File System, DB Indexing
+     
+       
+*** Hashing
+    + to prevent synonoym(シノニム)
+      - open address (how to delete)
+      - chaining
+        
+*** Sorting (Best Case, Worst Case, Memory Space)
+    + Heap Sort
+    + Quick Sort
+    + Redix Sort
+    + Merge Sort
+      
+*** misc
+    + XML Style Sheets(XSLT)
+    + Synchronized Multimedia Integration Language(SMIL)
+      
+** Hardware(p120)
