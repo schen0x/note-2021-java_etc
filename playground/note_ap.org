@@ -209,3 +209,45 @@
     + Synchronized Multimedia Integration Language(SMIL)
       
 ** Hardware(p120)
+   + XOR: not(A) * B + A * not(B) , (A + B) * not(A * B)
+   + NAND to AND / OR / NOT:
+     - X OR Y = (X NAND X) NAND (Y NAND Y)
+     - X AND Y = (X NAND Y) NAND (X NAND Y)
+       
+   + Resep-Set Flip Flop (RSFF)
+     + OR-NOT RSFF
+       - S - (OR-NOT) - negative Y
+       -       X
+       - R - (OR-NOT) - Y(info bit)
+         
+     + NAND RSFF
+       - S - NAND - X(info bit)
+       -      X
+       - R - NAND - Y
+
+**** FPGA
+     + keywords:
+       - Hardware Description Language (e.g. VHDL, verilog)
+       - system Large-scale-integration
+       - SystemC
+       - Application Specific Standard product(ASSP): for multiple customers
+       - Application Specific Integrated Circuit(ASIC): for a specific company
+
+         
+**** LSI power management
+     + keywords:
+       - Multi VDD
+       - Dynamic Voltage Scaling(DVS)
+       - Dynamic Voltage and Frequency Scaling(DVFS)
+       - *Power gating*
+         
+**** Data Converter
+     
+***** Analog to Digital (A/D) converter
+      + Angular resolution(分解能)
+        - 5V -> 3 bits = 5V/2^3 = (+-0.625V) per bit.
+        - 5V -> 8 bits = 5V/2^8 = (+-0.0195V) per bit.
+          
+***** two's complement (2^n - x), -1 -> 2^n - 1 = 111 when n = 3
+      + one's complement flip 0 and 1. Hence it could represent -0.
+      + while two's complement has a wider range, from -2^n to 2^n - 1.
