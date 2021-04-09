@@ -1,3 +1,4 @@
+;; -*- mode: org; eval: (company-mode -1); -*-
 * L0 Autumn
 ** p2
    
@@ -251,3 +252,52 @@
 ***** two's complement (2^n - x), -1 -> 2^n - 1 = 111 when n = 3
       + one's complement flip 0 and 1. Hence it could represent -0.
       + while two's complement has a wider range, from -2^n to 2^n - 1.
+      
+**** Computer Automation
+     + Programable Logic Controller(PLC), Ladder logic (ラダー・ロジック)
+     + Feedback Control, PID Controller
+
+**** type of sensors
+     + Hall-effect sensor (ホール素子), output voltage proportional to the magnetic field strength through it.
+     + Thermistor (サーミスタ), resistance dependent on temperature.
+     + strain gauge(ひずみゲージ)
+
+**** misc
+     + Actuator(アクチュエータ), convert energy to mechanical motion.
+       - Servomotor(サーボモーター)
+       - Brushless DC electric motor(DCブラシレスモーター)
+       - Stepper motor(ステッピングモーター)
+     + Actuator driver circuit(アクチュエータ駆動回路)
+       - Pulse Width Modulation(PWM) (パルス幅変調), use *duty cycle (デューティ比)* to regulate the speed of a motor.
+         
+*** Processor architecture
+    + Micro Processing Unit(MPU), integrate the main function of a CPU into a single LSI circuit.
+    + *Digital Signal Processor(DSP)*. The goal of a DSP is usually to measure, filter or compress continuous real-world analog signals(wiki).
+      - Multiply–accumulate operation (積和演算)の繰り返しを高速に実行でき、必要な信号成分だけを抽出するディジタルフィルタを効率よく実現できる.
+      - *discrete cosine transform (DCT)*
+    + GPU, handling 3D graphic faster than CPU.
+      
+**** Complex Instruction Set Computer(CSIC)
+     + drawback:
+       - less efficiency, as instructions have different clock cycle.
+
+**** Reduced Instruction Set Computer(RSIC)
+     + ref: [[https://ja.wikipedia.org/wiki/RISC][RSIC wiki ja]]
+     + pipelines
+     + load/store architecture(ロード/ストア・アーキテクチャ)
+
+**** wired logic 
+     + wired logic -> microprogram (basic)
+     + Hardwired control units, in mordern CPU. generally faster than microprogrammed designs (wiki).
+       
+**** addressing mode(アドレス指定方式)
+     + ref: [[https://en.wikipedia.org/wiki/Addressing_mode][Addressing mode, wiki, en]]
+     + literal addressing(即値アドレス指定方式)
+     + Absolute/direct(直接)
+     + Indexed absolute(Effective address = address + contents of specified index register)
+       - e.g. static variable, class variables.
+     + Base plus index(Effective address = contents of specified base register + contents of specified index register)
+       - e.g. elements of an array passed as a parameter
+     + Base plus index plus offset(Effective address = offset + contents of specified base register + contents of specified index register)
+     + relative addressing
+    
