@@ -301,3 +301,54 @@
      + Base plus index plus offset(Effective address = offset + contents of specified base register + contents of specified index register)
      + relative addressing
     
+**** Big/Little endian
+     + Little endian means the lower significant bytes get the lower addresses. Big endian means the other way around. (e.g. Intel CPU might be LE)
+       - 0C0D -> LE
+         | a + 1 | 0C |
+         | a     | 0D |
+     + ref: [[https://stackoverflow.com/questions/4560720/why-does-the-stack-address-grow-towards-decreasing-memory-addresses][Why does the stack address grow towards decreasing memory addresses?]]
+       
+**** EBP, ESP (not percise, cpu architecture dependent)
+     + [[https://youtu.be/1S0aBV-Waeo][Buffer Overflow Attack - Computerphile]]
+     + [[https://www.youtube.com/watch?v=7ha78yWRDlE][Reverse Polish Notation and The Stack - Computerphile]]
+
+   | 0xfff | kernel       |          |
+   |       | ...          |          |
+   |       | fcn param #2 | 12(%EBP) |
+   |       | fcn param #1 | 8(%EBP)  |
+   |       | old %EIP     |          |
+   |       | old %EBP     | %EBP     |
+   |       | local var #1 | -4(%EBP) |
+   |       | local var #2 | -8(%EBP) |
+   |       | ...          |          |
+   | 0xccc | saved %reg   | %ESP     |
+
+**** pipelining
+     + Superscalar processor (スーパースカラー)
+     + Very Long Instruction Word (超長命令語)
+       
+**** parallel computing
+     + Single Instruction stream Single Data stream (SISD)
+     + Single Instruction stream Multiple Data stream (SIMD)
+     + Multiple Instruction stream Single Data stream (MISD)
+     + Multiple Instruction stream Multiple Data stream (MIMD)
+       
+**** multi processor
+     + clock
+     + Frequency Division (分周)
+     + Frequency Multiplication (逓倍、ていばい)
+       
+*** Memory Architecture
+    + SRAM && DRAM (Volatile memory, 揮発性メモリ、きはつせい)
+    + SRAM && DRAM (Non-volatile memory, 不揮発性メモリ、ふきはつせい)
+      - Electrically Erasable Programmable ROM (EEPROM)
+ 
+        
+*** data coherency
+    + write through
+    + write back
+**** cache coherence
+    + ref:
+      - [[https://en.wikipedia.org/wiki/Cache_coherence][Cache coherence, wiki, en]]
+      - [[https://en.wikipedia.org/wiki/Bus_snooping][Bus Snooping, wiki, en]]
+    +
