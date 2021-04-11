@@ -351,4 +351,80 @@
     + ref:
       - [[https://en.wikipedia.org/wiki/Cache_coherence][Cache coherence, wiki, en]]
       - [[https://en.wikipedia.org/wiki/Bus_snooping][Bus Snooping, wiki, en]]
-    +
+      
+**** Cache placement policies(キャッシュメモリの割付方式)
+     + Direct-mapped cache fill(ダイレクトマッピング方式)
+     + Fully associative cache fill(フルアソシアティブ方式)
+       - more flexible
+       - better hit rate
+       - more overhead
+       - higher search cost, placement cost
+       - more complicated
+     + Set-associative cache(セットアソシアティブ方式)
+       - a trade-off between direct-mapped cache and fully associative cache.
+       - direct map to 'set', then could be placed to anywhere inside the set space.
+
+         
+**** io architecture
+     + Programmed I/O(PIO)(プログラム制御方式)
+       - data - CPU - peripheral device
+     + Direct memory access(DMA)(DMA制御方式)
+     + Channel I/O
+       - A channel program is a sequence of *Channel Command Words (CCWs) (チャネル指令語)* 
+         
+*** interfaces specifications
+    + USB
+    + ATA
+    + ATAPI
+    + SCSI
+    + iSCSI
+    + IEEE1394
+    + HDMI
+    + Display Port
+    + IrDA
+    + Bluetooth
+    + ZigBee
+    + NFC
+    + PCI
+    + AGP
+    + PCI Express
+    + I2C Bus
+
+*** diagram
+    + bar(CS)
+      - active low.
+
+** System
+   
+*** distributed processing(分散処理)
+    + keywords
+      - RPC
+      - NFS
+      - Hadoop Distributed File System(HDFS)
+        
+*** Fault tolerance (フォールトトレラントシステム)
+    + フェールソフト
+    + フェールオーバ・フェールバック
+    + フェールセーフ
+    + フォールトマスキング
+    + フールプルーフ
+      
+*** reliability related tech
+    + RAID
+      - RAID 0: data striping.
+      - RAID 1: mirroring.
+      - RAID 3: RAID0 + parity disk, in bit. Fast read, low write (bottlenecked by the common parity disk).
+      - RAID 4: RAID0 + parity disk, in block. Fast read, low write (bottlenecked by the common parity disk).
+      - RAID 5: RAID4 + parity block dispersed within all disks.
+      - RAID 6: RAID5 + extra parity to prevent 2 disks fail.
+      - RAID 01: RAID0 + RAID1
+        
+    + Network Attached Storage(NAS)
+
+    + Storage Area Network(SAN)
+      + Internet Small Computer Systems Interface(iSCSI) 1GB/s, 10GB/s, 40GB/s, SCSI protocol on TCP/IP
+      + Fibre Channel Protocol(FCP): 1, 2, 4, 8, 16,..., 128 Gbits/s
+        - FC over Ethernet(FCoE)
+          
+*** Virtualization
+    
