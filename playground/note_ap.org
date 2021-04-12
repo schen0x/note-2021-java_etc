@@ -427,4 +427,32 @@
         - FC over Ethernet(FCoE)
           
 *** Virtualization
+    + Thin provisioning (シン プロビジョニング)
+    + Hierarchical Storage Management(HSM)(ストレージ自動階層化)
+      
+**** hypervisor
+     + type I: native, bare metal, os - hypervisor - hardware
+     + type II: hosted, os - hypervisor - host os - hardware
+
+**** container
+     + container - container software - host os - hardware
+     + Hence: *No Windows docker on Linux, No Linux docker on Windows without WVM*
+       
+**** system performance
+     + throughput
+       - Transaction Per Sec(TPS)
+     + ResponseTime
+       - end of input -> start of output
+     + Turn Around Time(TAT)
+       - job start -> end of input -> start of output -> end of output
     
+     + 命令ミックス
+       - コマーシャルミックス
+       - ギブソンミックス
+     + Benchmarking
+       - SPEC: SPECint, SPECfp
+       - TPC: TPC-C, TPC-E, TPC-App, TPC-H
+
+         
+**** TODO M/M/1 待ち行列理論 平均待ち時間と平均応答時間 p206
+     + p / (1-p) * avgProcessTime, where p is use rate
