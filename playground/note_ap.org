@@ -456,3 +456,55 @@
          
 **** TODO M/M/1 待ち行列理論 平均待ち時間と平均応答時間 p206
      + p / (1-p) * avgProcessTime, where p is use rate
+       
+**** TODO M/M/S queuing theory
+     
+
+*** System Reliability
+    + RASIS
+      - Realibility(信頼性)
+      - Availability(可用性)
+      - Serviceability(保守性)
+      - Integrity(保全性)
+      - Security(安全性)
+    + TODO Mean time between failures (MTBF)
+    + Mean time to repair (MTTR)
+    + 故障率: 単位時間当たりに故障する確率または回数を表す。 = 1/MTBF
+      - TODO, 独立確率? p215???
+        
+      
+** os
+   + spooling
+   + Program Status Word
+   + context switching
+   + preemptive os
+   + Real Time OS(RTOS)
+     
+*** Mutual exclusion (排他制御)
+    + semaphore(セマフォ) p249
+      - バイナリセマフォ, S: 0, 1
+      - ゼネラルセマフォ, S: 0 ~ N
+      - the P(S) and V(S)
+        + P: Probeer (try), S--
+        + V: Verhoog (increment), S++
+
+** software
+*** language processing
+    + compile flow
+      - Lexical analysis (字句解析)
+        + tokenization
+      - syntactic analysis/Parsing (構文解析)
+        + regex -> report error if cannot parse
+      - Semantic analysis (意味解析)
+        + check data type.
+        + Generate *middle code*: triple(3つ組), quadruple(4つ組), Reverse Polish notation (逆ポーランド記法)
+      - Optimization 最適化
+      - code generation (コード生成)
+
+**** linking
+    + static linking: include the contents of the file at link time. In other words, the contents of the file are physically inserted into the executable that you will run.
+      
+
+*** development tool
+    
+
