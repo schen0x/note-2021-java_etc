@@ -507,4 +507,9 @@
 
 *** development tool
     
-
+** Database
+   + partial functinoal dependency 部分関数従属
+   + full functinoal dependency 完全関数従属
+   + transitive dependency 推移的関数従属
+   
+   + GRANT <ROLE(SELECT, INSERT, UPDATE, DELETE, ALL PRIVILEGES...)> ON <TABLENAME> TO <PRINCIPLE>
