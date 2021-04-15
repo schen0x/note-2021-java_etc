@@ -523,3 +523,117 @@
 *** database application
     + data warehouse
 
+** network
+   + OSI 7 layers
+*** devices
+    + physical layer:
+      - repeater
+      - hub (broadcast to all)
+    + data-link layer:
+      - bridge
+      - L2 switch / switch hub
+      - bridge vs switch:
+        + the difference
+          #+begin_quote
+        Bridges can operate only in half duplex mode, but a Switch can operate both in half duplex or full duplex mode. Both Bridge and Switch has one collision domain per port, but switches have one broadcast domain per VLAN. Switchs support full-duplex Local Area Network (LAN) communication.
+          #+end_quote
+        + Spanning Tree Protocol(STP)
+    + network layer:
+      - router
+        + Routing Information Protocol(RIP)
+        + Open Shortest Path First(OSPF) protocol
+        + -------
+        + Virtual Router Redundancy Protocol(VRRP)
+      - L3 switch
+        + focus on high speed communication
+    + transport layer and above:
+      - gateway
+        + connect L4 and L4+ layers to the Internet. (e.g. with firewall)
+      - L4 switch
+        
+*** VLAN
+    + port base vlan: the port of L2 switch
+    + tag vlan: by tagging mac, differentiate vlan with tag.
+    + among vlan devices need L3 switch or router to communitcate
+      
+*** datalink layer control and protocol
+    
+**** media access control
+    + CSMA/CD
+    + token passing
+    + TDMA
+      
+**** wireless access control
+    + CSMA/CD
+    + *RTS/CTS*
+    + ------------  
+    + FDMA
+    + CDMA
+      
+*** ipv6
+    + 32 bits -> 128 bits
+    + 8 * 2 * 8 = FFFF:FFFF:0000:0000:0000:0000:0000:FFFF
+      
+**** address translation
+     + Network Address Translation (NAT): public IP -> subnet IP
+     + Network Address and Port Translation(NAPT): extended NAT with specified port forwarding. It allows user to map multiple IP addresses to a single IP address.
+
+*** application protocol
+**** email
+    + SMTP(TCP 25): send
+    + POP3(TCP 110): download to computer, then deletes the email from the server
+    + IMAP(TCP 143-server, TCP-993 client IMAP over SSL/TLS): store the message on a server, synchronize the message to devices.
+      
+**** Voice over Internet Protocol VoIP
+     + *Session Initiation Protocol (SIP)*: a signaling protocol used for initiating, maintaining, and terminating real-time sessions that include voice, video and messaging applications.
+     + *Resource reSerVation Protocol (RSVP)*: a transport layer protocol designed to reserve resources across a network using the integrated services model.
+
+*** data transmission(伝送技術)
+**** error control(誤り制御)
+     + parity check
+     + Cyclic Redundancy Check(CRC): can detect multiple bit flip
+       - ref: [[http://chrisballance.com/wp-content/uploads/2015/10/CRC-Primer.html][A PAINLESS GUIDE TO CRC ERROR DETECTION ALGORITHMS]]
+       - crc(x XOR y XOR z) = crc(x) XOR crc(y) XOR crc(z)
+       - this property leads to the design flaw of the WEP propocol, that both the data and the CRC can be manipulated without knowing the encryption key.
+     + Hamming code: parity check on "location groups".
+       - p1(row 1, col2, val: 1): parity of 1, 3, 5, 7... (binary ...1)
+       - p2(1,3, 0): parity of 2,3, 6,7, 10,11, 14,15... (binary ...1[0|1]$)
+       - p3(2,1, 0): parity of (binary ... 1[0|1]{2}$)
+       - p4(3,1, 0): parity of (binary ... 1[0|1]{3}$)
+       - (15, 11) Hamming code
+       | - | 1 | 0 | 1 |
+       | 0 | 1 | 0 | 0 |
+       | 0 | 1 | 0 | 1 |
+       | 1 | 0 | 1 | 1 |
+       - position of parity bits on an bit-array of length 256 (2 ** 8 bits):
+         + p1: 2 ** 0 = 1
+         + p2: 2 ** 1 = 2
+         + p3: 2 ** 2 = 4
+         + p4: 2 ** 3 = 8
+         + ...
+         + p8: 2 ** 7 = 128
+           
+        - extended Hamming code: the loction 0 bit can be used as the parity bit of the whole block, to detect 2 errors.
+          
+**** synchronize control(同期制御)
+     + キャラクタ同期
+       #+begin_quote
+       ベーシック手順の場合、SYN (ASCIIで 001 0110)を転送文字列の前後に付加することで同期を行う。
+       (wiki, ja, 同期方式)
+       #+end_quote
+     + フラグ同期
+       #+begin_quote
+文字コードではない一般的なビット列での同期を取るために用いられる。High-Level Data Link Control (HDLC) の場合、0111 1110が伝送ビット列の前後に送出される（これをフラグシーケンスあるいはフラグという）。また、送信時伝送ビット列で*5ビット*以上'1'が連続した場合、フラグとの誤認を防止するため1ビットの'0'が挿入される。受信時には逆に5ビットの'1'が連続した場合、続く'0'を除去する。フラグシーケンスが伝送ブロックの最初と最後の位置を示すので, キャラクタの区切りとは無関係に可変長のデータを送受信することができ, キャラクタ同期よりも伝送効率が良い.
+       (wiki, ja, 同期方式)
+       #+end_quote
+    
+**** trassimition control (伝送制御) 
+     + High-Level Data Link Control (HDLC) package:
+       - Flag(F) (01111110)
+       - Address(A)
+       - Control(C)
+       - DATA (01111110 11111100) => (011111*0*1 011111*0*1 00...)
+       - FCS(CRC of F and C and DATA)
+       - Flag(F) (01111110)
+
+*** switching(交換方式)
