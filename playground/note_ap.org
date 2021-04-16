@@ -637,3 +637,80 @@
        - Flag(F) (01111110)
 
 *** switching(交換方式)
+    + packet switching
+    + Asynchronous Transfer Mode(ATM) switch: fixed size frame
+      - 51Mbps ~ 155Mbps
+    + Frame Relay
+      - Data Link Connection Identifier(DLCI)
+      - Congestion (輻輳)
+      - Committed Information Rate(CIR) (認定情報速度): the lowest guaranteed speed.
+      - 1.544Mbps ~ 44.736Mbps
+        
+** Security
+   + Symmetric-key algorithm(共通鍵暗号):
+     - n(n-1)/2
+     - block cypher
+       + DES
+       + AES
+     - stream cipher
+       + RC4
+     
+   + Asymmetric encryption scheme(公開鍵暗号):
+     - ref: [[https://security.stackexchange.com/questions/5096/rsa-vs-dsa-for-ssh-authentication-keys][rsa-vs-dsa-for-ssh-authentication-keys]]
+     - Diffie-Hellman, RSA, DSA(Digital Signature Algorithm), ECDSA(Elliptic Curve DSA), ElGamal encryption(ECC + DH)
+
+   + hybird 
+     - use asymmetric for symmetric-key exchange, use symmetric-key to encrypt text, since it is faster.
+       
+*** auth flow
+    + challenge response(e.g. the CHAP of PPP)
+      - user send ID -> server send challenge code -> user calculate hash with challenge code + pw -> send to server for comparison
+    + OTP
+    + Single-sign-on
+      - cookie
+      - reverse proxy
+      - SAML
+        
+*** remote access
+    + Point to Point Protocol(PPP)
+      - Link Control Protocol (LCP): auth methods negotiation
+      - Network Control Protocol (NCP)
+        - auth protocols:
+          - Password authentication protocol (PAP)
+          - challenge handshake authentication protocol (CHAP)
+*** Remote Authentication Dial-In User Service(RADIUS認証)
+    + to mitigate the damage when Access Server is compromised, which is more likely to happen since it is open to all.
+    + RADIUS server (auth server, like a KDC) hold the auth info.
+      - Extended Authentication Protocol(EAP)
+        
+*** Digital Signing
+    + message digest(hash) -> generate signature with private key -> calculate the digest and validate with public key.
+      
+*** Public Key Infrastructure(PKI)(公開鍵基盤)
+    + ref: Certification Practice Statement
+    + id -> get key-pair from CA and CA certificate-> public user get public key from the CA according to the CA
+      
+*** SSL/TLS(Secure Sockets Layer/Transport Layer Security) (OSI Presentation Layer)
+    + use PKI to exchange master-secret for the session.
+      
+*** misc
+    + Web Application Firewall (WAF)
+    + TLS accelerator
+    + Intrusion Detection System (IDS)
+
+**** TODO VPN *(p448)*
+     + Transport mode: encrypt content only, the header, dst ip is not protected.
+     + Tunnelling mode: e.g. *IPsec* (Layer 3 propocol) encrypt the packet of data.
+       - *Authentication Header (AH)*
+       - *Encapsulating Security Payload (ESP)*
+       - *Internet Key Exchange (IKE)*
+     + Multi-Protocol Label Switching(MPLS)
+     + L2TP (Layer 2 Tunneling Protocol)
+       
+*** Common Weakness Enumeration(CWE)
+    
+*** RLTrap
+    + *Unicode RLO(Right-to-Left Override)*
+
+** system development
+
