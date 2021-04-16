@@ -713,4 +713,11 @@
     + *Unicode RLO(Right-to-Left Override)*
 
 ** system development
+   + CMMI (p485)
+   + SPA(Software Process Assessment)
+     
+** misc
+   + petri net
+     
+** UML (p496)
 
