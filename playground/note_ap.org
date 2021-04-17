@@ -721,3 +721,14 @@
      
 ** UML (p496)
 
+
+
+
+* misc, tips
+  + read carefully
+    - 切り上げ round up.
+  + GROUPBY -> COUNT(), MAX(), MIN(), SUM(), AVG()
+  + 問題文中の言葉を使う:
+    - ハッシュ化する理由を，ハッシュ化の特性を踏まえ25字以内で述べよ。: ハッシュ値からパスワードの割出しは難しいから
+  + more detail: 連続して361回"未検出"を受信
+  + double check all easy questions, must take the point.
