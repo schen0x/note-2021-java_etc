@@ -1,6 +1,5 @@
 ;; -*- mode: org; eval: (company-mode -1); -*-
 + Book1: CISSP_ Certified Information Systems Security Professional Study Guide   (2011, John Wiley & Sons) (788 pages)
-+ Book2: GSEC GIAC Security Essentials Certification All-in-One Exam Guide (555 pages)
 + Book3: Offensive Security - Offensive Security OSCP-Offensive Security Ltd (2020) (853 pages)
 + Book4: Internet Core Protocols The Definitive Guide Help for Network Administrators by Eric Hall (424 pages)
 + Book5: Linux Administration  A Beginner’s Guide, Wale Soyinka (2016, McGraw-Hill) (802 pages)
@@ -3136,6 +3135,14 @@ wpscan --url sandbox.local --enumerate ap,at,cb,dbe
         + =SELECT column_name from information_schema.columns WHERE table_name='...'=
     + SELECT 1,2,3,column_name,4 FROM information_schema.columns WHERE ...
       - the =SELECT 1,2,3 FROM <table>= returns 1,2,3. Use this to reveal the channel that will be displayed on the screen. For example, if only 3 is shown, then inject SELECT 1,2,column_name FROM information_schema.table
+        
+*** Cracking the Password
+    + wordlist: /usr/share/wordlists/rockyou.txt.gz
+    #+begin_src sh
+echo "$P$BfBIi66MsPQgzmvYsUzwjc5vSx9L6i/" > pass.txt
+## John the Ripper
+john --wordlist=/usr/share/wordlists/rockyou.txt pass.txt
+    #+end_src
 
 
 
@@ -3452,7 +3459,10 @@ relay the datagram.
        - if any communication between clients may happen, it should be after they dial in to the VPN server.
        - so potential arp attack might happen only if the clients are sharing an environment which is behind the VPN server(a shared lab, for example.) A client may send ARP through a shared lab machine. (detail?)
        - ? other angle on the VPN server?
+         
+**** 
 
+         
 
 * Book4_Chapter 03 The Address Resolution Protocol
   #+begin_quote
