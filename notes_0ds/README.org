@@ -4022,6 +4022,25 @@ ipython
    echo 'a' > my_pipe
    #+end_src
    
+   
+** file attributes: chmod && chattr
+*** chmod
+    + ref: [[https://askubuntu.com/questions/472812/why-is-777-assigned-to-chmod-to-permit-everything-on-a-file]]
+    + summary:
+      | user | group | other |
+      |------+-------+-------|
+      | rwx  | rwx   | rwx   |
+      - 111 111 111 -> 777
+      - 101 101 101 -> 555
+      - 111 101 101 -> 755
+        
+*** chattr && lsattr
+    + ref: [[https://man7.org/linux/man-pages/man1/chattr.1.html][man 1 chattr]]
+    + summary:
+      - chattr [+-]a    # append only
+      - chattr [+-]i    # immutable(not applied to file descriptor already opened)
+      - chattr [+-]s    # secure delete (not honored by ext2, 3, 4 fs)
+
 
 * e0cp00 Electronics, the basic
 
