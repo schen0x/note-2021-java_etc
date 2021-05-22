@@ -1320,7 +1320,7 @@ snmpwalk -c public -v1 10.11.1.50 1.3.6.1.2.1.25.6.3.1.2
 TODO
 + how to know what --script-args
   
-* Book3_Chapter 8 Vulnerability Scanning
+* Book3_Chapter 08 Vulnerability Scanning
   + // overview of automated scanning, major tools : Nessus && Nmap
     
 ** Vulnerability Scanning Overview and Considerations
