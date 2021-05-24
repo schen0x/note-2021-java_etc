@@ -9,3 +9,19 @@
 
 
 
+* STL Algorithms
+** permutations
+*** HEAPs
+    + proterties:
+      - a tree-like data structure.
+      - every node must smaller or equal than its children
+      - can be squashed down to a *range* .
+        
+**** std::make_heap(RandomAccessIterator first, RandomAccessIterator last)
+     + ref: [[https://www.cplusplus.com/reference/algorithm/make_heap/]]
+       
+**** push_heap
+
+**** pop_heap
+
+
