@@ -1,5 +1,5 @@
 ;; -*- mode: org; eval: (company-mode -1); -*-
-//
+// TODO: impl all with cpp
 ========================================
 
 * Chapter 01, 
@@ -8,6 +8,34 @@
 // TODO normal alg, time & space complexity
 
 
+
+* Dynamic Programming
+** Fibonacci
+   + basic impl:
+   #+BEGIN_SRC javascript
+const fib = (n) => {
+  if (n <= 2) return 1
+  return fib(n - 1) + fib(n - 2)
+}
+   #+END_SRC
+     - time: O(2^n)
+     - space: O(n), since the stack height is n.
+
+   + cached impl:
+   #+BEGIN_SRC javascript
+const fib = (n, cache = {}) => {
+  if (n <= 2) return 1
+  let prev = cache[n - 1]
+  let prev2 = cache[n - 2]
+  if (!prev) prev = fib(n - 1, cache)
+  if (!prev2) prev2 = fib(n - 2, cache)
+  const res = prev + prev2
+  if(!cache[n]) cache[n] = res
+  return res
+}
+   #+END_SRC
+     - time: O(n), space: O(n)
+       
 
 * STL Algorithms
 ** permutations

