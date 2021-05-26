@@ -3270,12 +3270,15 @@ chmod +x portscan.sh
 **** ssh port forwarding (remote)
      + ref: [[ssh port forwarding]]
      + info: 
-       - Use ssh REMOTE port forward. Since the aim is to access DB_HOST from public.
+       - use ssh REMOTE port forward. Since the aim is to access DB_HOST from public.
        - use params to remove confirmations, since the shell may not be fully interative.
+       - result: localhost:13306, localhost:1122 points to the remote DB server ( the DB endpoint which the wp server must be allowed to access). check with `sudo netstat -tulpn`. 
      + src:
      #+BEGIN_SRC sh
-ssh -R 1122:10.5.5.11:22 -R 13306:10.5.5.11:3306 -o "UserKnownHostsFile=/dev/null" -o
-"StrictHostKeyChecking=no" kali@10.11.0.4
+ssh -f -N -R 1122:10.5.5.11:22 -R 13306:10.5.5.11:3306 -o "UserKnownHostsFile=/dev/null" -o
+"StrictHostKeyChecking=no" -i /tmp/key_id_ed25519 kali@10.11.0.4
+  # -f run at bg before command execution (detached from the current shell).
+  # -N no command (just forwarding, return no shell)
      #+END_SRC
      
 **** generate temporary ssh-key and connect
@@ -3294,7 +3297,6 @@ from="10.11.1.250",command="echo 'This account can only be used for port forward
 no-agent-forwarding,no-X11-forwarding,no-pty ssh-ed25519 AAA...
 EOF
      #+END_SRC
-     // CONTINUE
 
 
 * TODO list
