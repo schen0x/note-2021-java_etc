@@ -3307,7 +3307,13 @@ mysql --host=127.0.0.1 --port=13306 --user=wp -p [password]
     ## the MariaDB command-line tool
     
 MariaDB [(none)]> SHOW Grants;
-MariaDB [(none)]> SHOW variables;
+MariaDB [(none)]> SHOW variables;  # system variables, require no permission.
+## ...
+## | hostname   | zora              |
+## | plugin_dir | /home/dev/plugin/ |
+## | tmpdir     | /var/tmp          |
+## | version    | 10.3.20-MariaDB   |
+## | version_compile_machine     | x86_64 |
 # (PWK p781)
     #+END_SRC
 
