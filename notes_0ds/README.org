@@ -3534,7 +3534,11 @@ proxychains nmap --top-ports=20 -sT -Pn 10.5.5.20
   ## -Pn disable pinging, since ICMP is not TCP
   ## -sT perform a connect scan, since TCP only
     #+end_src
-    // continue p802
+    
+*** login to the remote desktop (rdp)
+    + info:
+      - the port scan reveal 135, 139, 445, 3389 open.
+      - where as 53 usually used as DNS, usually opened on DC (reference?)
 
         
 *** TODO SOCKS
@@ -3551,6 +3555,8 @@ proxychains nmap --top-ports=20 -sT -Pn 10.5.5.20
     #+begin_src sh
 proxychains <program>
     #+end_src
+    
+
 
 
 
