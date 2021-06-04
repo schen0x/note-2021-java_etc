@@ -3533,14 +3533,32 @@ socks4 127.0.0.1 1080
 proxychains nmap --top-ports=20 -sT -Pn 10.5.5.20
   ## -Pn disable pinging, since ICMP is not TCP
   ## -sT perform a connect scan, since TCP only
+  ## Result:
+  ## PORT STATE SERVICE
+  ## ...
+  ## 135/tcp open msrpc
+  ## 139/tcp open netbios-ssn
+  ## ...
+  ## 445/tcp open microsoft-ds
+  ## ...
+  ## 3389/tcp open ms-wbt-server
+  ## ...
     #+end_src
     
-*** login to the remote desktop (rdp)
+**** login to the remote desktop (rdp, 3389)
     + info:
       - the port scan reveal 135, 139, 445, 3389 open.
       - where as 53 usually used as DNS, usually opened on DC (reference?)
-
-        
+    + src:
+    #+begin_src sh
+proxychains xfreerdp /d:sandbox /u:alex /v:10.5.5.20 +clipboard
+  ## /d:domain
+  ## /u:[[domain\]user|user[@domain]]
+  ## /v:server[:port]
+  ## +clipboard, Active clipboard redirection
+  ## /p:password
+    #+end_src
+    
 *** TODO SOCKS
     + ref:
       - [[./ref/b3cp24_understanding-implementing-socks-server-guide-set-socks-environment_2326.pdf][socks basic (a giac paper)]] (p7, the "CONNECTION"; p8, a global socks proxy (client) manipulate TCP stack)
@@ -3548,7 +3566,6 @@ proxychains nmap --top-ports=20 -sT -Pn 10.5.5.20
       - pkg encrypted or cleartext
       - SOCKS5 auth flow, how does the credential exchange works.
 
-    
 *** TODO proxychains
     + ref: [[https://man.cx/proxychains][proxychains]]
     + src:
@@ -3556,10 +3573,40 @@ proxychains nmap --top-ports=20 -sT -Pn 10.5.5.20
 proxychains <program>
     #+end_src
     
-
-
-
-
+    
+*** Post-Exploitation Enumeration (Windows)
+    + info:
+      - the enum, after login with the rdp
+      - check/disable any existing AV
+    + src:
+    #+begin_src cmd
+systeminfo
+  ## HOSTNAME
+  ## OS Version
+  ## Registered Owner
+  ## Domain
+  ## IP address(es)
+  
+netstat -ano
+  ## -a, displays all connestions and listening ports
+  ## -n, displays addresses and port numbers in numerical form
+  ## -o, displays the owning process ID associated with each connection
+  ## check State = LISTENING ports
+  ## check port below 49152, see: "Ephemeral port"
+(tasklist /fi "pid eq 5712")
+net user /?
+net user /domain
+  ## list all domain user
+net user <UserName> [/DOMAIN]
+net user /domain <User name> (?)
+  ## Global Group memberships       *Domain Users
+    #+end_src
+    // continue p807
+    
+**** Ephemeral port (short live port)
+     + info:
+       - [[https://en.wikipedia.org/wiki/Ephemeral_port][wiki: Ephemeral port]]
+       - IANA suggests 49152-65535 (2^15 + 2^14 to 2^16 -1)(windows) for dynamic or private ports
 
 * TODO list
   + AD, LDAP enum users
