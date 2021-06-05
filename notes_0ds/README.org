@@ -3576,8 +3576,15 @@ proxychains <program>
     
 *** Post-Exploitation Enumeration (Windows)
     + info:
-      - the enum, after login with the rdp
-      - check/disable any existing AV
+      - login to the rdp `proxychains xfreerdp /d:sandbox /u:alex /v:10.5.5.20 +clipboard`
+      - enum `systeminfo`, `netstat -ano`, `net user [/domain]`, `wmic service`
+      - (check/disable any existing AV)
+      - "the service path is not quoted"
+      #+begin_quote
+      An unquoted search path could ... (be used in privilege escalation)
+      (PWK 809)
+      #+end_quote
+      - icacls //continue p810
     + src:
     #+begin_src cmd
 systeminfo
@@ -3600,13 +3607,29 @@ net user /domain
 net user <UserName> [/DOMAIN]
 net user /domain <User name> (?)
   ## Global Group memberships       *Domain Users
+
+  ## service enumeration in windows:
+wmic service get name,displayname,pathname,startmode | findstr /i "auto" | findstr /i /v "c:\windows"
+  ## /i not case-sensitive
+  ## /v not contains
+  ## found the following result:
     #+end_src
-    // continue p807
+    #+begin_quote
+McAfee Agent Common Services macmnsvc "C:\Program Files\McAfee\Agent\macmnsvc.exe" /ServiceStart Auto
+McAfee Agent Service masvc "C:\Program Files\McAfee\Agent\masvc.exe" /ServiceStart Auto
+McAfee Service Controller mfemms "C:\Program Files\Common Files\McAfee\SystemCore\mfemms.exe" Auto
+McAfee Endpoint Security Web Control Service mfewc "C:\Program Files (x86)\McAfee\Endpoint Security\Web Control\mfewc.exe" Auto
+Puppet Agent puppet C:\Puppet\Current Version\sys\ruby\bin\ruby.exe -rubygems "C:\Puppet\Current Version\service\daemon.rb"
+    #+end_quote
+    + info:
+      - 
+
     
 **** Ephemeral port (short live port)
      + info:
        - [[https://en.wikipedia.org/wiki/Ephemeral_port][wiki: Ephemeral port]]
        - IANA suggests 49152-65535 (2^15 + 2^14 to 2^16 -1)(windows) for dynamic or private ports
+         
 
 * TODO list
   + AD, LDAP enum users
