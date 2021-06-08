@@ -4555,12 +4555,12 @@ exec(funObj, {}, localmap)
    + ref:
      - [[https://www.youtube.com/watch?v=MijmeoH9LT4&list=WL&index=46][Characters, Symbols and the Unicode Miracle - Computerphile]]
 
-   + info (the UTF-8 convension) (CP -> Code Point):
+   + info (the UTF-8 convension) (CP -> Code Point) (the utf-8 stream is single byte, hence not affecetd by Endianess):
      | First CP | Last CP  | Bytes                                      |
      |----------+----------+--------------------------------------------|
-     | U+0000   | U+007F   | 0xxx xxxx                                  |
-     | U+0080   | U+07FF   | 1100 xxxx, 10xx xxxx                       |
-     | U+0800   | U+FFFF   | 1110 xxxx, 10xx xxxx, 10xx xxxx            |
+     | U+0000   | U+007F   | 0xxx xxxx, (ASCII, 1 byte)                 |
+     | U+0080   | U+07FF   | 1100 xxxx, 10xx xxxx (2 bytes)             |
+     | U+0800   | U+FFFF   | 1110 xxxx, 10xx xxxx, 10xx xxxx (3 bytes)  |
      | U+10000  | U+10FFFF | 1111 0xxx, 10xx xxxx, 10xx xxxx, 10xx xxxx |
    + src (UTF-8):
    #+begin_src javascript
@@ -4575,8 +4575,35 @@ encodeURIComponent('\uFFFF')
 0xefbfbf.toString(2)
   // "11101111 10111111 10111111"
    #+end_src
+
+   + info (the UTF-16 contension, in most cases use 2 bytes, hence affected by Endianness)
+     | First CP | Last CP  | Bytes                                                    |
+     |----------+----------+----------------------------------------------------------|
+     | U+0000   | U+D7FF   | code pts (2 bytes)                                       |
+     | U+E000   | U+FFFF   | code pts (2 bytes)                                       |
+     | U+0800   | U+FFFF   | code pts (2 bytes)                                       |
+     | U+10000  | U+10FFFF | (1101 10xx, xxxx xxxx), (1101 11xx, xxxx xxxx) (4 bytes) |
+
+     - U+D800 to U+DFFF are reserved for this reason:
+     #+begin_quote
+The Unicode standard permanently reserves these code point values for UTF-16 encoding of the high and low surrogates, and they will never be assigned a character, so there should be no reason to encode them.
+(wiki, UTF-16)
+     #+end_quote
    
-   + src (UTF-16):
+   + src (UTF-16 U+0000 - U+D7FF):
+   #+begin_src python
+"AB".encode("utf-16")
+  ## b'\xff\xfeA\x00B\x00  (LE)
+  ## UTF-16 bom (LE) ff fe
+  ## A: \x41, \x00 (LE), 2 bytes
+  ## B: \x42, \x00 (LE), 2 bytes
+"あい".encode("utf-16")
+  ## \u3042, \u3044
+  ## b'\xff\xfeB0D0' 
+  ## B0: \x42 \x30
+  ## D0: \x44 \x30
+   #+end_src
+   + src (UTF-16 U+10000 - U+10FFFF):
    #+begin_src javascript
   // U' = yyyyyyyyyyxxxxxxxxxx  // U - 0x10000
   // W1 = 110110yyyyyyyyyy      // 0xD800 + yyyyyyyyyy
