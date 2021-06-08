@@ -3679,6 +3679,7 @@ shellter
 ** an example
    + ref:
      - [[https://spaceraccoon.dev/imposter-alert-extracting-and-reversing-metasploit-payloads-flare-on-2020][msf payload reversing]]
+     - [[https://medium.com/@PenTest_duck/offensive-msfvenom-from-generating-shellcode-to-creating-trojans-4be10179bb86][msfvenom functions]]
 
 * TODO list
   + AD, LDAP enum users
@@ -4550,7 +4551,46 @@ exec(funObj, {}, localmap)
       
      - the final representation is: 0100 0010 1001 1000 1001 1001 1001...
 
-       
+** unicode encoding, decoding
+   + ref:
+     - [[https://www.youtube.com/watch?v=MijmeoH9LT4&list=WL&index=46][Characters, Symbols and the Unicode Miracle - Computerphile]]
+
+   + info (the UTF-8 convension) (CP -> Code Point):
+     | First CP | Last CP  | Bytes                                      |
+     |----------+----------+--------------------------------------------|
+     | U+0000   | U+007F   | 0xxx xxxx                                  |
+     | U+0080   | U+07FF   | 1100 xxxx, 10xx xxxx                       |
+     | U+0800   | U+FFFF   | 1110 xxxx, 10xx xxxx, 10xx xxxx            |
+     | U+10000  | U+10FFFF | 1111 0xxx, 10xx xxxx, 10xx xxxx, 10xx xxxx |
+   + src (UTF-8):
+   #+begin_src javascript
+encodeURIComponent('\u3698')
+  // "%E3%9A%98"
+0xe39a98.toString(2)
+  // "*1110* 0011 *10*01 1010 *10*01 1000"
+0b0011011010011000.toString(16)
+  // "3698"
+encodeURIComponent('\uFFFF')
+  // "%EF%BF%BF"
+0xefbfbf.toString(2)
+  // "11101111 10111111 10111111"
+   #+end_src
+   
+   + src (UTF-16):
+   #+begin_src javascript
+  // U' = yyyyyyyyyyxxxxxxxxxx  // U - 0x10000
+  // W1 = 110110yyyyyyyyyy      // 0xD800 + yyyyyyyyyy
+  // W2 = 110111xxxxxxxxxx      // 0xDC00 + xxxxxxxxxx
+  // *1101 10*00, 0000 0011, *1101 11*11, 1111 1111
+
+parseInt('1101101111111111', 2).toString(16)
+  // \xDBFF, high surrogates (0xD800 - 0xDBFF)
+parseInt('1101111111111111', 2).toString(16)
+  // \xDFFF, low surrogates (0xDC00 - 0xDFFF)
+   #+end_src
+
+
+
 * keywords misc
   + cfg bypass
   + [[https://danielmiessler.com/study/red-blue-purple-teams/]]
