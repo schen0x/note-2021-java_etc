@@ -3705,9 +3705,8 @@ shellter
   + (reflective dll injection)
   + list all privilege escalation techniques
   + bad chars (how to infer)
-  + the msfvenom hex
-    - how to use
-  + (payload reverse), nasm binary format?
+  + msfvenom, windows, linux payload execute methods summary.
+  + (msfvenom hex payload reverse), nasm binary format?
      
 ** boxes
    1. ensure 100% with msf.
