@@ -3716,6 +3716,7 @@ shellter
   + (msfvenom hex payload reverse), nasm binary format?
   + (migrate, why, how and without meterpreter)
   + *Windows, admin -> SYSTEM*
+  + *the wordlists*
     
   + the meterpreter workflow (use on Kerberos? time consideration? merit?) 
     - ref:
