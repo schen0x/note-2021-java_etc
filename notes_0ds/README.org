@@ -3602,6 +3602,9 @@ netstat -ano
   ## check State = LISTENING ports
   ## check port below 49152, see: "Ephemeral port"
 (tasklist /fi "pid eq 5712")
+net user
+net user /DOMAIN
+  ## the literal /DOMAIN, not a domain name
 net user /?
 net user /domain
   ## list all domain user
@@ -3676,11 +3679,30 @@ shellter
          
 *** persistence (Windows)
     + info:
-      - assume SYSTEM
+      - assume SYSTEM, meterpreter
       - enum existing account (incognito `list_tokens`, net /domain)
+      - change the password of local admin `net user poultryadmin <newPasswd>` -> rdp gui access
+
     + src:
+    #+begin_src meterpreter
+meterpreter > use incognito
+meterpreter > list_tokens -u
+  ## todo, but nothing new to impersonate in this case
+  (PWK p817)
+    #+end_src
     
-         
+** Internal Network Enumeration
+   + info:
+     - enum the internal network.
+     - tag: Windows cmd ping
+       
+   + src:
+   #+begin_src cmd
+FOR /L %i in (1,1,255) DO @ping -n 1 -w 200 192.168.0.%i > nul && echo 192.168.0.%i is up.
+  ## ...
+  ## 10.5.5.25 is up.
+  ## 10.5.5.30 is up.
+   #+end_src
          
 * msf payload internal
 ** an example
@@ -3717,13 +3739,13 @@ shellter
   + (migrate, why, how and without meterpreter)
   + *Windows, admin -> SYSTEM*
   + *the wordlists*
-    
   + the meterpreter workflow (use on Kerberos? time consideration? merit?) 
     - ref:
       + cheetsheet: [[https://www.blueliv.com/downloads/Meterpreter_cheat_sheet_v0.1.pdf][an old meterpreter cheetsheet]], [[https://www.offensive-security.com/metasploit-unleashed/msfcli/][msfconsole -x]]
       + the incognito module, the example workflow [[https://www.offensive-security.com/metasploit-unleashed/fun-incognito/][meterpreter incognito]] (need SYSTEM)
   + kerberos (from local admin)
   + post-enum scripts
+
      
 ** boxes
    1. ensure 100% with msf.
