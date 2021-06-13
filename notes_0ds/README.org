@@ -3696,7 +3696,6 @@ meterpreter > list_tokens -u
      - enum the internal network.
      - use ping to find live server, use nmap for detail scan.
      - find 8080 port open on .25, setup firefox proxy through SOCKS4 and visit (a Jenkins Server)
-     - 
        
    + src (cmd ping open machine):
    #+begin_src cmd
@@ -3722,6 +3721,33 @@ proxychains nmap -p53,88,135,139,389,445,464,593,636,3268,3269,3389 -sC -sT -Pn 
 ** Targeting the Jenkins Server
    
 *** Application Enumeration
+    + info:
+      - Inspect page, Expand all
+      - try weak pw. -> admin admin happens to work.
+      - `whoami /priv` SeImpersonate privilege -> escalation
+        
+*** TODO SeImpersonate Internal && AV Bypassing (fs)
+    + info:
+      - the SeImpersonate privilege escalation
+    + target:
+      - [[https://github.com/ohpe/juicy-potato]] 
+        
+*** Impersonate_token
+    + info:
+      - meterpreter incognito module, SYSTEM -> Admin
+    + src:
+    #+begin_src meterpreter
+C:\Windows\system32>exit
+meterpreter > use incognito
+meterpreter > list_tokens -u
+  ## sandbox\Administrator
+meterpreter > impersonate_token sandbox\\Administrator
+meterpreter > getuid
+meterpreter > shell
+(PWK 845)
+#+end_src
+
+** Targeting the Domain Controller
    
          
 * msf payload internal
@@ -3746,6 +3772,7 @@ proxychains nmap -p53,88,135,139,389,445,464,593,636,3268,3269,3389 -sC -sT -Pn 
   + AV bypassing
     - with Admin, util scripts to turn off Windows Defender && firewall
     - without Admin, obfuscation, string substitution.
+    - file splitting
   + pivoting: ssh port-forward (local, remote, dynamic)
   + useful linux file structure (/proc, /dev)
   + stand-alone multi/handler and payload
@@ -3765,7 +3792,9 @@ proxychains nmap -p53,88,135,139,389,445,464,593,636,3268,3269,3389 -sC -sT -Pn 
       + the incognito module, the example workflow [[https://www.offensive-security.com/metasploit-unleashed/fun-incognito/][meterpreter incognito]] (need SYSTEM)
   + kerberos (from local admin)
   + post-enum scripts
-
+  + privilege escalation methods (general), DCOM etc.
+  + *SeImpersonate Internal && AV Bypassing (fs)*
+  + mimikatz av-evasion (list_tokens, KRBs related)
      
 ** boxes
    1. ensure 100% with msf.
@@ -3775,7 +3804,6 @@ proxychains nmap -p53,88,135,139,389,445,464,593,636,3268,3269,3389 -sC -sT -Pn 
 ** exam preparation
    1. read and summarize about the topics in the syllabus (possible routines, methods, tools)>
    2. use tools on boxes.
-      
 
 ** flows:
 *** PWK cp24, wordpress webserver (linux) -> sql server (linux)
@@ -3808,7 +3836,8 @@ proxychains nmap -p53,88,135,139,389,445,464,593,636,3268,3269,3389 -sC -sT -Pn 
     - use `proxychains nmap` to scan open ports
     - on open Ports scan further with default scripts `nmap -sC` (PWK p819)
     - 30 is a DC, which tends to be hardened. 25 has opened `8080 http-proxy` -> config firefox proxy and visit the page (proxy SOCKS v4 127.0.0.1:1080)(PWK p822) -> Jenkins server
-    - 
+    - Inspect Element, Expand All, try weak password -> admin admin logged success.
+    - Check the Jenkins documentation -> code execution -> download payload -> reverse shell (jenkinsuser)
 
       
 * AV bypass
