@@ -3694,15 +3694,35 @@ meterpreter > list_tokens -u
 ** Internal Network Enumeration
    + info:
      - enum the internal network.
-     - tag: Windows cmd ping
+     - use ping to find live server, use nmap for detail scan.
+     - find 8080 port open on .25, setup firefox proxy through SOCKS4 and visit (a Jenkins Server)
+     - 
        
-   + src:
+   + src (cmd ping open machine):
    #+begin_src cmd
 FOR /L %i in (1,1,255) DO @ping -n 1 -w 200 192.168.0.%i > nul && echo 192.168.0.%i is up.
   ## ...
   ## 10.5.5.25 is up.
   ## 10.5.5.30 is up.
    #+end_src
+   + src (nmap):
+   #+begin_src sh
+proxychains nmap --top-ports=1000 -sT -Pn 10.5.5.25,30 --open
+  ## -sT TCP connect scan
+  ## -Pn do not ping
+  ## target: 10.5.5.25, 10.5.5.30
+  ## --open only see ports which may be connected to.
+
+proxychains nmap --top-ports=1000 -sT -Pn 10.5.5.25,30 --open
+  ## reveal opened ports
+proxychains nmap -p53,88,135,139,389,445,464,593,636,3268,3269,3389 -sC -sT -Pn 10.5.5.30
+  ## -sC to further enum
+   #+end_src
+   
+** Targeting the Jenkins Server
+   
+*** Application Enumeration
+   
          
 * msf payload internal
 ** an example
@@ -3784,6 +3804,10 @@ FOR /L %i in (1,1,255) DO @ping -n 1 -w 200 192.168.0.%i > nul && echo 192.168.0
     - xfreedrp with proxychains: `proxychains xfreerdp /d:sandbox /u:alex /v:10.5.5.20 +clipboard`
     - [[Post-Exploitation Enumeration (Windows)]]: opened ports, account permission, wmic (auto start service)
     - found Unquoted Search Path -> parse payload, bypass AV, download from browser -> root (poultry)
+    - use `cmd ping` to detect live servers
+    - use `proxychains nmap` to scan open ports
+    - on open Ports scan further with default scripts `nmap -sC` (PWK p819)
+    - 30 is a DC, which tends to be hardened. 25 has opened `8080 http-proxy` -> config firefox proxy and visit the page (proxy SOCKS v4 127.0.0.1:1080)(PWK p822) -> Jenkins server
     - 
 
       
