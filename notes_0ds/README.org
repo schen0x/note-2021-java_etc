@@ -3726,15 +3726,15 @@ proxychains nmap -p53,88,135,139,389,445,464,593,636,3268,3269,3389 -sC -sT -Pn 
       - try weak pw. -> admin admin happens to work.
       - `whoami /priv` SeImpersonate privilege -> escalation
         
-*** TODO SeImpersonate Internal && AV Bypassing (fs)
+*** TODO!! SeImpersonate Internal && AV Bypassing (fs)
     + info:
-      - the SeImpersonate privilege escalation
+      - the SeImpersonate privilege escalation (Jenkins user -> `SYSTEM`)
     + target:
       - [[https://github.com/ohpe/juicy-potato]] 
         
 *** Impersonate_token
     + info:
-      - meterpreter incognito module, SYSTEM -> Admin
+      - meterpreter incognito module, (`SYSTEM` -> impersonate `Domain Admins` happend to be logged in)
     + src:
     #+begin_src meterpreter
 C:\Windows\system32>exit
@@ -3875,7 +3875,9 @@ PS C:\Windows\system32> $ps01 = Get-PSSession -Id 1
     - on open Ports scan further with default scripts `nmap -sC` (PWK p819)
     - 30 is a DC, which tends to be hardened. 25 has opened `8080 http-proxy` -> config firefox proxy and visit the page (proxy SOCKS v4 127.0.0.1:1080)(PWK p822) -> Jenkins server
     - Inspect Element, Expand All, try weak password -> admin admin logged success.
-    - Check the Jenkins documentation -> code execution -> download payload -> reverse shell (jenkinsuser, Domain Admins)
+    - Check the Jenkins documentation -> code execution -> download payload -> reverse shell (jenkinsuser, SYSTEM)
+    - `use incognito; list_tokens -u` find sandbox\Administrator who is Domain Admins
+    - `impersonate_token sandbox\\Administrator`
     - nslookup -> `_ldap._tcp.dc._msdcs.sandbox.local` returns DC's ComputerName.
     - `$s=New-PSSession -Computer <ComputerName>` get remote session on DC.
 
