@@ -3889,6 +3889,12 @@ PS C:\Windows\system32> $ps01 = Get-PSSession -Id 1
      - [[https://github.com/danielbohannon/Invoke-Obfuscation][invoke-obfuscation, github]]
    + info:
      - invoke `psh*` payload
+       
+** windows defender
+   + keywords:
+     - `ExpandDefenderSig`
+   + ref:
+     - 
       
 
 * Book4_Chapter 01 An Introduction to TCP/IP
@@ -4657,6 +4663,14 @@ exec(funObj, {}, localmap)
       
     + bt(backtrace) full                 # backtrace, use after crach
 
+
+** dumpbin and Windows binary basic
+   + ref: 
+     - [[https://docs.microsoft.com/en-us/cpp/build/reference/dumpbin-reference?view=msvc-160][DUMPBIN (MS doc)]]
+       
+   + info:
+     - a VS studio development tool, add to path.
+   //TODO
 
 * S0 misc
 ** IEEE 754 floating number representation
