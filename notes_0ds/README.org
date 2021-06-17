@@ -4670,7 +4670,82 @@ exec(funObj, {}, localmap)
        
    + info:
      - a VS studio development tool, add to path.
-   //TODO
+   
+*** DLL format (Windows)
+    + ref:
+      - [[https://www.youtube.com/watch?v=JPQWQfDhICA][CppCon 2017: James McNellis “Everything You Ever Wanted to Know about DLLs”]]
+      - [[https://tech.blog.aerie.jp/entry/2016/01/12/145455][the exports table]]
+    + info:
+      - Relative Virtual Address (RVA): 
+        + An *offset* from the beginning of the DLL
+        + `Address in Memory = DLL Base Address + RVA`
+        + if DLL Base Addr = 0x7000'0000, the RVA of a function = 0x10F0, then the function will be loaded at 0x7000'10F0
+        + `ordinal hint RVA name`, if `Baz = Hige.Sori`, then RVA does not exist
+        + the `Foo` has a RVA of `0x0001 10E6`, thus a real address of `0x7001 10E6`
+      - implicit linking of a lib/dll, the video 20:40/1:02:27: in linking stage, a Hello.lib (an *import library* for dll) file is created automatically, exports a stub function which redirect the call to a function pointer to the real function. Then when `dumpbin /dependencies Hello.exe`, the `Hello.dll` is also in the list.
+       
+    + src:
+    #+begin_src powershell
+A:\>dumpbin /headers Hello.dll
+  ##  RVA [size]
+  ## ==============================================
+  ## 10F0 [     14C] RVA [size] of Export Directory
+  ##    0 [       0] RVA [size] of Import Directory
+  ## 2000 [     3F0] RVA [size] of Resource Directory
+  
+SECTION HEADER #1     ## the section contains code
+   .text name
+    23C virtual size
+   1000 virtual address (10001000 to 1000123B)
+
+SECTION HEADER #2     ## the section contains read-only(neither writable nor executable) data
+   .text name
+    23C virtual size
+   1000 virtual address (10001000 to 1000123B)
+    #+end_src
+
+    + src (SECTION in detail):
+    #+begin_src powershell
+A:\>dumpbin /rawdata /section:.text Hello.dll
+  ## RAW DATA #1
+A:\>dumpbin /disasm /section:.text Hello.dll
+  ## since `.text` is the code section, it can be disasmbled
+
+A:\>dumpbin /exports Hello.dll
+  ## the content of Export Directory. In this case, from `0x10F0` to `0x10F0 + 0x14C`
+  ## in this case the records is in the .text SECTION
+
+  ##
+  ## ordinal hint RVA      name
+  ## ====================================================
+  ##       2    1 000110E6 Foo
+  ##       3    0          Baz (forwarded to Hige.Sori)
+  ##       5      000110D2 [NONAME]
+  
+A:\> dumpbin /dependents Hello.dll
+A:\> dumpbin /imports Hello.dll
+  ## the dependencies, import table of the dll/exe
+    #+end_src
+
+    
+*** export an DLL
+    + src:
+    #+begin_src cpp
+extern "C" int GetOne()    { return 1; }
+extern "C" int GetTwo()    { return 2; }
+extern "C" int GetThree()  { return 3; }
+    #+end_src
+    #+begin_src powershell
+gcc Numbers.cpp
+link Number.obj
+     /DLL
+     /NOENTRY
+     /EXPORT:GetOne
+     /EXPORT:GetTwo=GetTwo2
+     /EXPORT:GetThree,PRIVATE
+    #+end_src
+    
+
 
 * S0 misc
 ** IEEE 754 floating number representation
