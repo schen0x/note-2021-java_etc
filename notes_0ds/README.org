@@ -4735,15 +4735,19 @@ extern "C" int GetOne()    { return 1; }
 extern "C" int GetTwo()    { return 2; }
 extern "C" int GetThree()  { return 3; }
     #+end_src
-    #+begin_src powershell
-gcc Numbers.cpp
-link Number.obj
-     /DLL
-     /NOENTRY
-     /EXPORT:GetOne
-     /EXPORT:GetTwo=GetTwo2
-     /EXPORT:GetThree,PRIVATE
+    #+begin_src developer powershell
+cl /C .\Numbers.cpp
+link Numbers.obj /DLL /NOENTRY /EXPORT:GetOne /EXPORT:GetTwo /EXPORT:GetThree,PRIVATE /EXPORT:GetTwo2=GetTwo
+dumpbin /exports Numbers.dll
+
+  ## ordinal hint RVA      name
+  ## ===========================
+  ##       1    0 00001000 GetOne
+  ##       2    1 00001020 GetThree
+  ##       3    2 00001010 GetTwo
+  ##       4    3 00001010 GetTwo2
     #+end_src
+  // continue
     
 
 
