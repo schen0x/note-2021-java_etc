@@ -4735,6 +4735,7 @@ A:\> dumpbin /imports Hello.dll
       - [[https://docs.microsoft.com/en-us/cpp/build/reference/dot-lib-files-as-linker-input?view=msvc-160][.Lib Files as Linker Input (MS doc)]]
       - [[https://docs.microsoft.com/en-us/cpp/build/reference/working-with-import-libraries-and-export-files?view=msvc-160][Working with Import Libraries and Export Files (MS doc)]]
       - [[https://docs.microsoft.com/en-us/cpp/build/reference/md-mt-ld-use-run-time-library?view=msvc-160][/MD, /MT, /LD (Use Run-Time Library) (MS doc)]]
+      - [[https://www.youtube.com/watch?v=Jzh4ZULXsvo&t=325s][C++ Dynamic Linking vs Static Linking (Youtube)]]
       - [[https://docs.microsoft.com/en-us/windows/win32/Dlls/dynamic-link-library-search-order][dll search order (MS doc, advanced)]]
 
     + info:
@@ -4747,7 +4748,7 @@ A:\> dumpbin /imports Hello.dll
       - However, it is also useful in implicit linking an external `.dll`.
     #+begin_quote
 In most situations, you do not need to use LIB to create your import library. When you link a program (either an executable file or a DLL) that contains exports, LINK automatically creates an import library that describes the exports. Later, when you link a program that references those exports, you specify the import library.
-(MS doc)
+(Working with Import Libraries and Export Files (MS doc))
     #+end_quote
     
 **** use import library (.lib) in static linking
