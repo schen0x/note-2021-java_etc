@@ -4727,8 +4727,130 @@ A:\> dumpbin /imports Hello.dll
   ## the dependencies, import table of the dll/exe
     #+end_src
 
+
+*** static and dynamic linking in Windows, dll exporting with Windows API
+    + ref:
+      - [[https://docs.microsoft.com/en-us/cpp/build/linking-an-executable-to-a-dll?view=msvc-160][Link an executable to a DLL (MS doc)]]
+      - [[https://docs.microsoft.com/en-us/cpp/cpp/dllexport-dllimport?view=msvc-160][dllexport, dllimport (MS doc)]]
+      - [[https://docs.microsoft.com/en-us/cpp/build/reference/dot-lib-files-as-linker-input?view=msvc-160][.Lib Files as Linker Input (MS doc)]]
+      - [[https://docs.microsoft.com/en-us/cpp/build/reference/working-with-import-libraries-and-export-files?view=msvc-160][Working with Import Libraries and Export Files (MS doc)]]
+      - [[https://docs.microsoft.com/en-us/cpp/build/reference/md-mt-ld-use-run-time-library?view=msvc-160][/MD, /MT, /LD (Use Run-Time Library) (MS doc)]]
+      - [[https://docs.microsoft.com/en-us/windows/win32/Dlls/dynamic-link-library-search-order][dll search order (MS doc, advanced)]]
+
+    + info:
+      - `main.cpp` need `a.obj` and `b.obj` to compile.
+      - static link: Either specify the objs directly at compile time, or, create a library file
+      - `lib /out:theLibrary.lib a.obj b.obj` ``
+
+    + info (the `.lib` Import Library file) :
+      - a `fooBarLib.lib` may contains the content of `foo/bar.obj`. In which case, same as specifying the `.obj` files directly.
+      - However, it is also useful in implicit linking an external `.dll`.
+    #+begin_quote
+In most situations, you do not need to use LIB to create your import library. When you link a program (either an executable file or a DLL) that contains exports, LINK automatically creates an import library that describes the exports. Later, when you link a program that references those exports, you specify the import library.
+(MS doc)
+    #+end_quote
     
-*** export an DLL
+**** use import library (.lib) in static linking
+    + src (library):
+    #+begin_src cpp
+// compile by: cl /c foo.cpp bar.cpp   
+// copy the content to a import library by lib /out:fooBarLibrary.lib foo.obj bar.obj
+#include<iostream>
+
+__declspec(dllexport) void foo()
+{
+    std::cout << "foo" << std::endl;
+}
+    #+end_src
+
+    + src (consumer):
+    #+begin_src cpp
+// compile by: cl /EHsc main.cpp fooBarLibrary.lib
+// same as:    cl /EHsc main.cpp foo.obj bar.obj
+void foo();
+void main()
+{
+    foo();
+}
+    #+end_src
+    
+**** use import library (.lib) in dynamic linking (implicit)
+    + info (for implicit linking, an application must):
+      1. Specify `__declspec(dllimport) declarator` in the header file.
+      2. Has the `.lib (import library) file`. The linker creates the `.lib` file when the DLL is built.
+      3. Has the actual `.dll` file.
+
+    + src (implicit linking):
+    #+begin_src cpp
+// lib_link_input_1.cpp
+// compile by using: cl /LD lib_link_input_1.cpp
+__declspec(dllexport) int Test() {
+   return 213;
+}
+    #+end_src
+    #+begin_src cpp
+// lib_link_input_2.cpp
+// compile by using: cl /EHsc lib_link_input_1.lib lib_link_input_2.cpp
+// EHsc, `catch(...)` clauses don't catch asynchronous structured exceptions. 
+__declspec(dllimport) int Test();
+#include <iostream>
+int main() {
+   std::cout << Test() << std::endl;
+}
+    #+end_src
+
+**** use import library (.lib) in dynamic linking (explicit)
+    + info (for explicit linking, an application must):
+    #+begin_quote
+1. Call `LoadLibraryEx` or a similar function to load the DLL and obtain a module handle.
+
+2. Call `GetProcAddress` to obtain a function pointer to each exported function that the application calls. Because applications call the DLL functions through a pointer, the compiler doesn't generate external references, so there's no need to link with an import library. However, you must have a typedef or using statement that defines the call signature of the exported functions that you call.
+
+3. Call `FreeLibrary` when done with the DLL.
+
+...
+the LoadLibrary and FreeLibrary should be only called only once in an application
+(MS doc, link an executable to a dll)
+    #+end_quote
+
+    + src:
+    #+begin_src c
+#include "windows.h"
+
+typedef HRESULT (CALLBACK* LPFNDLLFUNC1)(DWORD,UINT*);
+
+HRESULT LoadAndCallSomeFunction(DWORD dwParam1, UINT * puParam2)
+{
+    HINSTANCE hDLL;               // Handle to DLL
+    LPFNDLLFUNC1 lpfnDllFunc1;    // Function pointer
+    HRESULT hrReturnVal;
+
+    hDLL = LoadLibrary("MyDLL");
+    if (NULL != hDLL)
+    {
+        lpfnDllFunc1 = (LPFNDLLFUNC1)GetProcAddress(hDLL, "DLLFunc1");
+        if (NULL != lpfnDllFunc1)
+        {
+            // call the function
+            hrReturnVal = lpfnDllFunc1(dwParam1, puParam2);
+        }
+        else
+        {
+            // report the error
+            hrReturnVal = ERROR_DELAY_LOAD_FAILED;
+        }
+        FreeLibrary(hDLL);
+    }
+    else
+    {
+        hrReturnVal = ERROR_DELAY_LOAD_FAILED;
+    }
+    return hrReturnVal;
+}
+// ref: MS doc, link an executable to a dll
+    #+end_src
+    
+*** export an DLL (the extern "C" and .def way)
     + src:
     #+begin_src cpp
 extern "C" int GetOne()    { return 1; }
@@ -4747,7 +4869,7 @@ dumpbin /exports Numbers.dll
   ##       3    2 00001010 GetTwo
   ##       4    3 00001010 GetTwo2
     #+end_src
-  // continue
+  
     
 
 
