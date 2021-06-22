@@ -21,8 +21,14 @@ elpa/
 eclipse.jdt.ls/
 
 ;;;;c/c++
-*.o
-*.out
 !Makefile*
 !makefile*
 ~          
+*.exe
+*.out
+*.dll
+*.so
+*.obj
+*.o
+*.exp
+*.lib
