@@ -4682,7 +4682,7 @@ exec(funObj, {}, localmap)
         + if DLL Base Addr = 0x7000'0000, the RVA of a function = 0x10F0, then the function will be loaded at 0x7000'10F0
         + `ordinal hint RVA name`, if `Baz = Hige.Sori`, then RVA does not exist
         + the `Foo` has a RVA of `0x0001 10E6`, thus a real address of `0x7001 10E6`
-      - implicit linking of a lib/dll, the video 20:40/1:02:27: in linking stage, a Hello.lib (an *import library* for dll) file is created automatically, exports a stub function which redirect the call to a function pointer to the real function. Then when `dumpbin /dependencies Hello.exe`, the `Hello.dll` is also in the list.
+      - implicit linking of a lib/dll, the video 20:40/1:02:27: in linking stage, a Hello.lib (an *import library* for dll) file is created automatically, exports a stub function which redirect the call to a function pointer to the real function. Then when `dumpbin /dependents Hello.exe`, the `Hello.dll` is also in the list.
        
     + src:
     #+begin_src powershell
