@@ -3795,44 +3795,65 @@ PS C:\Windows\system32> $ps01 = Get-PSSession -Id 1
      - [[https://medium.com/@PenTest_duck/offensive-msfvenom-from-generating-shellcode-to-creating-trojans-4be10179bb86][msfvenom functions]]
 
 * TODO list
-  + AD, LDAP enum users
-  + AD, enum flow
-  + nmap: quick, full
-  + dirb, simple util && advanced util
-  + lfi
-  + overflow
+  + jobs control
+  + interative shell (py and none py?)
+  + nc common cmds
+  + wireshark filters (capture and display)
+  + (tcpdump)
+  + (general osint, cp 6)
+  + DNS Enumeration (cp 7 revision)
+  + (1 or 2 video, nmap common usage)
+---------------------------------------- 30th
+  + SMB,NFS,SMTP enumeration? (cp7) is necessary?
+  + (Nessus? automated web, check if newer PWK contains the info, or exam detail)
+  + (Nikto)?
+---------------------------------------- 1st
+  + (gobuster and Burp, test in box)
+  + *XSS, DirTraversal, SQL (cp9 revisit), test in box*
+  + *lfi, test in box*
+---------------------------------------- 2nd
+  + *sqlmap, test in box*
+---------------------------------------- 3rd
+  + *BO, p345-436, linux, Windows, practice*
     - offset - length
     - half offset
-  + log inject
-  + sqlmap&msf op -> .
-  + pw basic
+    - *bad chars (how to infer)*
+---------------------------------------- 4th, ++
+  + exploit search, p455-476, common fixes, one bytes, other techniques
+  + *Windows payload AV bypass(p490-511)*? (check exam examples)
+  + *post enumeration scripts (linux, windows, try in box)*
+---------------------------------------- 5-9th
+  + privilege escalation methods (general), DCOM etc. video, common pattern
+---------------------------------------- 10th
+  + basic pw atks(p572-595)
+  + AD, kerberos revisit (p622-p677) [[Book3_Chapter 21 Active Directory Attacks]]
+    - AD, LDAP enum users
+    - AD, enum flow
+    - escalate from local admin
+  + *mimikatz manual ops(the modified ver, try in box)*
+---------------------------------------- 11th
+  + the msf
+    - meterpreter common usage, AV evasion, auto pilot all boxes first.
+    - *msfvenom*, use the different format.
+  + manual migration
+  + (empire, on exam? info)
+  + (log injection)
   + msf tools fast access
-  + AV bypassing
+  + AV bypassing script
     - with Admin, util scripts to turn off Windows Defender && firewall
     - without Admin, obfuscation, string substitution.
     - file splitting
   + pivoting: ssh port-forward (local, remote, dynamic)
   + useful linux file structure (/proc, /dev)
-  + stand-alone multi/handler and payload
-  + proxychain
-  + use msfvenom, use the different format.
+  + *stand-alone multi/handler and payload*
   + (reflective dll injection)
-  + list all privilege escalation techniques
-  + bad chars (how to infer)
   + msfvenom, windows, linux payload execute methods summary.
-  + (msfvenom hex payload reverse), nasm binary format?
-  + (migrate, why, how and without meterpreter)
   + *Windows, admin -> SYSTEM*
-  + *the wordlists*
   + the meterpreter workflow (use on Kerberos? time consideration? merit?) 
     - ref:
       + cheetsheet: [[https://www.blueliv.com/downloads/Meterpreter_cheat_sheet_v0.1.pdf][an old meterpreter cheetsheet]], [[https://www.offensive-security.com/metasploit-unleashed/msfcli/][msfconsole -x]]
       + the incognito module, the example workflow [[https://www.offensive-security.com/metasploit-unleashed/fun-incognito/][meterpreter incognito]] (need SYSTEM)
-  + kerberos (from local admin)
-  + post-enum scripts
-  + privilege escalation methods (general), DCOM etc.
   + *SeImpersonate Internal && AV Bypassing (fs)*
-  + mimikatz av-evasion (list_tokens, KRBs related)
      
 ** boxes
    1. ensure 100% with msf.
