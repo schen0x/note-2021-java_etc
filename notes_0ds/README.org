@@ -1214,7 +1214,7 @@ nmap -v -p 139,445 --script=smb-vuln-ms08-067 --script-args=unsafe=1 10.11.1.5
     NFS is often used with UNIX operating systems and is predominantly insecure in its implementation. It can be somewhat difficult to set up securely, so it’s not uncommon to find NFS shares open to the world. This is quite convenient for us as penetration testers, as we might be able to leverage them to collect sensitive information, escalate our privileges, and so forth.
    #+end_quote
    
-*** TODO scanning for NFS shares p197
+*** scanning for NFS shares p197
     + the TCP port 111
     #+begin_quote
     Both *Portmapper* and *RPCbind* run on TCP port 111. RPCbind maps RPC services to the ports on which they listen. RPC processes notify rpcbind when they start, registering the ports they are listening on and the RPC program numbers they expect to serve.
