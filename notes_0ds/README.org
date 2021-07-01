@@ -1004,7 +1004,7 @@ administrator), which is used to find the hostname of a specific IP address*.
     host -t txt megacorpone.com
     #+end_src
     
-**** forward lookup brute force
+**** forward lookup brute force (to identify ftp. mail. ... server of a domain)
      + simplified wordlist /usr/share/seclists
        - Much more comprehensive wordlists are available as part of the SecLists project.
        - [[https://github.com/danielmiessler/SecLists]]
@@ -1015,7 +1015,7 @@ administrator), which is used to find the hostname of a specific IP address*.
      for ip in $(cat list.txt); do host $ip.megacorpone.com; done
      #+end_src
      
-**** reverse lookup brute force
+**** reverse lookup brute force (ip -> hostname, TODO check PTR, p174)
      #+begin_quote
      If the DNS administrator of megacorpone.com configured PTR 191 records for the domain, we could scan the approximate range with reverse lookups to request the hostname for each IP.
      #+end_quote
@@ -1024,17 +1024,19 @@ administrator), which is used to find the hostname of a specific IP address*.
      for ip in $(seq 50 100); do host 38.100.193.$ip; done | grep -v "not found"
      #+end_src
      
-*** dns zone transfers
+*** dns zone transfers (enum possible AAA records within the zone)
+    + info:
+      - the RFC 5936 *Authoritative Transfer (AXFR)* protocol
+      - an automation script in PWK p176
     #+begin_quote
     A zone transfer is basically a database replication between related DNS servers in which the zone file is copied from a master DNS server to a slave server. The zone file contains a list of all the DNS names configured for that zone. Zone transfers should only be allowed to authorized slave DNS servers but many administrators misconfigure their DNS servers, and in these cases, anyone asking for a copy of the DNS server zone will usually receive one.
     #+end_quote
-    + host -l         # list zone, to attemp the zone transfers
-    + useage:         # nameserver is already knowned in the ~host~ result
+    + host -l <domain name> <dns server address>   # list zone, to attemp the zone transfers
+    + usage:         # nameserver is already knowned in the ~host~ result
       #+begin_src sh
       # host -l megacorpone.com <nameserver>
       host -l megacorpone.com ns2.megacorpone.com     # success if the nameserver allows the transfer
       #+end_src
-    + TODO test script
   
 *** *dns enumeration tools*
    
