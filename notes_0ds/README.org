@@ -3793,19 +3793,10 @@ PS C:\Windows\system32> $ps01 = Get-PSSession -Id 1
      - [[https://medium.com/@PenTest_duck/offensive-msfvenom-from-generating-shellcode-to-creating-trojans-4be10179bb86][msfvenom functions]]
 
 * TODO list
-  + wireshark filters (capture and display)
-  + (tcpdump)
   + (general osint, cp 6)
-  + DNS Enumeration (cp 7 revision)
-  + (1 or 2 video, nmap common usage)
-----------------------------------------
-  + SMTP enumeration?
-  + (Nessus? automated web, check if newer PWK contains the info, or exam detail)
-  + (Nikto)?
 ----------------------------------------
   + (gobuster and Burp, test in box)
-  + *XSS, DirTraversal, SQL (cp9 revisit), test in box*
-  + *lfi, test in box*
+  + *Exploiting Admin Consoles, XSS, LFI && (RFI), DirTraversal, SQL (cp9.4 revisit), test in box*
 ---------------------------------------- 2nd
   + *sqlmap, test in box*
 ---------------------------------------- 3rd
