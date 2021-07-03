@@ -5120,15 +5120,16 @@ ipython
 
 ** TODO list
   + (gobuster and Burp, test in box)
-  + *Exploiting Admin Consoles, XSS, LFI && (RFI), DirTraversal, SQL (cp9.4 revisit), test in box*
----------------------------------------- 2nd
+  + *Exploiting Admin Consoles, XSS, LFI && (RFI), DirTraversal, test in box*
+---------------------------------------- 
+  + *SQL (cp9.4 revisit)*
   + *sqlmap, test in box*
----------------------------------------- 3rd
+---------------------------------------- 4th
   + *BO, p345-436, linux, Windows, practice*
     - offset - length
     - half offset
     - *bad chars (how to infer)*
----------------------------------------- 4th, ++
+---------------------------------------- 5-9th
   + exploit search, p455-476, common fixes, one bytes, other techniques
   + *Windows payload AV bypass(p490-511)*? (check exam examples)
   + *post enumeration scripts (linux, windows, try in box)*
