@@ -476,7 +476,7 @@ axel -a -n 20 -o o.pdf https://example.com/o.pdf
 
 ***** 4. command substitution: ~$(command)~ or ~`command`~
       #+begin_quote
-        Bash performs the expansion by executing command in a subshell environment and replacing the  command  substitution  with  the  standard  output of the command, with any trailing newlines deleted.
+        Bash performs the expansion by executing command in a subshell environment and replacing the command substitution with the standard output of the command, with any trailing newlines deleted.
       #+end_quote
         
 ***** 5. arithmetic expansion: ~$((expression))~: eval the arithmetic expression and substitute the result.
