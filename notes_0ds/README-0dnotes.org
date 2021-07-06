@@ -5121,28 +5121,26 @@ ipython
 ** TODO list
   + (gobuster and Burp, test in box)
   + *Exploiting Admin Consoles, XSS, LFI && (RFI), DirTraversal, test in box*
----------------------------------------- 
   + *SQL (cp9.4 revisit)*
   + *sqlmap, test in box*
----------------------------------------- 4th
+  + *post enumeration scripts (linux, windows, try in box)*
+  + privilege escalation methods (linux)
+---------------------------------------- 6-9th web
   + *BO, p345-436, linux, Windows, practice*
     - offset - length
     - half offset
     - *bad chars (how to infer)*
----------------------------------------- 5-9th
-  + exploit search, p455-476, common fixes, one bytes, other techniques
-  + *Windows payload AV bypass(p490-511)*? (check exam examples)
-  + *post enumeration scripts (linux, windows, try in box)*
----------------------------------------- 5-9th
-  + privilege escalation methods (general), DCOM etc. video, common pattern
----------------------------------------- 10th
+---------------------------------------- 10-11th BO, stacks(linux)
   + basic pw atks(p572-595)
   + AD, kerberos revisit (p622-p677) [[Book3_Chapter 21 Active Directory Attacks]]
     - AD, LDAP enum users
     - AD, enum flow
     - escalate from local admin
   + *mimikatz manual ops(the modified ver, try in box)*
----------------------------------------- 11th
+  + *Windows payload AV bypass(p490-511)*? (check exam examples)
+  + privilege escalation methods (Windows), DCOM etc. video, common pattern
+---------------------------------------- 17-18th
+  + exploit fix, p455-476, common fixes, one bytes, other techniques
   + the msf
     - meterpreter common usage, AV evasion, auto pilot all boxes first.
     - *msfvenom*, use the different format.
