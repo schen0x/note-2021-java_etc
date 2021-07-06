@@ -5119,7 +5119,7 @@ ipython
   + (general osint, cp 6)
 
 ** TODO list
-  + (gobuster and Burp, test in box)
+  + (Burp setup, test in box)
   + *Exploiting Admin Consoles, XSS, LFI && (RFI), DirTraversal, test in box*
   + *SQL (cp9.4 revisit)*
   + *sqlmap, test in box*
