@@ -5170,10 +5170,8 @@ ipython
 
   p306 - self xss -> src -> nc
   9.4.4.3 log + LFI
-  
 
   TODO suid sgit bit, file
-  TODO py3 rewrite
 
 sysinit.target.wants
 
