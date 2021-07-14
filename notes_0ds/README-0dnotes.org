@@ -4993,6 +4993,15 @@ ipython
       - 111 111 111 -> 777
       - 101 101 101 -> 555
       - 111 101 101 -> 755
+
+*** SETUID AND SETGID BITS (sticky bit)
+    + info:
+      - man 1 chmod
+    + summary
+      - `chmod u+s`
+      - `chmod g-s`, `chmod 00755`, `chmod =755`
+      - the `x` takes extra state when `s` set, run as owner or owner's group
+      - the behavior differ depends on the underlying `chmod` syscall 
         
 *** chattr && lsattr
     + ref: [[https://man7.org/linux/man-pages/man1/chattr.1.html][man 1 chattr]]
@@ -5171,7 +5180,12 @@ ipython
   p306 - self xss -> src -> nc
   9.4.4.3 log + LFI
 
-  TODO suid sgit bit, file
+  TODO suid sgit bit readlist
+  TODO SQL
+  TODO BO ref:
+    - [[https://www.vulnhub.com/entry/brainpan-1,51/][brainpan]]
+    - [[https://github.com/justinsteven/dostackbufferoverflowgood][dostackbufferoverflowgood]]
+  TODO report env, pandoc
 
 sysinit.target.wants
 
