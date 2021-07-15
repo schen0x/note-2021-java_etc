@@ -5187,6 +5187,11 @@ ipython
     - [[https://github.com/justinsteven/dostackbufferoverflowgood][dostackbufferoverflowgood]]
   TODO report env, pandoc
 
+16th TODO identify bad chars, ref: [[https://github.com/gh0x0st/Buffer_Overflow][Buffer Overflow guide]]
+16th TODO EIP, pattern identify && offset script
+  - pattern_create.rb -l 600 identify eip
+  - pattern_offset.rb -q ...
+
 sysinit.target.wants
 
   + *SQL (cp9.4 revisit p321)*
