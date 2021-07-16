@@ -1469,8 +1469,10 @@ sudo nmap --script vuln 10.11.1.10
         - *EBP* (base pointer): points to the *base/topmost if stack grows downwards/higher address* of the stack when a function is called, provide easy reference for the function to its own stack frame (via offsets). i.e. the (offset 0 pointer)
         - *EIP* (instruction pointer): points to the *next* instruction to be executed.
           
-*** TODO the *function prologue*
-    + [[https://www.youtube.com/watch?v=75gBFiFtAb8][x86 Assembly Crash Course(by HackUCF)]]
+*** the *function prologue*
+    + ref:
+      - [[https://www.youtube.com/watch?v=75gBFiFtAb8][x86 Assembly Crash Course(by HackUCF)]]
+      - [[https://www.intel.com/content/dam/www/public/us/en/documents/manuals/64-ia-32-architectures-software-developer-instruction-set-reference-manual-325383.pdf][Intel x86 instruction set reference manual]]
     + ? the $ESP, $EBP, $EIP change, during call -> leave -> ret.
       #+begin_quote
       [ebp+0xc]  ; contains parameter 1, etc
@@ -1484,7 +1486,7 @@ sudo nmap --script vuln 10.11.1.10
 
       
 ** DEP, ASLR, and CFG
-   + Data Execution Prevention(DEP): raise an exception when code from data pages executed.
+   + Data Execution Prevention(DEP): Specify executable section. raise an exception when code from data pages executed.
    + Address Space Layout Randomization(ASLR): randomize the base address of loaded applications and DLLs on system reboot.
    + Control Flow Guard(CFG): ?
 
@@ -4270,7 +4272,7 @@ relay the datagram.
          + 0C -> p + 2
          + 0D -> p + 3
      + LE: *the most significant byte -> biggest memory address.*
-       - //a bigger byte goes to a bigger address
+       - `unsigned char retn[] = "\x83\x0c\x09\x10"; // 0x10090c83`
        - an 32-bit int: 0x0A0B0C0D
          + (assume byte p* is the starting byte of a memory section)
          + 0D -> p
@@ -5188,9 +5190,10 @@ ipython
   TODO report env, pandoc
 
 16th TODO identify bad chars, ref: [[https://github.com/gh0x0st/Buffer_Overflow][Buffer Overflow guide]]
-16th TODO EIP, pattern identify && offset script
+16th TODO EIP, pattern identify && offset script, p461
   - pattern_create.rb -l 600 identify eip
   - pattern_offset.rb -q ...
+17th TODO PWK p460 JMP ESP and Return Address
 
 sysinit.target.wants
 
