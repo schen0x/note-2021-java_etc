@@ -5180,7 +5180,6 @@ ipython
   p306 - self xss -> src -> nc
   9.4.4.3 log + LFI
 
-  TODO suid sgit bit readlist
   TODO SQL
   TODO BO ref:
     - [[https://www.vulnhub.com/entry/brainpan-1,51/][brainpan]]
