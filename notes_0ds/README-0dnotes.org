@@ -4616,7 +4616,7 @@ exec(funObj, {}, localmap)
 
     + make                               # makefile
       
-    + bt(backtrace) full                 # backtrace, use after crach
+    + bt(backtrace) full                 # backtrace, use after crash
 
 
 ** dumpbin and Windows binary basic
@@ -5167,6 +5167,15 @@ ipython
     - `impersonate_token sandbox\\Administrator`
     - nslookup -> `_ldap._tcp.dc._msdcs.sandbox.local` returns DC's ComputerName.
     - `$s=New-PSSession -Computer <ComputerName>` get remote session on DC.
+
+*** PWK cp10, Windows Buffer Overflow (SyncBreeze) p370
+    - fuzzing, with a poc script, `import time; while (size < 2000) {fuzz(); size+=100; time.sleep(10); }`
+    - pid and tcp port, tool: https://docs.microsoft.com/en-us/sysinternals/downloads/tcpview
+    - attach debugger with ADMIN privilege
+    - the overflow crash the service
+TODO Q: need EIP value on crash? p381
+TODO windows script to restart service
+
 
 ** HOLD list
   + (general osint, cp 6)
