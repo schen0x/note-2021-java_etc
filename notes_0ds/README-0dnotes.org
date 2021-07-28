@@ -2935,7 +2935,7 @@ sudo proxychains rdesktop 192.168.1.110
   # e.g. to obtain GUI access to the DC through the pivot.
     #+end_src
 
-      - =portfwd= command from meterpreter, similar effect, forward a port to the internal network.
+      - =portfwd= port forwarding (remote), with meterpreter.
     #+begin_src meterpreter
 meterpreter > portfwd -h
   # show help
