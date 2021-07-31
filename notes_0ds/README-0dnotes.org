@@ -1430,7 +1430,7 @@ sudo nmap --script vuln 10.11.1.10
   # run all scripts in the “vuln” category
      #+end_src
 
-* TODO Book3_Chapter 10 Buffer Overflow
+* Book3_Chapter 10, 11, 12 Buffer Overflow
 ** basic
    + ? x64 memory range (low 0x00000000 -> high 0x7FFFFFFF)
    + the stack, LIFO, the return address at bottom.
@@ -1486,11 +1486,62 @@ sudo nmap --script vuln 10.11.1.10
 
       
 ** DEP, ASLR, and CFG
-   + Data Execution Prevention(DEP): Specify executable section. raise an exception when code from data pages executed.
+   + Data Execution Prevention(DEP): Specify executable section. raise an exception when code from data pages executed. (OPTIONAL keyword: NXCompat)
    + Address Space Layout Randomization(ASLR): randomize the base address of loaded applications and DLLs on system reboot.
    + Control Flow Guard(CFG): ?
+   + [[https://docs.microsoft.com/en-us/cpp/build/reference/safeseh-image-has-safe-exception-handlers?view=vs-2019][Safe SEH]]
 
+** Identifying bad characters
+   + ref:
+     - Windows: PWK p383
+     - Linux: PWK p404
 
+   + info:
+     - It depends on the *application, vulnerability type, and protocols in use*. e.g. `\x0D` is End Of field in a HTTP POST req.
+     - To identify, throw a list of 256 chars b"\x00" to b"\xFF" to the buffer. A bad char would End the input, and the rest would not present in the memory.
+
+** Linux Buffer Overflow
+   + details in `assets/protostar/README-protostar.md`
+
+** Windows Buffer Overflow, SyncBreeze (return to a static library)
+  + first, control EIP.
+  + then, `info proc mappings` equivalent, `mona.py` [https://github.com/corelan/mona]. 
+  + use `!mona modules` to find a library whose Rebase, SafeSEH, ASLR, DEP flags are false. (which means the stack would be static)
+  + in addition, the address of the lib should contains no bad chars (leading digits of the address, 0x00XXXXXX)
+  + find the `JMP ESP`. If the DEP is enabled, the instruction should also be in `.text` section.
+
+*** find the `JMP ESP` in multi memory space
+    + find the opcode of `JMP ESP`
+    #+begin_src sh
+msf-nasm_shell
+
+nasm > jmp esp
+  # 00000000 FFE4     jmp esp
+    #+end_src
+
+** python3 auto char encoding
+
+   + problem: python3 would auto encode some bytes.
+
+   #+begin_src python
+   python -c 'print("\x48\x49\x90\x84\xe3\xe9")' |xxd
+     # 0000000: 4849 9084 e3e9 0a                        HI.....
+   python3 -c 'print("\x48\x49\x90\x84\xe3\xe9")' |xxd
+     # 0000000: 4849 c290 c284 c3a3 c3a9 0a              HI.........
+   #+end_src
+
+   + solution: write the raw bytes to a file, or send directly use a socket.
+
+   #+begin_src python
+import os, sys
+s = (b"\x48\x49\x90\x84\xe3\xe9"
+     b"\x48\x49\x90\x84\xe3\xe9")
+
+with open("out.txt","wb") as F:
+    F.write(s)
+    F.close()
+# xxd out.txt -> 00000000: 4849 9084 e3e9 4849 9084 e3e9            HI....HI....
+   #+end_src
 
 
 * Book3_Chapter 14 Locating Public Exploits
