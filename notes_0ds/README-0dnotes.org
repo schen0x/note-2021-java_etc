@@ -1432,6 +1432,7 @@ sudo nmap --script vuln 10.11.1.10
 
 * Book3_Chapter 10, 11, 12 Buffer Overflow
 ** basic
+   + ref: [[https://security.stackexchange.com/questions/157478/why-jmp-esp-instead-of-directly-jumping-into-the-stack][]]
    + ? x64 memory range (low 0x00000000 -> high 0x7FFFFFFF)
    + the stack, LIFO, the return address at bottom.
      - an example *stack frame*:
@@ -1508,7 +1509,8 @@ sudo nmap --script vuln 10.11.1.10
   + then, `info proc mappings` equivalent, `mona.py` [https://github.com/corelan/mona]. 
   + use `!mona modules` to find a library whose Rebase, SafeSEH, ASLR, DEP flags are false. (which means the stack would be static)
   + in addition, the address of the lib should contains no bad chars (leading digits of the address, 0x00XXXXXX)
-  + find the `JMP ESP`. If the DEP is enabled, the instruction should also be in `.text` section.
+  + find a `JMP ESP` gadget. If the DEP is enabled, the instruction should also be in `.text` section.
+  + Because before the `ret`, the $esp should be directly pointing at the payload ((may need no-op slop since clean-up might happen on the `ret` call)see the function prologue).
 
 *** find the `JMP ESP` in multi memory space
     + find the opcode of `JMP ESP`
