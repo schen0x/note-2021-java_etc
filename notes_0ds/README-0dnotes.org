@@ -1510,7 +1510,8 @@ sudo nmap --script vuln 10.11.1.10
   + use `!mona modules` to find a library whose Rebase, SafeSEH, ASLR, DEP flags are false. (which means the stack would be static)
   + in addition, the address of the lib should contains no bad chars (leading digits of the address, 0x00XXXXXX)
   + find a `JMP ESP` gadget. If the DEP is enabled, the instruction should also be in `.text` section.
-  + Because before the `ret`, the $esp should be directly pointing at the payload ((may need no-op slop since clean-up might happen on the `ret` call)see the function prologue).
+  + Because before the `ret`, the $esp should be directly pointing at the payload see the function prologue.
+  + in a `__stdcall`, `ret <imm16>` maybe used instead of `ret`. Since the callee would do the clean-up. In that case, the <imm16> bytes of extra padding is necessary.
 
 *** find the `JMP ESP` in multi memory space
     + find the opcode of `JMP ESP`
