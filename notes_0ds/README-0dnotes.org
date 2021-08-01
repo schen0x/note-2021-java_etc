@@ -285,6 +285,7 @@ done
         #+end_src
 
 *** sed
+    + perform text editing on a *stream* of text. e.g. `echo "ab cd" | sed 's/cd/ef'`, the dst after sed is still STDOUT.
     + ~sed -i.bak -e 's/sed/script/gi' fileName~ //edit --in-place, with backup fileName.bak, and --expression
     + ~echo 'sed in a shell' | sed 's/shell/subshell/g'~ //the last part is *regex flag*
       #+begin_quote
@@ -5247,7 +5248,6 @@ TODO windows script to restart service
 
 ** TODO list
   + (Burp setup, test in box)
-  + (Nikto p274, test)
   + *Exploiting Admin Consoles, XSS, LFI && (RFI), DirTraversal, test in box*
   (p275-321)
   7th lfi, 8-9th sql
