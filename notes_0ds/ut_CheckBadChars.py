@@ -37,6 +37,11 @@ def sendSocket(ip: str, port: int, buffer: bytes):
     s.send(b'PASS '+ buffer + b'\r\n')
 
 def sendHttpReq(url: str, buffer: bytes):
+    '''
+    Use with cautious. should not contain HTTP specific bad chars
+    b'\x90' -> '\xc2\x90'
+    '''
+
     import requests
     from urllib.parse import quote
 
@@ -46,7 +51,7 @@ def sendHttpReq(url: str, buffer: bytes):
     data = {'key': rawStr, 'password': 'A'}
     resPost = requests.post(url, data=data)
     url = 'http://localhost:8083'
-      # TODO be careful with the encoding
+      # b'\x90' -> '\xc2\x90'
 
     resGet = requests.get(url, params=data)
       # "GET /?key=%C2%90&password=A HTTP/1.1"
