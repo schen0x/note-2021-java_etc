@@ -40,6 +40,8 @@ $Searcher.SearchRoot = $objDomain
 $Searcher.filter="samAccountType=805306368"
 ## find all SPNs
 # $search.filter = "(servicePrincipalName=*)"
+## find all Groups (nested && none nested)
+# $Searcher.filter="(objectClass=Group)"
 ## SPN for http web services that support Kerberos authentication
 # $Searcher.filter="serviceprincipalname=*http*"
 

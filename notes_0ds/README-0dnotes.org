@@ -1080,7 +1080,7 @@ administrator), which is used to find the hostname of a specific IP address*.
   
 *** *dns enumeration tools*
    
-**** DNSRecon (.py script) TODO try zone transfer
+**** DNSRecon (.py script) try zone transfer
     + usage:
       #+begin_src sh
       dnsrecon -d megacorpone.com -t axfr                 # -d <domainname> -t <typeOfEnumeration>
@@ -1183,7 +1183,7 @@ sudo nmap -O 10.11.1.220
      #+begin_src sh
 nmap -sV -sS -A 10.11.1.220    # -sV version detection, or banners
      #+end_src
-     + TODO track size
+     + track size
 
 **** nmap scripting engine (NSE)
      + /usr/share/nmap/scripts
@@ -1303,7 +1303,7 @@ VRFY root
 VRFY idontexist
 # 550 5.1.1 <idontexist>: Recipient address rejected: User unknown in local recipient table
      #+end_src
-   + TODO [[./ut_SMTPEnumerationAuto.py]]
+   + [[./ut_SMTPEnumerationAuto.py]]
 
 ** SNMP enumeration : Simple Network Management Protocol : UDP 161
    + about SNMP
@@ -1583,7 +1583,7 @@ nmap --script-help=clamav-exec.nse
     #+begin_src sh
 sudo beef-xss                                 # start service
     #+end_src
-    + TODO usage
+    + OPTIONAL usage
 
 *** the Metasploit Framework
     + src
@@ -1593,8 +1593,6 @@ search ms08_067
 search -h                                     # help
     #+end_src
       
-*** //TODO p451
-
 * TODO Book3_Chapter 15 fixing the exploit
 ** TODO bo, manual to find the address quick
 ** TODO use metasploit and read different ver. of code
@@ -1620,7 +1618,7 @@ python -m http.server [-h] [--bind IP] [--directory DIR] [PORT]
     + backdoor exploited by 3rd party
     + antivirus scan
 
-*** TODO install Pure-FTPd
+*** install Pure-FTPd
    + src:
    #+begin_src sh
 sudo apt update && sudo apt install pure-ftpd
@@ -1637,7 +1635,7 @@ chown -R ftpuser:ftpgroup /ftphome/
 systemctl restart pure-ftpd
    #+end_src
    
-*** TODO the Non-Interactive shell
+*** the Non-Interactive shell
     + src:
     #+begin_src sh
 ftp <ip>
@@ -1871,7 +1869,6 @@ net localgroup <domain_local_security_group> /domain
        #+begin_quote
 In Active Directory, a group (and subsequently all the included members) can be added as member to another group. This is known as a nested group.
        #+end_quote
-       - TODO ?
        #+begin_quote
 Unfortunately, the net.exe command line tool cannot list nested groups and only shows the direct user members. Given this and other limitations, we will explore a more flexible alternative in the next section that is more effective in larger real-world environments.
        #+end_quote
@@ -1950,11 +1947,9 @@ Foreach($obj in $Result)
     Write-Host"------------------------"
 }
     #+end_src
-    - TODO p632 script modifications, other filters, lab
 ***** Resolving Nested Groups
-      
-TODO p632
-TODO the reason
+
++ `$Searcher.filter="(objectClass=Group)"`
 
 ***** Current Logged on Users
      + [[https://medium.com/@sixdub]]
@@ -3652,7 +3647,7 @@ proxychains xfreerdp /d:sandbox /u:alex /v:10.5.5.20 +clipboard
   ## /p:password
     #+end_src
     
-*** TODO SOCKS
+*** OPTIONAL SOCKS
     + ref:
       - [[./ref/b3cp24_understanding-implementing-socks-server-guide-set-socks-environment_2326.pdf][socks basic (a giac paper)]] (p7, the "CONNECTION"; p8, a global socks proxy (client) manipulate TCP stack)
     + questions:
@@ -3780,7 +3775,7 @@ shellter
     #+begin_src meterpreter
 meterpreter > use incognito
 meterpreter > list_tokens -u
-  ## todo, but nothing new to impersonate in this case
+  ## TODO, but nothing new to impersonate in this case
   (PWK p817)
     #+end_src
     
@@ -4280,7 +4275,7 @@ relay the datagram.
 
 * S2 python#utilities
 ** char, string processing (python)
-*** TODO string formating
+*** string formating
 
 *** ~split~, ~join~
     #+begin_src
@@ -5018,10 +5013,6 @@ parseInt('1101111111111111', 2).toString(16)
    + the param of get is received as string.
    + use a fuzzer which generate and inject code string, to an "any" typed input.
 
-//TODO 
-burpsuite
-ipython
-
 * linux misc
   
 ** named pipe
@@ -5199,7 +5190,7 @@ ipython
     - `dirb http://sandbox.local`
     - application specific scanner `wpscan --url sandbox.local --enumerate ap,at,cb,dbe` ## plugins
     - find the right keywords and target(wp plugins)`searchsploit survey poll`
-    - follow the exploit, TODO Burp and SQL Injection (PWK p755) `OR 1=2 UNION SELECT 1,2,3,4,5,6,7,8,9,table_name,11 FROM information_schema.tables#"]`
+    - follow the exploit, Burp and SQL Injection (PWK p755) `OR 1=2 UNION SELECT 1,2,3,4,5,6,7,8,9,table_name,11 FROM information_schema.tables#"]`
     - the SQL Injection -> wp username and pw hash
     - (try to crack the pw -> get the wp pw) `echo "$P$BfBIi66MsPQgzmvYsUzwjc5vSx9L6i/" > pass.txt`
     - `john --wordlist=/usr/share/wordlists/rockyou.txt pass.txt`
@@ -5236,7 +5227,6 @@ ipython
     - attach debugger with ADMIN privilege
     - the overflow crash the service
 TODO Q: need EIP value on crash? p381
-TODO windows script to restart service
 
 
 ** HOLD list
@@ -5252,19 +5242,12 @@ TODO windows script to restart service
   p306 - self xss -> src -> nc
   9.4.4.3 log + LFI
 
-  TODO SQL
-  TODO BO ref:
-    - [[https://www.vulnhub.com/entry/brainpan-1,51/][brainpan]]
-    - [[https://github.com/justinsteven/dostackbufferoverflowgood][dostackbufferoverflowgood]]
   TODO report env, pandoc
 
-16th TODO identify bad chars, ref: [[https://github.com/gh0x0st/Buffer_Overflow][Buffer Overflow guide]]
-16th TODO EIP, pattern identify && offset script, p461
+TODO identify bad chars, ref: [[https://github.com/gh0x0st/Buffer_Overflow][Buffer Overflow guide]]
+TODO pattern_create.rb
   - pattern_create.rb -l 600 identify eip
   - pattern_offset.rb -q ...
-17th TODO PWK p460 JMP ESP and Return Address
-
-sysinit.target.wants
 
   + *SQL (cp9.4 revisit p321)*
   + *sqlmap, test in box*
