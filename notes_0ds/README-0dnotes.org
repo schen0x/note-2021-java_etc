@@ -3202,13 +3202,13 @@ sudo nmap -sC -sS -p- -oA outFile sandbox.local
   # -p0-65535 or -p- scan all ports
   # -oA <fileName> save the result in all(txt, XML, greppable) formats
    #+end_src
-*** TODO when to use -A -sV
+*** when to use -A -sV
     
 ** Targeting the Web Application
    1. visit the homepage
    2. dirb http://sandbox.local
       
-*** TODO dirb frequently used params
+*** dirb frequently used params
      
 ** Targeting the Web Application
    3. (try find the default entries of the application)
@@ -3222,7 +3222,7 @@ wpscan --url sandbox.local --enumerate ap,at,cb,dbe
    5. searchsploit the scan result, i.e. the plugins. Use generic keywords (searchsploit wordpress survey poll). Check the detail if Hit.
    6. find the possible vulnerable component. Setup Burp and intereact.
       
-*** TODO burp
+*** burp
     + repeater
 
 ** Targeting the Web Application
@@ -3300,7 +3300,7 @@ grep -rnw '/path/to/somewhere/' -e 'PASSWORD'
   ## -r recursive, -n line number, -w match the whole word, -e pattern
       #+END_SRC
 
-**** TODO (optional) python interactive shell?
+**** (optional) python interactive shell
      + ref:
        - [[https://unix.stackexchange.com/questions/21752/what-s-the-difference-between-a-raw-and-a-cooked-device-driver][stty raw -echo]]
 
@@ -3318,7 +3318,7 @@ stty rows 38 columns 116
 reset
      #+END_SRC
 
-**** TODO enum opened port (bash: /dev/tcp/host/port) (portscan.sh)
+**** enum opened port (bash: /dev/tcp/host/port) (portscan.sh)
      + info:
        - use a bash specific feature to enumerate opened ports of internal nodes.
        - when used in redirection, bash handles "/dev/tcp/host/port" differently. see: [[https://www.gnu.org/savannah-checkouts/gnu/bash/manual/bash.html#Redirections][bash redirections]]
