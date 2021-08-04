@@ -878,7 +878,7 @@ axel -a -n 20 -o o.pdf https://example.com/o.pdf
 *** Fuzzer
     + AFL, libFuzzer, honggfuzz, KAFL(kernel), syscall fuzzer, syzkaller
 
-** TODO practical examples
+** practical examples
 *** example 1: grap all subdomain, get ip
     1. wget pages html
     2. grab all urls use regex.
@@ -887,13 +887,9 @@ axel -a -n 20 -o o.pdf https://example.com/o.pdf
        #+begin_src sh
 while read p; do host $p >> index_hosts_result; done < index_hosts
        #+end_src
-     
-
-   //p123 pass
    
 *** example2
-    //p125 pass
-    TODO grep and analyse raw
+    //p132 process string of searchsploit result, and auto download raw from original site.
     
 *** example3
     //namp
@@ -995,14 +991,14 @@ intitle: "index of" "parent directory"
     https://osintframework.com/
     + *extremely useful*
       
-*** TODO maltego
+*** OPTINAL Maltego (OSINT data mining tool)
     https://www.paterva.com/buy/maltego-clients.php
     + indispensable tool for large information gathering operations (PWK, p170)
 
 * Book3_Chapter 07 Active Information Gathering
   + port scanning, DNS, SMB, NFS, SMTP, SNMP enumeration.
     
-** DNS enumeration TODO recursor
+** DNS enumeration OPTIONAL recursor
    + dns client <-> DNS recursor <-> DNS infrastructure
    + the DNS infrastructure:
      + cliient:
@@ -1051,6 +1047,7 @@ administrator), which is used to find the hostname of a specific IP address*.
      + simplified wordlist /usr/share/seclists
        - Much more comprehensive wordlists are available as part of the SecLists project.
        - [[https://github.com/danielmiessler/SecLists]]
+       - [[https://github.com/danielmiessler/SecLists/tree/master/Discovery/DNS]]
        - sudo apt install seclists
      + usage: 
      #+begin_src sh
@@ -1058,7 +1055,7 @@ administrator), which is used to find the hostname of a specific IP address*.
      for ip in $(cat list.txt); do host $ip.megacorpone.com; done
      #+end_src
      
-**** reverse lookup brute force (ip -> hostname, TODO check PTR, p174)
+**** reverse lookup brute force (ip -> hostname, check PTR, p179)
      #+begin_quote
      If the DNS administrator of megacorpone.com configured PTR 191 records for the domain, we could scan the approximate range with reverse lookups to request the hostname for each IP.
      #+end_quote
