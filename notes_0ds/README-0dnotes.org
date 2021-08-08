@@ -5297,3 +5297,10 @@ TODO pattern_create.rb
    2. same exploit manually.
    3. different routines.
      
+
+* extra 02 System Architecture reference 
+
++ img:
+
+[[./img/e2_LinuxFileSystemArchitecture.png]]
+[[./img/e2_WindowsArchitecture.png]]
