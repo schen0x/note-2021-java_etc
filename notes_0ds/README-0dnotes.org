@@ -5304,3 +5304,20 @@ TODO pattern_create.rb
 
 [[./img/e2_LinuxFileSystemArchitecture.png]]
 [[./img/e2_WindowsArchitecture.png]]
+
+* extra 03 route
+
+** Routing table
+
+  - Q: Does the order of `ip route` matters?
+  - A: No. The specific one wins over generic ones. i.e. `10.1.2.151/32 <gw>` wins against `10.1.2.96/27 <gw>`.
+
+  - Q: Does conflict happens when the length of Netmasks are the same?
+  - A: No. Because route only happen on exact match. e.g. `10.0.0.0/8 <gw>` has no effect if ip is in the scope of `192.0.0.0/8`.
+
+** Netmask calculation
+
+  - Q: Given `ip 172.26.114.229`, `brd 172.26.127.255`, what is the possible Network mask length in bit?
+  - A: Since ip 114 -> 0b01110010, brd 127 -> 0b01111111, in the 3rd section the mask could be 1b10000000 , 0b11000000, 0b11100000 or 0b11110000. 
+  -    The possible length are 17, 18, 19, 20.
+
