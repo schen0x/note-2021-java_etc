@@ -37,9 +37,9 @@ $Searcher.SearchRoot = $objDomain
 ## ref1: [LDAP Famous filters](http://www.ldapexplorer.com/en/manual/109050000-famous-filters.htm)
 ## ref2: [common SPNs](https://adsecurity.org/?page_id=183)
 ## find all user account(805306368) || computer/machine account: (805306369)
-$Searcher.filter="samAccountType=805306368"
+# $Searcher.filter="samAccountType=805306368"
 ## find all SPNs
-# $search.filter = "(servicePrincipalName=*)"
+$Searcher.filter="(servicePrincipalName=*)"
 ## find all Groups (nested && none nested)
 # $Searcher.filter="(objectClass=Group)"
 ## SPN for http web services that support Kerberos authentication
@@ -59,7 +59,7 @@ Foreach($obj in $Result)
     {
         $prop
     }
-    Write-Host"------------------------"
+    Write-Host "------------------------"
 }
 
 ## Expected $prop:
